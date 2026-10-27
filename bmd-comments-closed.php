@@ -23,35 +23,3 @@ add_filter( 'get_comments_number', function ( $count ) {
     if ( is_admin() ) { return $count; }
     return 0;
 }, 999, 2 );
-
-// One-time persistent closure of historical WordPress content (including
-// public custom post types). Save old states so the DB operation is reversible.
-add_action( 'init', function () {
-    if ( get_option( 'bmd_all_comments_closed_20261027', false ) ) { return; }
-    global $wpdb;
-    $sql_where = "(comment_status = 'open' OR ping_status = 'open')";
-    $previous = $wpdb->get_results(
-        "SELECT ID, comment_status, ping_status FROM {$wpdb->posts} WHERE {$sql_where}",
-        ARRAY_A
-    );
-    if ( ! is_array( $previous ) ) { return; }
-    $backup_key = 'bmd_previous_open_comment_states_20261027';
-    if ( get_option( $backup_key, null ) === null ) {
-        if ( ! add_option( $backup_key, $previous, '', false ) ) { return; }
-    }
-    if ( ! update_option( 'default_comment_status', 'closed' ) &&
-         get_option( 'default_comment_status' ) !== 'closed' ) { return; }
-    if ( ! update_option( 'default_ping_status', 'closed' ) &&
-         get_option( 'default_ping_status' ) !== 'closed' ) { return; }
-
-    $affected = $wpdb->query(
-        "UPDATE {$wpdb->posts} SET comment_status='closed', ping_status='closed'
-         WHERE {$sql_where}"
-    );
-    if ( $affected === false ) { return; }
-    update_option( 'bmd_all_comments_closed_20261027', array(
-        'closed_count' => (int) $affected,
-        'backed_up_count' => count( $previous ),
-        'closed_at' => gmdate( 'Y-m-d H:i:s' ),
-    ), false );
-}, 25 );
