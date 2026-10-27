@@ -59,7 +59,7 @@ add_action( 'rest_api_init', function () {
   'methods' => 'GET',
   'permission_callback' => '__return_true',
   'callback' => function () {
-   $cache_key = 'bmd_assets_audit_20261027_2';
+   $cache_key = 'bmd_assets_audit_20261027_3';
    $cached = get_transient($cache_key);
    if ( is_array($cached) ) return rest_ensure_response($cached);
    $result = array('version'=>'1.2.1-audit', 'pages'=>array());
@@ -99,7 +99,9 @@ add_action( 'rest_api_init', function () {
       foreach(array('gtag','google-analytics','googletagmanager','adsbygoogle','elementor','aiblock','ad-inserter','cookie','complianz','recaptcha','rankmath','schema.org','jQuery','oceanwp','wordfence','affiliate','wp-emoji','pixel','facebook','script src','document.write','base64') as $test) {
        if(stripos($m[2],$test)!==false) $signals[]=$test;
       }
-      $large_script_meta[]=array('bytes'=>$length,'id'=>$id,'type'=>$type,'head'=>strpos($html,$m[0])<strlen($head),'signals'=>$signals,'classifiers'=>array('has_src_text'=>strpos($m[2],'src=')!==false,'has_jsonld'=>strpos($m[2],'@context')!==false));
+      preg_match_all('~\b(?:function|var|let|const)\s+([a-zA-Z_$][a-zA-Z0-9_$]{2,50})~',$m[2],$idents);
+      $symbol_names=array_slice(array_values(array_unique($idents[1]??array())),0,35);
+      $large_script_meta[]=array('bytes'=>$length,'id'=>$id,'type'=>$type,'head'=>strpos($html,$m[0])<strlen($head),'signals'=>$signals,'symbols'=>$symbol_names,'classifiers'=>array('has_src_text'=>strpos($m[2],'src=')!==false,'has_jsonld'=>strpos($m[2],'@context')!==false));
     }
     rsort($inlinejs);rsort($inlinestyle);
 
