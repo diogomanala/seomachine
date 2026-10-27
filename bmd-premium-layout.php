@@ -29,6 +29,16 @@ add_shortcode('bmd_tools_hub', function() {
     $html='<section class="bmd-hub" aria-label="Catálogo de ferramentas">';
     $html.='<p class="bmd-hub-lede">Ferramentas gratuitas para medir campanhas, criar links rastreáveis, preparar imagens e organizar dados. Escolha o que precisa e comece sem procurar em menus extensos.</p>';
     $html.=bmd_premium_tools_html();
+
+    $html.='<section class="bmd-pro-solutions" aria-labelledby="bmd-pro-title">';
+    $html.='<span class="bmd-eyebrow">PARA QUEM CRIA E VENDE</span>';
+    $html.='<h2 id="bmd-pro-title">Soluções para projetos profissionais</h2>';
+    $html.='<p>Além das ferramentas gratuitas, conheça duas soluções para quem trabalha com criação de sites e automações.</p>';
+    $html.='<div class="bmd-pro-links">';
+    $html.='<a href="https://siteclonerpro.com.br/" rel="sponsored noopener" target="_blank"><strong>SiteCloner Pro <span aria-hidden="true">↗</span></strong><span>Capture referências de sites e comece sua personalização com uma base adiantada.</span></a>';
+    $html.='<a href="https://autodminsta.com/" rel="sponsored noopener" target="_blank"><strong>AutoDMInsta <span aria-hidden="true">↗</span></strong><span>Configure automações de comentários e Direct para campanhas do Instagram.</span></a>';
+    $html.='</div></section>';
+
     $html.='<section class="bmd-hub-next" aria-labelledby="bmd-hub-guides">';
     $html.='<h2 id="bmd-hub-guides">Para ir além das ferramentas</h2>';
     $guides=array(
@@ -67,7 +77,7 @@ add_filter('wp_nav_menu_items', function($items,$args){
         $html.='<li class="'.esc_attr($classes).'"><a class="menu-link" href="'.esc_url(home_url($path)).'"'.($active?' aria-current="page"':'').'><span class="text-wrap">'.esc_html($title).'</span></a></li>';
     }
     // Preserve the native OceanWP search toggle (and its JS behavior).
-    if(preg_match('~<li\b[^>]*class=["\x27][^"\x27]*search-toggle-li[^"\x27]*["\x27][^>]*>.*?</li>~is',$items,$m)){
+    if(strpos((string)($args->menu_class ?? ''), 'main-menu') !== false && preg_match('~<li\b[^>]*class=["\x27][^"\x27]*search-toggle-li[^"\x27]*["\x27][^>]*>.*?</li>~is',$items,$m)){
         $html.=$m[0];
     }
     return $html;
@@ -213,7 +223,7 @@ body.bmd-tool-page .bmd-calc .bmd-scenario strong{font-size:12px}
 body.bmd-premium-layout .bmd-footer-quick{display:flex;align-items:center;justify-content:center;gap:14px 22px;flex-wrap:wrap;padding:10px 0;font-size:12px}
 body.bmd-premium-layout .bmd-footer-quick strong{font-weight:800;color:#c2cbd6}
 body.bmd-premium-layout .bmd-footer-quick a{color:inherit;text-decoration:underline;text-underline-offset:3px}
-@media(max-width:1100px){
+@media(max-width:959px){
 body.bmd-premium-layout #site-navigation-wrap{display:none!important}
 body.bmd-premium-layout .oceanwp-mobile-menu-icon{display:block!important;float:none!important;margin-left:auto!important}
 body.bmd-premium-layout #site-header-inner{padding-inline:16px}
@@ -239,6 +249,15 @@ body.bmd-tool-page .bmd-calc .bmd-calc-fields{grid-template-columns:1fr}
 body.bmd-tool-page .bmd-calc .bmd-calc-scenarios{grid-template-columns:1fr}
 body.bmd-premium-layout .bmd-footer-quick{justify-content:flex-start}
 }
+body.bmd-premium-layout .bmd-pro-solutions{margin:42px 0 0;padding-top:30px;border-top:1px solid var(--bmd-line)}
+body.bmd-premium-layout .bmd-pro-solutions h2{font-size:clamp(22px,2.5vw,28px);letter-spacing:-.8px;line-height:1.25;margin:9px 0 7px}
+body.bmd-premium-layout .bmd-pro-solutions>p{font-size:14px;color:var(--bmd-muted);line-height:1.55;margin:0 0 16px}
+body.bmd-premium-layout .bmd-pro-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+body.bmd-premium-layout .bmd-pro-links a{display:flex;flex-direction:column;gap:8px;padding:18px 20px;border:1px solid var(--bmd-line);border-radius:12px;color:var(--bmd-ink)!important;text-decoration:none!important;background:#fbfcfe}
+body.bmd-premium-layout .bmd-pro-links a:hover{border-color:#bdc8d7}
+body.bmd-premium-layout .bmd-pro-links strong{font-size:16px;font-weight:780}
+body.bmd-premium-layout .bmd-pro-links span{font-size:13px;color:var(--bmd-muted);line-height:1.55}
+@media(max-width:640px){body.bmd-premium-layout .bmd-pro-links{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}body.bmd-premium-layout .bmd-tool-tile{transition:none}body.bmd-premium-layout .bmd-tool-tile:hover{transform:none}}
 </style>
 BMD_STYLE;
