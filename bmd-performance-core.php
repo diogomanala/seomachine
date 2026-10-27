@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Reducao seletiva de recursos na home e em artigos; preserva formularios, AdSense, Analytics e administracao.
- * Version: 1.1.0
+ * Version: 1.2.0
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 function bmd_perf_is_formless_post() {
     if ( is_admin() || is_user_logged_in() || is_preview() || is_customize_preview() ) { return false; }
-    if ( is_home() ) { return true; }
+    if ( is_home() || is_front_page() ) { return true; }
     if ( ! is_singular( 'post' ) ) { return false; }
     $post_id = get_queried_object_id();
     if ( ! $post_id ) { return false; }
@@ -62,13 +62,13 @@ add_action( 'rest_api_init', function () {
         'methods' => 'GET',
         'permission_callback' => '__return_true',
         'callback' => function () {
-            $cached = get_transient( 'bmd_performance_diagnostic_20261027' );
+            $cached = get_transient( 'bmd_performance_diagnostic_20261027b' );
             if ( is_array( $cached ) ) { return rest_ensure_response( $cached ); }
 
             $loc = get_nav_menu_locations();
             $menu = get_term_by( 'slug', 'menuzao', 'nav_menu' );
             $res = array(
-                'plugin_version' => '1.1.0',
+                'plugin_version' => '1.2.0',
                 'theme' => wp_get_theme()->get_stylesheet(),
                 'menus' => array(
                     'menuzao_id' => $menu ? (int) $menu->term_id : null,
@@ -108,7 +108,7 @@ add_action( 'rest_api_init', function () {
                     ),
                 );
             }
-            set_transient( 'bmd_performance_diagnostic_20261027', $res, 120 );
+            set_transient( 'bmd_performance_diagnostic_20261027b', $res, 120 );
             return rest_ensure_response( $res );
         },
     ) );
