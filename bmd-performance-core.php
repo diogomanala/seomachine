@@ -2,12 +2,22 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 1.5.2
+ * Version: 1.5.3
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
+
+/**
+ * WordPress 6.9+ still prints ~3KB emoji detection module in the footer.
+ * Browser-native emojis work without it; admin and editor are unchanged.
+ */
+add_action( 'init', function() {
+    if ( is_admin() ) { return; }
+    remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+    remove_action( 'wp_print_styles', 'print_emoji_styles' );
+}, 1 );
 
 function bmd_perf_is_formless_post() {
     if ( is_admin() || is_user_logged_in() || is_preview() || is_customize_preview() ) { return false; }
@@ -166,8 +176,12 @@ add_action( 'rest_api_init', function () {
       'has_fontawesome_css'=>strpos($html,'fontawesome/css/all.min.css')!==false,
       'has_simple_icons_css'=>strpos($html,'simple-line-icons.min.css')!==false,
       'has_analytics'=>strpos($html,'gtag/js')!==false,
+      'footer_emoji_loader'=>strpos($html,'id="wp-emoji-settings"')!==false || strpos($html,'wp-emoji')!==false,
       'has_adsense'=>strpos($html,'adsbygoogle.js')!==false);
    }
+   $file=WP_CONTENT_DIR . '/webp-express/webp-images/uploads/2025/07/cupom-hostinger.jpg.webp';
+   $dims=is_file($file)?@getimagesize($file):false;
+   $result['hostinger_banner_file']=array('exists'=>is_file($file),'dimensions'=>$dims?array($dims[0],$dims[1]):null);
    return rest_ensure_response($result);
   }
  ));
