@@ -266,3 +266,32 @@ add_action('template_redirect', function(){
         exit;
     }
 }, 0);
+
+
+/** Repair an initial duplicate page using narrowly scoped matching. */
+add_action('init', function () {
+    $primary = get_page_by_path('baixar-video-instagram', OBJECT, 'page');
+    $duplicate = get_page_by_path('baixar-video-instagram-2', OBJECT, 'page');
+    if (!$primary || !$duplicate || $primary->ID === $duplicate->ID) { return; }
+    if ($primary->post_status !== 'publish' || $duplicate->post_status !== 'publish') { return; }
+    if ($primary->post_title !== $duplicate->post_title ||
+        trim($primary->post_content) !== '[bmd_instagram_downloader]' ||
+        trim($duplicate->post_content) !== '[bmd_instagram_downloader]') { return; }
+    wp_trash_post($duplicate->ID);
+}, 38);
+add_action('template_redirect', function () {
+    $path = trim((string)(wp_parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: ''), '/');
+    if ($path !== 'baixar-video-instagram-2') { return; }
+    wp_safe_redirect(home_url('/baixar-video-instagram/'), 301, 'BMD');
+    exit;
+}, 0);
+
+/** Keep the tools directory SERP snippet aligned with its visible inventory. */
+add_action('init', function () {
+    if (get_option('bmd_instagram_tools_seo_v1', false)) { return; }
+    $hub = get_page_by_path('ferramentas-gratis', OBJECT, 'page');
+    if (!$hub || $hub->post_status !== 'publish') { return; }
+    update_post_meta($hub->ID, 'rank_math_description',
+        'Ferramentas grátis para marketing digital: baixe seus Reels públicos do Instagram, calcule ROAS e CAC, gere UTMs e remova metadados. Sem cadastro.');
+    update_option('bmd_instagram_tools_seo_v1', $hub->ID, false);
+}, 42);
