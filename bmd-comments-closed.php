@@ -55,25 +55,3 @@ add_action( 'init', function () {
         'closed_at' => gmdate( 'Y-m-d H:i:s' ),
     ), false );
 }, 25 );
-
-// Temporary counts-only verification endpoint, removed after one deployment.
-add_action( 'rest_api_init', function () {
-    register_rest_route( 'bmd-performance/v1', '/closed-comments-audit', array(
-        'methods' => 'GET',
-        'permission_callback' => '__return_true',
-        'callback' => function () {
-            global $wpdb;
-            return rest_ensure_response( array(
-                'new_posts_default' => get_option( 'default_comment_status' ),
-                'default_pingback_status' => get_option( 'default_ping_status' ),
-                'open_posts_remaining' => (int) $wpdb->get_var(
-                    "SELECT COUNT(*) FROM {$wpdb->posts} WHERE comment_status='open' OR ping_status='open'"
-                ),
-                'existing_comment_records' => (int) $wpdb->get_var(
-                    "SELECT COUNT(*) FROM {$wpdb->comments}"
-                ),
-                'closed_result' => get_option( 'bmd_all_comments_closed_20261027', false ),
-            ) );
-        },
-    ) );
-} );
