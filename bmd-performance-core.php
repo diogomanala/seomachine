@@ -433,6 +433,8 @@ add_action( 'rest_api_init', function() {
                     'utm_copy'=>strpos($html,'id="bmd-utm-copy"')!==false,
                     'utm_script'=>strpos($html,"root.dataset.ready='1'")!==false,
                     'recaptcha'=>strpos($html,'recaptcha/api.js')!==false,
+                    'captcha_head'=>strpos(explode('</head>',$html,2)[0],'recaptcha/api.js')!==false,
+                    'captcha_scripts'=>(function($html){preg_match_all('~<script\b[^>]*\bsrc=["\x27]([^"\x27]*recaptcha[^"\x27]*)["\x27][^>]*>~i',$html,$hits);return array_slice(array_map(function($url){return (string)wp_parse_url(html_entity_decode($url),PHP_URL_HOST).(string)wp_parse_url(html_entity_decode($url),PHP_URL_PATH);},$hits[1]??array()),0,5);})($html),
                     'adsense'=>strpos($html,'adsbygoogle.js')!==false,
                     'has_referral'=>strpos($html,'clubedigitalpro')!==false,
                 );
