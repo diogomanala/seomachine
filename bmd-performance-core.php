@@ -120,7 +120,7 @@ add_action( 'rest_api_init', function () {
       'adsense_in_head'=>strpos($head,'adsbygoogle.js')!==false,
       'litecache_header'=>isset($headers['x-litespeed-cache'])?(string)$headers['x-litespeed-cache']:'',
 
-      'hostinger_affiliate_anchors'=>array_map(function($v){return array('text'=>mb_substr(strip_tags($v[2]),0,90),'full_tag_bytes'=>strlen($v[0]),'tag_head'=>mb_substr($v[1],0,120));},array_slice((function($h){preg_match_all('~<a\b([^>]*)href=["\x27]([^"\x27]*hostinger\.com\.br[^"\x27]*)["\x27][^>]*>(.*?)</a>~is',$h,$m,PREG_SET_ORDER);return $m;} )($html),0,5)),
+      'hostinger_affiliate_anchors'=>array_map(function($v){return array('text'=>substr(strip_tags($v[3]),0,90),'full_tag_bytes'=>strlen($v[0]),'tag_head'=>substr($v[1],0,120));},array_slice((function($h){preg_match_all('~<a\b([^>]*)href=["\x27]([^"\x27]*hostinger\.com\.br[^"\x27]*)["\x27][^>]*>(.*?)</a>~is',$h,$m,PREG_SET_ORDER);return $m;} )($html),0,5)),
 
     );
    }
