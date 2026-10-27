@@ -152,6 +152,16 @@ add_action( 'rest_api_init', function () {
                     'http' => (int) wp_remote_retrieve_response_code( $response ),
                     'html_bytes' => strlen( $html ), 'inline_js_bytes' => $js_total,
                     'external_ai_file' => strpos( $html, '/ai-functions' ) !== false,
+                    'external_script_sources' => (function($html){
+                        $result = array();
+                        preg_match_all('~<script\b[^>]*\bsrc\s*=\s*["\x27]([^"\x27]+)~i',$html,$matches);
+                        foreach($matches[1]??array() as $src){
+                            $path=wp_parse_url(html_entity_decode($src),PHP_URL_PATH);
+                            $host=wp_parse_url(html_entity_decode($src),PHP_URL_HOST);
+                            $result[]=($host?:'local').(string)$path;
+                        }
+                        return array_slice($result,0,48);
+                    })($html),
                     'has_adsense' => strpos( $html, 'adsbygoogle.js' ) !== false,
                     'has_referral' => strpos( $html, 'clubedigitalpro' ) !== false,
                     'has_native_note' => strpos( $html, 'bmd-native-note' ) !== false,
