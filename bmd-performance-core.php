@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 1.3.0
+ * Version: 1.3.1
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -53,18 +53,6 @@ foreach ( array( 'litespeed_optimize_js_excludes', 'litespeed_optm_js_defer_exc'
 }
 
 
-
-/**
- * Remove only the legacy Hostinger referral image widget.
- * Keep editorial content, AdSense, and all unrelated sidebar widgets.
- */
-add_filter( 'widget_display_callback', function( $instance, $widget, $args ) {
-    if ( ! is_admin() && isset( $widget->id ) && $widget->id === 'block-2' && is_array( $instance ) &&
-         strpos( serialize( $instance ), 'clubedigitalpro' ) !== false ) {
-        return false;
-    }
-    return $instance;
-}, 10, 3 );
 
 /**
  * Editorial recommendation: one subtle, relevant text link in a post.
