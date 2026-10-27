@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 1.5.3
+ * Version: 1.6.0
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -63,6 +63,32 @@ add_action( 'wp_enqueue_scripts', function () {
     wp_dequeue_script( 'comment-reply' );
     wp_dequeue_script( 'wp-embed' );
 }, 999 );
+
+/**
+ * On the blog listing, prioritize the lead article image only.
+ * Subsequent featured images can load as they approach the viewport.
+ * This does not affect single posts, the contact page, or the Hostinger banner.
+ */
+add_filter( 'post_thumbnail_html', function( $html ) {
+    if ( is_admin() || is_user_logged_in() || ! ( is_home() || is_front_page() ) ) {
+        return $html;
+    }
+    static $featured = 0;
+    if ( ! preg_match( '~<img\b~i', $html ) ) {
+        return $html;
+    }
+    $featured++;
+    if ( $featured <= 1 ) {
+        return $html;
+    }
+    if ( preg_match( '~\bloading\s*=\s*["\x27][^"\x27]+["\x27]~i', $html ) ) {
+        $html = preg_replace( '~\bloading\s*=\s*(["\x27])[^"\x27]*\1~i', 'loading="lazy"', $html, 1 );
+    } else {
+        $html = preg_replace( '~<img\b~i', '<img loading="lazy"', $html, 1 );
+    }
+    $html = preg_replace( '~\sfetchpriority\s*=\s*(["\x27])high\1~i', '', $html, 1 );
+    return $html;
+}, 50 );
 
 $GLOBALS['bmd_perf_head_buffer'] = false;
 add_action( 'wp_head', function () {
