@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 1.8.0
+ * Version: 1.8.1
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -18,6 +18,37 @@ add_action( 'init', function() {
     remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
     remove_action( 'wp_print_styles', 'print_emoji_styles' );
 }, 1 );
+
+
+/**
+ * One-time, audited repair of a broken editor placeholder in the 2022 SEO pillar.
+ * Keep a private complete backup in post meta and update no other material.
+ */
+add_action( 'init', function () {
+    if ( get_option( 'bmd_fix_seo_placeholder_20261027', false ) ) { return; }
+    $id = 5017;
+    $post = get_post( $id );
+    if ( ! $post || $post->post_type !== 'post' || $post->post_status !== 'publish'
+         || $post->post_name !== 'significado-o-que-e-seo-e-para-que-serve' ) { return; }
+    $old = (string) $post->post_content;
+    if ( strpos( $old, '_wp_link_placeholder' ) === false ) { return; }
+    $target = esc_url_raw( home_url( '/23-ferramentas-gratuitas-de-seo-e-analise-de-websites/' ) );
+    $new = preg_replace(
+        '~href\s*=\s*(["\x27])_wp_link_placeholder\1~i',
+        'href="' . $target . '"',
+        $old,
+        1,
+        $replaced
+    );
+    if ( $replaced !== 1 || $new === $old ) { return; }
+    if ( ! metadata_exists( 'post', $id, '_bmd_seo_placeholder_original_20261027' ) ) {
+        add_post_meta( $id, '_bmd_seo_placeholder_original_20261027', $old, true );
+    }
+    $result = wp_update_post( array( 'ID' => $id, 'post_content' => wp_slash( $new ) ), true );
+    if ( ! is_wp_error( $result ) && (int) $result === $id ) {
+        update_option( 'bmd_fix_seo_placeholder_20261027', 'repaired_post_5017', false );
+    }
+}, 25 );
 
 function bmd_perf_is_formless_post() {
     if ( is_admin() || is_user_logged_in() || is_preview() || is_customize_preview() ) { return false; }
