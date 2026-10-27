@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 1.6.1
+ * Version: 1.7.0
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -157,3 +157,32 @@ add_filter( 'the_content', function( $content ) {
     $box .= ' <span style="opacity:.8"> — ' . esc_html( $description ) . '</span></aside>';
     return $content . "\n" . $box;
 }, 35 );
+
+/**
+ * Evergreen internal navigation for the first blog home page only.
+ * Uses real existing editorial category URLs; no external CSS/JS, ads or widgets.
+ * Executed before the OceanWP archive loop and suppressed on paginated archives.
+ */
+add_action( 'ocean_before_content_inner', function () {
+    if ( is_admin() || ! is_home() || is_paged() || is_feed() || is_preview() ) {
+        return;
+    }
+    $topics = array(
+        'SEO' => '/category/seo/',
+        'Inteligência artificial e automação' => '/category/inteligencia-artificial-automacao/',
+        'Tráfego pago' => '/category/trafego/',
+        'Criação de sites e WordPress' => '/category/wordpress/',
+        'Mídias sociais' => '/category/midias-sociais-2/',
+    );
+    echo '<section class="bmd-home-topics" aria-labelledby="bmd-home-topics-title" style="margin:0 0 22px;padding:0 0 16px;border-bottom:1px solid #e7ebf0;">';
+    echo '<h2 id="bmd-home-topics-title" style="font-size:1.24em;line-height:1.35;margin:0 0 8px;">Marketing digital na prática: explore nossos guias</h2>';
+    echo '<p style="margin:0 0 8px;line-height:1.5;">Aprenda estratégias de marketing digital, encontre ferramentas e acompanhe tutoriais de SEO, IA, anúncios e desenvolvimento web.</p>';
+    echo '<nav aria-label="Assuntos do blog"><p style="margin:0;line-height:1.8;">';
+    $first = true;
+    foreach ( $topics as $name => $path ) {
+        if ( ! $first ) { echo ' <span aria-hidden="true" style="color:#9099a5;padding:0 5px;">·</span> '; }
+        echo '<a href="' . esc_url( home_url( $path ) ) . '">' . esc_html( $name ) . '</a>';
+        $first = false;
+    }
+    echo '</p></nav></section>';
+}, 5 );
