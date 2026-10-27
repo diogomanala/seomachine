@@ -164,6 +164,11 @@ $raw=get_option('ad_inserter');
   };
   $walk($data);
   $shape['candidate_paths']=array_slice($found,0,90);
+  $shape['first_bytes_hex']=is_string($raw)?bin2hex(substr($raw,0,14)):'';
+  $shape['base64_valid']=is_string($raw)&&base64_decode($raw,true)!==false;
+  $shape['starts_html']=is_string($raw)&&strpos(ltrim($raw),'<')===0;
+  $shape['starts_phpserialize']=is_string($raw)&&preg_match('~^[aOsibdN]:~',$raw)===1;
+  $shape['contains_configuration_keys']=is_string($raw)?array_values(array_filter(array('javascript'=>strpos($raw,'javascript')!==false?'javascript':null,'js_code'=>strpos($raw,'js_code')!==false?'js_code':null,'frontend'=>strpos($raw,'frontend')!==false?'frontend':null,'external'=>strpos($raw,'external')!==false?'external':null,'file'=>strpos($raw,'file')!==false?'file':null,'inline'=>strpos($raw,'inline')!==false?'inline':null))):array();
   return rest_ensure_response(array('ad_inserter_shape'=>$shape));
 
  }));
