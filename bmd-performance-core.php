@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 1.8.1
+ * Version: 1.8.2
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -19,36 +19,6 @@ add_action( 'init', function() {
     remove_action( 'wp_print_styles', 'print_emoji_styles' );
 }, 1 );
 
-
-/**
- * One-time, audited repair of a broken editor placeholder in the 2022 SEO pillar.
- * Keep a private complete backup in post meta and update no other material.
- */
-add_action( 'init', function () {
-    if ( get_option( 'bmd_fix_seo_placeholder_20261027', false ) ) { return; }
-    $id = 5017;
-    $post = get_post( $id );
-    if ( ! $post || $post->post_type !== 'post' || $post->post_status !== 'publish'
-         || $post->post_name !== 'significado-o-que-e-seo-e-para-que-serve' ) { return; }
-    $old = (string) $post->post_content;
-    if ( strpos( $old, '_wp_link_placeholder' ) === false ) { return; }
-    $target = esc_url_raw( home_url( '/23-ferramentas-gratuitas-de-seo-e-analise-de-websites/' ) );
-    $new = preg_replace(
-        '~href\s*=\s*(["\x27])_wp_link_placeholder\1~i',
-        'href="' . $target . '"',
-        $old,
-        1,
-        $replaced
-    );
-    if ( $replaced !== 1 || $new === $old ) { return; }
-    if ( ! metadata_exists( 'post', $id, '_bmd_seo_placeholder_original_20261027' ) ) {
-        add_post_meta( $id, '_bmd_seo_placeholder_original_20261027', $old, true );
-    }
-    $result = wp_update_post( array( 'ID' => $id, 'post_content' => wp_slash( $new ) ), true );
-    if ( ! is_wp_error( $result ) && (int) $result === $id ) {
-        update_option( 'bmd_fix_seo_placeholder_20261027', 'repaired_post_5017', false );
-    }
-}, 25 );
 
 function bmd_perf_is_formless_post() {
     if ( is_admin() || is_user_logged_in() || is_preview() || is_customize_preview() ) { return false; }
@@ -231,3 +201,45 @@ add_action( 'ocean_before_content_inner', function () {
     }
     echo '</ul></div></section>';
 }, 5 );
+
+/**
+ * Original decision table for an established, manually researched SEO guide.
+ * Only post 2402. No injected third-party scripts or sales promotions.
+ */
+add_filter( 'the_content', function ( $content ) {
+    if ( is_admin() || ! is_main_query() || ! in_the_loop() || ! is_singular( 'post' ) ||
+        get_the_ID() !== 2402 || is_preview() || is_feed() || strpos( $content, 'bmd-seo-quick-compare' ) !== false ) {
+        return $content;
+    }
+    $rows = array(
+        array( 'Google Search Console', 'Buscas, cliques, indexação e sitemaps', 'Grátis; é preciso verificar o site' ),
+        array( 'PageSpeed Insights', 'LCP, CLS e problemas de carregamento', 'Grátis; analisa uma URL por vez' ),
+        array( 'Screaming Frog SEO Spider', 'Rastrear links, títulos e erros técnicos', 'Versão gratuita: até 500 URLs por rastreamento' ),
+        array( 'Ahrefs Free', 'Backlinks e auditoria do próprio domínio', 'Site verificado; créditos mensais limitados' ),
+        array( 'Google Trends', 'Interesse e sazonalidade dos termos', 'Grátis; não mede volume absoluto de buscas' ),
+        array( 'Rich Results Test', 'Elegibilidade para resultados avançados', 'Grátis; não garante exibição de rich results' ),
+    );
+    $table = '<section id="bmd-seo-quick-compare" aria-labelledby="bmd-seo-quick-title" style="margin:24px 0 28px;">';
+    $table .= '<h2 id="bmd-seo-quick-title">Comparativo rápido: qual ferramenta de SEO gratuita usar?</h2>';
+    $table .= '<p>Escolha pela tarefa, não pela promessa de uma nota única. Primeiro confira os dados reais do seu site; depois use rastreadores e comparadores para investigar problemas específicos.</p>';
+    $table .= '<div style="max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;">';
+    $table .= '<table style="width:100%;min-width:540px;border-collapse:collapse;font-size:.94em;"><thead><tr>';
+    foreach( array( 'Ferramenta', 'Melhor para', 'Limite importante' ) as $h ) {
+        $table .= '<th scope="col" style="text-align:left;border-bottom:2px solid #d7dce3;padding:9px 11px;">' . esc_html( $h ) . '</th>';
+    }
+    $table .= '</tr></thead><tbody>';
+    foreach ( $rows as $row ) {
+        $table .= '<tr>';
+        foreach ( $row as $cell ) {
+            $table .= '<td style="vertical-align:top;border-bottom:1px solid #e5e7eb;padding:8px 11px;">' . esc_html( $cell ) . '</td>';
+        }
+        $table .= '</tr>';
+    }
+    $table .= '</tbody></table></div>';
+    $table .= '<p style="font-size:.85em;margin-top:9px;color:#667085;">Os limites gratuitos podem mudar. Consulte as condições atuais antes de escolher uma ferramenta.</p>';
+    $table .= '</section>';
+    if ( strpos( $content, '</p>' ) !== false ) {
+        return preg_replace_callback( '~</p>~i', function ( $m ) use ( $table ) { return $m[0] . $table; }, $content, 1 );
+    }
+    return $table . $content;
+}, 24 );
