@@ -64,9 +64,6 @@ add_action('rest_api_init', function () {
             }
             $url = bmd_ig_parse_link($request->get_param('url'));
             if (!$url) { return new WP_Error('url', 'Cole um link válido de Reel ou publicação do Instagram.', array('status'=>400)); }
-            if ($request->get_param('authorized') !== true) {
-                return new WP_Error('rights', 'Confirme que o conteúdo é seu ou que você tem autorização para baixá-lo.', array('status'=>400));
-            }
             $cache = 'bmd_ig_public_'.md5($url['code']);
             $media = get_transient($cache);
             if (!is_string($media) || !bmd_ig_allowed_media($media)) {
@@ -150,7 +147,6 @@ add_shortcode('bmd_instagram_downloader', function () {
       <form class="bmd-ig-form" id="bmd-ig-form">
         <label for="bmd-ig-url">Link do Reel ou vídeo</label>
         <div class="bmd-ig-input"><input id="bmd-ig-url" type="url" inputmode="url" autocomplete="off" required placeholder="https://www.instagram.com/reel/..." maxlength="1400"><button id="bmd-ig-paste" type="button" class="bmd-ig-paste">Colar</button></div>
-        <label class="bmd-ig-check"><input type="checkbox" id="bmd-ig-rights" required> <span>Sou o autor ou tenho autorização para baixar este conteúdo.</span></label>
         <button type="submit" class="bmd-ig-submit" id="bmd-ig-submit">Verificar e baixar vídeo <span aria-hidden="true">↗</span></button>
       </form>
       <div class="bmd-ig-result" id="bmd-ig-result" role="status" aria-live="polite" hidden></div>
@@ -180,8 +176,6 @@ add_shortcode('bmd_instagram_downloader', function () {
     .bmd-ig-input:focus-within{border-color:#d56b45;box-shadow:0 0 0 3px rgba(213,107,69,.12)}
     .bmd-ig-input input{min-width:0;flex:1;border:0!important;outline:0!important;box-shadow:none!important;background:transparent!important;margin:0!important;padding:12px!important;font-size:15px!important;color:#162337!important}
     .bmd-ig-paste{border:0!important;background:#f0f3f6!important;color:#29384c!important;border-radius:9px!important;min-height:43px;font-weight:650;padding:0 16px!important}
-    .bmd-ig-check{display:flex!important;align-items:flex-start;gap:10px;margin:19px 0!important;font-size:13px!important;line-height:1.5!important;color:#59677a!important;cursor:pointer}
-    .bmd-ig-check input{flex:none;margin:3px 0!important;width:16px;height:16px;accent-color:#d25f37}
     .bmd-ig-submit{border:0!important;display:flex!important;justify-content:space-between;align-items:center;width:100%;background:#172338!important;color:#fff!important;font-weight:750;font-size:15px!important;min-height:56px;padding:0 20px!important;border-radius:12px!important}
     .bmd-ig-submit:hover{background:#293951!important}.bmd-ig-submit:disabled{opacity:.6;cursor:wait}
     .bmd-ig-result{margin:0 clamp(24px,5vw,44px) 20px;padding:17px;border-radius:12px;background:#f4f7fb;color:#283a4b;font-size:14px;line-height:1.6}
@@ -197,7 +191,7 @@ add_shortcode('bmd_instagram_downloader', function () {
     <script>
     (function(){
       var f=document.getElementById('bmd-ig-form'),url=document.getElementById('bmd-ig-url'),
-          rights=document.getElementById('bmd-ig-rights'),result=document.getElementById('bmd-ig-result'),
+          result=document.getElementById('bmd-ig-result'),
           submit=document.getElementById('bmd-ig-submit'),paste=document.getElementById('bmd-ig-paste');
       if(!f)return;
       paste.addEventListener('click',function(){
@@ -211,11 +205,10 @@ add_shortcode('bmd_instagram_downloader', function () {
       }
       f.addEventListener('submit',function(e){
         e.preventDefault();
-        if(!rights.checked){rights.focus();return;}
         result.hidden=false;result.textContent='Verificando se o vídeo está disponível publicamente…';
         submit.disabled=true;submit.textContent='Verificando link…';
         fetch(<?php echo wp_json_encode($endpoint); ?>,{method:'POST',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({url:url.value.trim(),authorized:true}),credentials:'omit'
+          body:JSON.stringify({url:url.value.trim()}),credentials:'omit'
         }).then(function(r){return r.json().then(function(d){if(!r.ok)throw Error(d.message||'Não foi possível verificar o link.');return d;});})
         .then(function(d){
           result.textContent=d.message||'Consulta concluída.';
