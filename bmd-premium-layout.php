@@ -42,7 +42,6 @@ function bmd_premium_tools() {
         array('name'=>'Calculadora de ROAS e CAC','desc'=>'Descubra margem, lucro, CPA e ponto de equilíbrio da sua campanha.','url'=>'/calculadora-roas-cac-lucro/','tag'=>'Tráfego pago','mark'=>'01'),
         array('name'=>'Gerador de UTM','desc'=>'Crie links de campanha para Instagram, WhatsApp, Facebook e GA4.','url'=>'/gerador-de-utm/','tag'=>'Analytics','mark'=>'02'),
         array('name'=>'Removedor de metadados','desc'=>'Confira e remova EXIF, XMP e informações de IA das suas imagens.','url'=>'/remover-metadados-ia/','tag'=>'Imagem e IA','mark'=>'03'),
-        array('name'=>'Baixador de vídeos do Instagram','desc'=>'Verifique Reels públicos e salve vídeos acessíveis em MP4, sem login.','url'=>'/baixar-video-instagram/','tag'=>'Vídeo e social','mark'=>'04'),
     );
 }
 function bmd_premium_tools_html( $limit=4 ) {
@@ -59,7 +58,7 @@ function bmd_premium_tools_html( $limit=4 ) {
 
 add_shortcode('bmd_tools_hub', function() {
     $html='<section class="bmd-hub" aria-label="Catálogo de ferramentas">';
-    $html.='<p class="bmd-hub-lede">Ferramentas gratuitas para medir campanhas, criar links rastreáveis, preparar imagens e salvar seus próprios vídeos públicos do Instagram. Escolha o que precisa e comece sem procurar em menus extensos.</p>';
+    $html.='<p class="bmd-hub-lede">Ferramentas gratuitas para analisar resultados de campanhas, criar links rastreáveis e preparar imagens sem instalar programas. Escolha o que precisa e comece sem procurar em menus extensos.</p>';
     $html.=bmd_premium_tools_html();
 
     $html.='<section class="bmd-pro-solutions" aria-labelledby="bmd-pro-title">';
@@ -103,7 +102,7 @@ add_filter('wp_nav_menu_items', function($items,$args){
     $html='';
     foreach($nav as $title=>$path){
         $active=(is_page('ferramentas-gratis') && $path==='/ferramentas-gratis/') ||
-            (is_page(array('gerador-de-utm','calculadora-roas-cac-lucro','remover-metadados-ia','baixar-video-instagram')) && $path==='/ferramentas-gratis/') ||
+            (is_page(array('gerador-de-utm','calculadora-roas-cac-lucro','remover-metadados-ia')) && $path==='/ferramentas-gratis/') ||
             (is_category() && trailingslashit(home_url($path))===trailingslashit(get_term_link(get_queried_object())));
         $classes='menu-item bmd-premium-menu-item'.($path==='/ferramentas-gratis/'?' bmd-nav-tools':'').($active?' current-menu-item':'');
         $html.='<li class="'.esc_attr($classes).'"><a class="menu-link" href="'.esc_url(home_url($path)).'"'.($active?' aria-current="page"':'').'><span class="text-wrap">'.esc_html($title).'</span></a></li>';
@@ -121,7 +120,7 @@ add_filter('wp_nav_menu_items', function($items,$args){
  */
 add_filter('body_class',function($classes){
     $classes[]='bmd-premium-layout';
-    if(is_page(array('calculadora-roas-cac-lucro','gerador-de-utm','ferramentas-gratis','remover-metadados-ia','baixar-video-instagram'))){
+    if(is_page(array('calculadora-roas-cac-lucro','gerador-de-utm','ferramentas-gratis','remover-metadados-ia'))){
         $classes[]='bmd-tool-page';
     }
     return $classes;
@@ -140,7 +139,7 @@ add_action('ocean_before_content_inner', function(){
 },7);
 
 add_filter('the_content',function($content){
-    if(!is_page(array('calculadora-roas-cac-lucro','gerador-de-utm','remover-metadados-ia','baixar-video-instagram')) ||
+    if(!is_page(array('calculadora-roas-cac-lucro','gerador-de-utm','remover-metadados-ia')) ||
         !is_main_query()||!in_the_loop()||is_preview())return $content;
     $back='<nav class="bmd-tool-back" aria-label="Navegação de ferramentas">';
     $back.='<a href="'.esc_url(home_url('/ferramentas-gratis/')).'"><span aria-hidden="true">←</span> Todas as ferramentas</a>';
@@ -213,7 +212,7 @@ body.bmd-premium-layout .bmd-eyebrow{color:var(--bmd-brand);font-weight:800;font
 body.bmd-premium-layout .bmd-tools-section-heading h2{font-size:clamp(25px,2.8vw,33px);margin:7px 0 4px;letter-spacing:-1.3px;line-height:1.2}
 body.bmd-premium-layout .bmd-tools-section-heading p{color:var(--bmd-muted);margin:0}
 body.bmd-premium-layout .bmd-all-tools-link{white-space:nowrap;font-weight:750;font-size:13px;border-bottom:1px solid #d0d9e4;padding-bottom:6px}
-body.bmd-premium-layout .bmd-tool-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+body.bmd-premium-layout .bmd-tool-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 body.bmd-premium-layout .bmd-tool-tile{display:flex;flex-direction:column;align-items:flex-start;min-width:0;min-height:192px;gap:10px;background:#fff;border:1px solid var(--bmd-line);border-radius:13px;padding:20px 22px!important;text-decoration:none!important;box-shadow:0 4px 18px rgba(21,33,52,.025);transition:border-color .18s ease,transform .18s ease,box-shadow .18s ease}
 body.bmd-premium-layout .bmd-tool-tile:hover{border-color:#c1cad7;transform:translateY(-2px);box-shadow:0 12px 32px rgba(24,35,54,.06)}
 body.bmd-premium-layout .bmd-tool-tile-top{display:flex;align-items:center;justify-content:space-between;width:100%;gap:14px}
@@ -418,7 +417,7 @@ add_action('init',function(){
         'post_content'=>'[bmd_tools_hub]',
         'meta_input'=>array(
             'rank_math_title'=>'Ferramentas Grátis de Marketing Digital | BMD',
-            'rank_math_description'=>'Explore ferramentas gratuitas de marketing digital: calculadora ROAS e CAC, gerador UTM, removedor de metadados e extrator de e-mails. Sem cadastro.',
+            'rank_math_description'=>'Ferramentas gratuitas para marketing digital: calcule ROAS e CAC, crie links UTM e remova metadados de imagens. Sem cadastro.',
             'rank_math_focus_keyword'=>'ferramentas de marketing digital gratis',
         ),
     ),true);
