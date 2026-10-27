@@ -2,11 +2,18 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 2.2.3
+ * Version: 2.3.0
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
+
+/** Single-run migration for four audited legacy articles; remove after verification. */
+$bmd_refresh = __DIR__ . '/bmd-evergreen-refresh.php';
+if ( is_file( $bmd_refresh ) ) {
+    require_once $bmd_refresh;
+}
+
 
 /** Premium OceanWP design and organized free tools directory. */
 $bmd_premium_layout_file = __DIR__ . '/bmd-premium-layout.php';
