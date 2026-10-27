@@ -22,3 +22,11 @@ add_filter('rank_math/frontend/description',function($description){
  }
  return $description;
 },30);
+
+/** Keep a legacy custom Rank Math title consistent with the refreshed article H1. */
+add_filter('rank_math/frontend/title',function($title){
+ if(!is_admin() && is_singular('post') && (int)get_queried_object_id()===1869){
+  return 'Como Melhorar Posts no X (Twitter): 9 Técnicas e Exemplos | Blog de Marketing Digital';
+ }
+ return $title;
+},35);
