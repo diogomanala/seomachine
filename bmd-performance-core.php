@@ -2,11 +2,15 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 3.4.2
+ * Version: 3.5.0
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
+
+/** Instagram public media tool with explicit rights and no login bypass. */
+$bmd_instagram_tool = __DIR__ . '/bmd-instagram-video.php';
+if ( is_file($bmd_instagram_tool) ) { require_once $bmd_instagram_tool; }
 
 /** One-time correction, guarded by exact post slug and a private backup. */
 $bmd_editorial_patch = __DIR__ . '/bmd-editorial-20261027.php';
