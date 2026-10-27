@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 1.9.2
+ * Version: 1.9.3
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -19,6 +19,19 @@ add_action( 'init', function() {
     remove_action( 'wp_print_styles', 'print_emoji_styles' );
 }, 1 );
 
+
+/**
+ * The browser-only UTM tool has no captcha-backed submission. On this single
+ * page suppress third-party reCAPTCHA JS emitted through WordPress enqueue.
+ * Keep reCAPTCHA untouched on contact, Elementor forms and other pages.
+ */
+add_filter( 'script_loader_tag', function( $tag, $handle, $src ) {
+    if ( ! is_admin() && is_page( 'gerador-de-utm' ) &&
+        preg_match( '~(?:^|https?://)(?:www\.)?google\.com/recaptcha/api\.js~i', html_entity_decode( (string) $src ) ) ) {
+        return '';
+    }
+    return $tag;
+}, 99, 3 );
 
 function bmd_perf_is_formless_post() {
     if ( is_admin() || is_user_logged_in() || is_preview() || is_customize_preview() ) { return false; }
@@ -421,7 +434,7 @@ add_action( 'rest_api_init', function() {
         'methods' => 'GET',
         'permission_callback' => '__return_true',
         'callback' => function() {
-            $result = array('plugin_version' => '1.9.2', 'pages' => array());
+            $result = array('plugin_version' => '1.9.3', 'pages' => array());
             foreach (array('tool'=>'/gerador-de-utm/','home'=>'/','contact'=>'/contato/') as $name=>$path) {
                 $res=wp_remote_get(home_url($path),array('timeout'=>12,'redirection'=>2));
                 if(is_wp_error($res)){$result['pages'][$name]=array('error'=>'fetch-failed');continue;}
