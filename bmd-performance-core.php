@@ -166,6 +166,18 @@ add_action( 'rest_api_init', function () {
                     'has_referral' => strpos( $html, 'clubedigitalpro' ) !== false,
                     'has_native_note' => strpos( $html, 'bmd-native-note' ) !== false,
 
+                    'ui_elements_without_scripts' => (function($html) {
+                        $body = preg_replace('~<script\b[^>]*>.*?</script\s*>|<style\b[^>]*>.*?</style\s*>|<link\b[^>]*>~is','',$html);
+                        return array(
+                            'sliders' => preg_match_all('~(?:flickity|ow-slider|oceanwp-slider|data-flickity|swiper-container|owl-carousel|slick-slider)~i',$body),
+                            'lightboxes' => preg_match_all('~(?:ow-lightbox|magnific-popup|data-fancybox|rel=["\x27]lightbox|data-rel=["\x27][^"\x27]*lightbox)~i',$body),
+                            'galleries' => preg_match_all('~(?:wp-block-gallery|gallery-item|elementor-image-gallery)~i',$body),
+                            'selects' => preg_match_all('~<select\b~i',$body),
+                            'masonry' => preg_match_all('~(?:isotope|masonry)~i',$body)
+                        );
+                    })($html),
+
+
                     'slider_markup_matches' => preg_match_all('~(?:flickity|ow-slider|oceanwp-slider|data-flickity|swiper-container|owl-carousel|slick-slider)~i',$html),
                     'lightbox_markup_matches' => preg_match_all('~(?:ow-lightbox|magnific-popup|data-fancybox|rel=["\x27]lightbox|data-rel=["\x27][^"\x27]*lightbox)~i',$html),
                     'gallery_markup_matches' => preg_match_all('~(?:wp-block-gallery|gallery-item|elementor-image-gallery)~i',$html),
