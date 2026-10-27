@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 1.9.3
+ * Version: 1.9.4
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -350,58 +350,6 @@ BMDUTMHTML;
 } );
 
 /**
- * Publish exactly one useful evergreen utility in the blog.
- * Never overwrite an editor-created page with the same slug.
- */
-add_action( 'init', function () {
-    if ( get_option( 'bmd_create_utm_page_20261027', false ) ) { return; }
-    $existing = get_page_by_path( 'gerador-de-utm', OBJECT, 'page' );
-    if ( $existing ) {
-        update_option( 'bmd_create_utm_page_20261027', 'existing_page_' . (int) $existing->ID, false );
-        return;
-    }
-    $content = <<<'BMDUTMPAGE'
-<p>Precisa descobrir de onde vieram as visitas de uma campanha? Use este <strong>gerador de UTM gratuito</strong> para criar links rastreáveis para Instagram, Facebook, WhatsApp, newsletter e outros canais. Sem cadastro, sem planilhas e sem enviar suas URLs para um servidor.</p>
-[bmd_utm_builder]
-<h2>O que é uma UTM?</h2>
-<p>UTMs são parâmetros adicionados ao endereço de uma página para identificar a origem, a mídia e a campanha que trouxe um visitante. Por exemplo, um link divulgado no Instagram pode informar ao Google Analytics 4 (GA4) que a visita veio de uma publicação orgânica ou de um anúncio, desde que o rastreamento do destino esteja configurado corretamente.</p>
-<h2>Como criar um link com UTM em 3 passos</h2>
-<ol><li>Cole o endereço da página para onde o visitante deve ir, incluindo caminhos e parâmetros existentes.</li><li>Escolha o canal ou informe <code>utm_source</code> (origem), <code>utm_medium</code> (mídia) e <code>utm_campaign</code> (nome da campanha).</li><li>Copie o link gerado e utilize-o em anúncios, e-mails, posts, vídeos ou mensagens externas.</li></ol>
-<h2>Quais parâmetros UTM usar?</h2>
-<ul><li><strong>utm_source:</strong> quem enviou a visita, como <code>instagram</code>, <code>facebook</code> ou <code>newsletter</code>.</li><li><strong>utm_medium:</strong> tipo de canal, como <code>paid_social</code>, <code>email</code> ou <code>referral</code>.</li><li><strong>utm_campaign:</strong> nome consistente da campanha, por exemplo <code>black_friday_2026</code>.</li><li><strong>utm_content:</strong> opcional, diferencia criativos, botões ou versões do mesmo anúncio.</li><li><strong>utm_term:</strong> opcional, normalmente associado a palavras-chave.</li><li><strong>utm_id:</strong> opcional, identificador estável da campanha, útil em determinadas integrações de dados.</li></ul>
-<h2>Boas práticas para rastrear sem bagunçar o GA4</h2>
-<p>Padronize tudo em letras minúsculas, escolha um nome estável para cada canal e evite criar grafias diferentes da mesma campanha. Nossa ferramenta normaliza espaços e acentos, mantém parâmetros de URL não relacionados às UTMs e substitui parâmetros UTM que já estiverem presentes.</p>
-<p>Use UTMs principalmente em <strong>links de distribuição externa</strong>. Em geral, não acrescente UTMs a links entre páginas do mesmo site: isso pode confundir a atribuição da sessão. Nos anúncios do Google Ads, verifique primeiro sua configuração de codificação automática (auto-tagging) e sua integração com GA4.</p>
-<h2>Perguntas frequentes</h2>
-<h3>O gerador de UTM é realmente grátis?</h3>
-<p>Sim. Os links são montados no próprio navegador, sem login, licença ou cobrança.</p>
-<h3>O link rastreável funciona no WhatsApp e no Instagram?</h3>
-<p>Sim. Você pode usá-lo no WhatsApp, na bio, nos stories, em anúncios e em e-mails. Para os acessos aparecerem no Analytics, o site de destino precisa ter a medição configurada.</p>
-<h3>O link com UTM aumenta o tráfego do site?</h3>
-<p>Não por si só. A UTM mede a origem das visitas; quem gera as visitas é a distribuição e a campanha. Esse controle ajuda a identificar quais esforços funcionam.</p>
-<h3>O gerador encurta a URL?</h3>
-<p>Não. Ele mantém o endereço original e adiciona os parâmetros de rastreamento. Encurtadores são serviços separados e podem adicionar redirecionamentos.</p>
-<p><small>Referência: <a href="https://support.google.com/analytics/answer/10917952?hl=pt-BR" rel="noopener noreferrer">orientações oficiais do Google Analytics sobre parâmetros de campanha</a>.</small></p>
-BMDUTMPAGE;
-    $id = wp_insert_post( array(
-        'post_type' => 'page',
-        'post_status' => 'publish',
-        'post_title' => 'Gerador de UTM Grátis: Crie Links Rastreáveis para Instagram, WhatsApp e GA4',
-        'post_name' => 'gerador-de-utm',
-        'post_content' => wp_slash( $content ),
-        'meta_input' => array(
-            'rank_math_title' => 'Gerador de UTM Grátis para GA4, Instagram e WhatsApp',
-            'rank_math_description' => 'Crie links com UTM grátis para Instagram, WhatsApp, Facebook e e-mail. Gerador online para GA4 com copiar URL, exemplos e sem cadastro.',
-            'rank_math_focus_keyword' => 'gerador de utm',
-        ),
-    ), true );
-    if ( ! is_wp_error( $id ) && $id ) {
-        update_option( 'bmd_create_utm_page_20261027', (int) $id, false );
-    }
-}, 30 );
-
-
-/**
  * Add context-sensitive internal discovery links only to verified relevant guides.
  * Does not auto-edit stored content, rankings, or sponsored ads.
  */
@@ -426,33 +374,3 @@ add_filter( 'the_content', function( $content ) {
     $link .= 'Monte URLs rastreáveis para anúncios, e-mails e redes sociais sem cadastro.</aside>';
     return $content . "\n" . $link;
 }, 39 );
-
-
-/* Short-lived read-only check; to be removed immediately after deployment verification. */
-add_action( 'rest_api_init', function() {
-    register_rest_route( 'bmd-performance/v1', '/utm-check', array(
-        'methods' => 'GET',
-        'permission_callback' => '__return_true',
-        'callback' => function() {
-            $result = array('plugin_version' => '1.9.3', 'pages' => array());
-            foreach (array('tool'=>'/gerador-de-utm/','home'=>'/','contact'=>'/contato/') as $name=>$path) {
-                $res=wp_remote_get(home_url($path),array('timeout'=>12,'redirection'=>2));
-                if(is_wp_error($res)){$result['pages'][$name]=array('error'=>'fetch-failed');continue;}
-                $html=(string)wp_remote_retrieve_body($res);
-                $result['pages'][$name]=array(
-                    'status'=>wp_remote_retrieve_response_code($res),
-                    'bytes'=>strlen($html),
-                    'utm_form'=>strpos($html,'id="bmd-utm-form"')!==false,
-                    'utm_copy'=>strpos($html,'id="bmd-utm-copy"')!==false,
-                    'utm_script'=>strpos($html,"root.dataset.ready='1'")!==false,
-                    'recaptcha'=>strpos($html,'recaptcha/api.js')!==false,
-                    'captcha_head'=>strpos(explode('</head>',$html,2)[0],'recaptcha/api.js')!==false,
-                    'captcha_scripts'=>(function($html){preg_match_all('~<script\b[^>]*\bsrc=["\x27]([^"\x27]*recaptcha[^"\x27]*)["\x27][^>]*>~i',$html,$hits);return array_slice(array_map(function($url){return (string)wp_parse_url(html_entity_decode($url),PHP_URL_HOST).(string)wp_parse_url(html_entity_decode($url),PHP_URL_PATH);},$hits[1]??array()),0,5);})($html),
-                    'adsense'=>strpos($html,'adsbygoogle.js')!==false,
-                    'has_referral'=>strpos($html,'clubedigitalpro')!==false,
-                );
-            }
-            return rest_ensure_response($result);
-        },
-    ));
-});
