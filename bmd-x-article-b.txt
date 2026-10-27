@@ -1,0 +1,10 @@
+<h2>3. Gerador de UTM: identifique o tráfego vindo do X</h2>
+<p>Quando divulgar um artigo ou página de serviço, crie um link com origem <code>x</code>, mídia <code>organic_social</code> e um nome de campanha específico. Use o <a href="/gerador-de-utm/">gerador gratuito de UTM</a> para montar o endereço. Com a medição configurada no site de destino, esses parâmetros ajudam a classificar as visitas externas. Eles não geram seguidores nem acompanham tudo que acontece dentro do X.</p>
+<h2>Como combinar os três recursos numa rotina de conteúdo</h2>
+<ol><li><strong>Pesquise:</strong> procure dúvidas reais que seu público faz no X.</li><li><strong>Valide:</strong> investigue no Trends se o assunto também desperta interesse em buscas.</li><li><strong>Produza:</strong> escreva uma explicação própria, com exemplo concreto.</li><li><strong>Distribua:</strong> publique uma mensagem útil por si só e acrescente um link quando houver motivo.</li><li><strong>Meça:</strong> analise os acessos relevantes e ajuste o próximo conteúdo.</li></ol>
+<h2>Quando vale contratar um gerenciador de redes sociais?</h2>
+<p>Quando você precisa aprovar peças com uma equipe, administrar muitos perfis, organizar atendimento ou publicar com alta frequência. Compare recursos e limites antes de assinar. Nosso guia sobre <a href="/4-ferramentas-gratis-irao-poupar-seu-tempo-na-gestao-das-midias-sociais/">quatro ferramentas gratuitas de gestão de redes sociais</a> ajuda nessa escolha.</p>
+<h2>Perguntas frequentes</h2>
+<h3>Esses recursos são gratuitos?</h3><p>Os usos descritos têm acesso gratuito. O X pode exigir login e disponibilizar funções avançadas apenas por assinatura.</p>
+<h3>Qual ferramenta garante que eu ganhe seguidores?</h3><p>Nenhuma. Elas ajudam a pesquisar e medir. O crescimento depende da audiência, do conteúdo e da distribuição.</p>
+<h3>O Google Trends mostra assuntos virais do X?</h3><p>Não diretamente. Ele reflete interesse relativo na Pesquisa Google, não o alcance dentro do X.</p>
