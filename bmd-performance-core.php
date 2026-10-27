@@ -213,7 +213,26 @@ $raw=get_option('ad_inserter');
   $shape['blocks']=array_slice($blocks,0,95);
 
 
-  return rest_ensure_response(array('ad_inserter_shape'=>$shape));
+  
+  $wpdb_options=$GLOBALS['wpdb'];
+  $matching_options=$wpdb_options->get_col($wpdb_options->prepare(
+      "SELECT option_name FROM {$wpdb_options->options} WHERE option_value LIKE %s LIMIT 25",
+      '%' . $wpdb_options->esc_like('clubedigitalpro') . '%'
+  ));
+  $matched_widgets=array();
+  foreach(wp_get_sidebars_widgets() as $sidebar=>$ids){
+   if(!is_array($ids))continue;
+   foreach($ids as $widget_id){
+    $type=preg_replace('~-[0-9]+$~','',$widget_id);
+    $number=(int)preg_replace('~^.*-([0-9]+)$~','$1',$widget_id);
+    $all=get_option('widget_'.$type,array());
+    if(isset($all[$number])&&stripos(serialize($all[$number]),'clubedigitalpro')!==false){
+     $matched_widgets[]=array('widget_id'=>$widget_id,'sidebar'=>$sidebar,'type'=>$type);
+    }
+   }
+  }
+  return rest_ensure_response(array('ad_inserter_shape'=>$shape,'affiliate_option_names'=>$matching_options,'affiliate_widgets'=>$matched_widgets));
+
 
  }));
 });
