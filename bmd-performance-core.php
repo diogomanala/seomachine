@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 1.9.4
+ * Version: 2.0.0
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -206,6 +206,7 @@ add_action( 'ocean_before_content_inner', function () {
         'Como automatizar o Direct no Instagram' => '/automatizar-direct-instagram-comentarios/',
         'Quanto custa anunciar no Google Ads' => '/quanto-custa-google-ads/',
         'Gerador de UTM grátis para campanhas' => '/gerador-de-utm/',
+        'Calculadora de ROAS, CAC e lucro' => '/calculadora-roas-cac-lucro/',
     );
     echo '<div class="bmd-evergreen-guides" style="margin-top:13px;">';
     echo '<h3 style="font-size:1.05em;line-height:1.4;margin:0 0 6px;">Guias essenciais</h3>';
@@ -374,3 +375,37 @@ add_filter( 'the_content', function( $content ) {
     $link .= 'Monte URLs rastreáveis para anúncios, e-mails e redes sociais sem cadastro.</aside>';
     return $content . "\n" . $link;
 }, 39 );
+
+/**
+ * Campaign economics utility. Browser-only scripts and styles are emitted
+ * exclusively where the [bmd_campaign_calculator] shortcode is rendered.
+ */
+$campaign_calculator_path = __DIR__ . '/bmd-campaign-calculator.php';
+if ( is_file( $campaign_calculator_path ) ) {
+    require_once $campaign_calculator_path;
+}
+
+/**
+ * Editorial internal links from tightly related existing guides.
+ */
+add_filter( 'the_content', function( $content ) {
+    if ( is_admin() || ! is_main_query() || ! in_the_loop() || ! is_singular( 'post' ) ||
+         is_feed() || is_preview() ) {
+        return $content;
+    }
+    $related = array(
+        'quanto-custa-google-ads',
+        'ferramentas-digitais-para-analisar-desempenho-de-campanhas-online',
+        'estrategia-diferenciada-e-eficaz-para-alavancar-vendas-no-ecommerce',
+    );
+    $slug = (string) get_post_field( 'post_name', get_the_ID() );
+    if ( ! in_array( $slug, $related, true ) ||
+         stripos( $content, '/calculadora-roas-cac-lucro/' ) !== false ) {
+        return $content;
+    }
+    $tool = '<aside class="bmd-related-calc" style="border-top:1px solid #e6e9ee;margin:14px 0;padding:14px 0;font-size:.93em;line-height:1.65;">';
+    $tool .= '<strong>Ferramenta gratuita:</strong> Descubra se sua campanha está dando lucro usando nossa ';
+    $tool .= '<a href="' . esc_url( home_url( '/calculadora-roas-cac-lucro/' ) ) . '">calculadora de ROAS, CAC e resultado líquido</a>. ';
+    $tool .= 'Simule campanhas e custos em segundos, sem cadastro.</aside>';
+    return $content . "\n" . $tool;
+}, 40 );
