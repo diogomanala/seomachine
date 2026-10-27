@@ -121,3 +121,54 @@ add_filter( 'the_content', function( $content ) {
     $box .= ' <span style="opacity:.8"> — ' . esc_html( $description ) . '</span></aside>';
     return $content . "\n" . $box;
 }, 35 );
+
+
+/* Read-only short-lived audit endpoint (remove after analysis). */
+add_action( 'rest_api_init', function () {
+ register_rest_route( 'bmd-performance/v1', '/check-icons', array(
+  'methods' => 'GET', 'permission_callback' => '__return_true',
+  'callback' => function () {
+   $mods = array('ocean_performance_fontawesome','ocean_performance_simple_line_icons','ocean_site_icons','ocean_performance_emoji','ocean_performance_lightbox','ocean_performance_custom_select','ocean_performance_scroll_effect');
+   $settings=array();
+   foreach($mods as $m){ $settings[$m] = get_theme_mod($m,'(default)'); }
+   $result=array('version'=>'1.5.2-icons','theme_settings'=>$settings,'pages'=>array());
+   foreach(array('home'=>'/','post'=>'/como-clonar-um-site-completo/','contact'=>'/contato/') as $label=>$path){
+    $res=wp_remote_get(home_url($path),array('timeout'=>12,'redirection'=>2,'headers'=>array('Accept'=>'text/html')));
+    if(is_wp_error($res)){ $result['pages'][$label]=array('error'=>'fetch-failed');continue; }
+    $html=(string)wp_remote_retrieve_body($res);
+    $body=preg_replace('~<script\b[^>]*>.*?</script\s*>|<style\b[^>]*>.*?</style\s*>~is','',$html);
+    $fa=array();$sli=array();
+    preg_match_all('~<[^>]+\bclass=["\x27]([^"\x27]+)["\x27][^>]*>~i',$body,$tags);
+    foreach($tags[1]??array() as $classes){
+      foreach(preg_split('~\s+~',trim($classes)) as $cls){
+        if(preg_match('~^(fa|fas|far|fab|fal|fad|fa-[a-z])~',$cls))$fa[$cls]=($fa[$cls]??0)+1;
+        if(preg_match('~^icon-[a-z]~',$cls))$sli[$cls]=($sli[$cls]??0)+1;
+      }
+    }
+    $images=array();
+    preg_match_all('~<img\b[^>]*>~i',$html,$im);
+    foreach(array_slice($im[0],0,8) as $img){
+     $src='';
+     if(preg_match('~\bsrc=["\x27]([^"\x27]+)~i',$img,$sm)){$src=html_entity_decode($sm[1]);}
+     $alt='';
+     if(preg_match('~\balt=["\x27]([^"\x27]*)~i',$img,$am)){$alt=$am[1];}
+     $images[]=array('path'=>(string)wp_parse_url($src,PHP_URL_PATH),
+       'has_width'=>preg_match('~\bwidth=~i',$img)===1,
+       'has_height'=>preg_match('~\bheight=~i',$img)===1,
+       'lazy'=>preg_match('~\bloading=["\x27]lazy~i',$img)===1,
+       'fetchpriority_high'=>preg_match('~\bfetchpriority=["\x27]high~i',$img)===1,
+       'alt_len'=>strlen($alt));
+    }
+    $result['pages'][$label]=array('http'=>wp_remote_retrieve_response_code($res),
+      'bytes'=>strlen($html),'fa_classes'=>$fa,'simple_line_classes'=>$sli,
+      'image_count'=>count($im[0]),'first_images'=>$images,
+      'has_wp_emoji_module'=>strpos($html,'wp-emoji')!==false,
+      'has_fontawesome_css'=>strpos($html,'fontawesome/css/all.min.css')!==false,
+      'has_simple_icons_css'=>strpos($html,'simple-line-icons.min.css')!==false,
+      'has_analytics'=>strpos($html,'gtag/js')!==false,
+      'has_adsense'=>strpos($html,'adsbygoogle.js')!==false);
+   }
+   return rest_ensure_response($result);
+  }
+ ));
+});
