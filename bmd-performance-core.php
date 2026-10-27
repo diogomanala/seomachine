@@ -169,6 +169,22 @@ $raw=get_option('ad_inserter');
   $shape['starts_html']=is_string($raw)&&strpos(ltrim($raw),'<')===0;
   $shape['starts_phpserialize']=is_string($raw)&&preg_match('~^[aOsibdN]:~',$raw)===1;
   $shape['contains_configuration_keys']=is_string($raw)?array_values(array_filter(array('javascript'=>strpos($raw,'javascript')!==false?'javascript':null,'js_code'=>strpos($raw,'js_code')!==false?'js_code':null,'frontend'=>strpos($raw,'frontend')!==false?'frontend':null,'external'=>strpos($raw,'external')!==false?'external':null,'file'=>strpos($raw,'file')!==false?'file':null,'inline'=>strpos($raw,'inline')!==false?'inline':null))):array();
+
+  $decoded=(is_string($raw)&&strpos($raw,':AI:')===0)?base64_decode(substr($raw,4),true):false;
+  $settings=($decoded!==false && is_serialized($decoded))?@unserialize($decoded,array('allowed_classes'=>false)):null;
+  $shape['decoded_valid']=$decoded!==false;
+  $shape['serialized_valid']=is_array($settings);
+  $shape['decoded_keys']=is_array($settings)?array_slice(array_map('strval',array_keys($settings)),0,110):array();
+  $flat=array();
+  if(is_array($settings)){
+   foreach($settings as $key=>$v){
+    if(preg_match('~(?:javascript|js|file|external|inline|header|footer|adblock|google|block|banner|output|inject)~i',(string)$key)){
+     $flat[]=array('key'=>(string)$key,'kind'=>gettype($v),'value'=>(is_scalar($v)&&preg_match('~^[0-9]{1,3}$|^on$|^off$|^yes$|^no$~i',(string)$v))?(string)$v:'[hidden]');
+    }
+   }
+  }
+  $shape['matching_flags']=array_slice($flat,0,100);
+
   return rest_ensure_response(array('ad_inserter_shape'=>$shape));
 
  }));
