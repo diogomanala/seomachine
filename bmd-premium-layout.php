@@ -373,6 +373,25 @@ body.bmd-premium-layout #site-logo{min-width:0!important;max-width:calc(100% - 6
 body.bmd-premium-layout #site-logo .site-title{white-space:normal!important;overflow-wrap:break-word!important;display:block!important}
 body.bmd-premium-layout .oceanwp-mobile-menu-icon{flex:0 0 auto!important;position:relative!important;right:auto!important;top:auto!important}
 }
+/* Final mobile layout guard: use actual viewport units, not a potentially
+   oversized inherited OceanWP container width. No JavaScript, no resize hacks. */
+@media(max-width:959px){
+body.bmd-premium-layout #site-header,
+body.bmd-premium-layout #main > .page-header{width:100vw!important;max-width:100vw!important;min-width:0!important}
+body.bmd-premium-layout #site-header-inner{width:calc(100vw - 32px)!important;max-width:calc(100vw - 32px)!important;min-width:0!important;gap:12px!important}
+body.bmd-premium-layout #main > .page-header > .page-header-inner{width:calc(100vw - 36px)!important;max-width:calc(100vw - 36px)!important;min-width:0!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;overflow-wrap:anywhere!important}
+body.bmd-premium-layout #main > .page-header .page-header-title{display:block!important;flex:0 1 auto!important;max-width:100%!important;min-width:0!important;inline-size:100%!important;white-space:normal!important;overflow-wrap:break-word!important;word-break:normal!important;letter-spacing:-.7px!important;line-height:1.22!important;text-align:start!important}
+body.bmd-premium-layout #main #content-wrap{width:calc(100vw - 32px)!important;max-width:calc(100vw - 32px)!important;min-width:0!important}
+body.bmd-premium-layout .bmd-home-topics,
+body.bmd-premium-layout .bmd-home-tools,
+body.bmd-premium-layout #primary,
+body.bmd-premium-layout #content{max-width:100%!important;min-width:0!important}
+body.bmd-premium-layout #site-header{min-height:66px!important}
+body.bmd-premium-layout #site-header-inner{min-height:66px!important;padding-block:8px!important}
+body.bmd-premium-layout .oceanwp-mobile-menu-icon{min-width:44px;min-height:44px;display:flex!important;align-items:center;justify-content:center}
+body.bmd-premium-layout .oceanwp-mobile-menu-icon a{min-height:44px;display:flex!important;align-items:center;gap:6px}
+}
+
 @media(max-width:480px){
 body.bmd-premium-layout #main > .page-header{padding-top:20px!important;padding-bottom:23px!important}
 body.bmd-premium-layout #main > .page-header .page-header-title{font-size:clamp(24px,6.5vw,29px)!important;line-height:1.2!important}
