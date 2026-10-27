@@ -18,6 +18,9 @@ if (!defined('ABSPATH')) { exit; }
  * The existing duplicate H2 is visually suppressed by CSS below.
  */
 add_filter('ocean_title',function($title){
+    if ( ! is_admin() && ( is_home() || is_front_page() ) ) {
+        return 'Marketing digital, SEO e IA';
+    }
     if(!is_admin() && is_singular('post')){
         $post_id=get_queried_object_id();
         if($post_id)return get_the_title($post_id);
@@ -348,6 +351,34 @@ body.bmd-premium-layout #blog-entries .blog-entry-readmore{order:4!important}
 /* The same post title is now the semantic H1 at the top. Hide duplicate H2. */
 body.bmd-premium-layout.single-post #main article .single-post-title{display:none!important}
 body.bmd-premium-layout.single-post #main .page-header .page-header-title{max-width:890px!important}
+
+
+/* MOBILE VIEWPORT FIX: OceanWP's header title was overflowing the
+   page-header container on small screens, allowing horizontal panning. */
+body.bmd-premium-layout #main > .page-header{box-sizing:border-box!important;width:100%!important;max-width:100%!important;min-width:0!important}
+body.bmd-premium-layout #main > .page-header > .page-header-inner{box-sizing:border-box!important;min-width:0!important;max-width:1180px!important;width:calc(100% - 40px)!important;margin-inline:auto!important;padding-inline:0!important}
+body.bmd-premium-layout #main > .page-header .page-header-title{box-sizing:border-box!important;min-width:0!important;max-width:100%!important;text-align:left!important;white-space:normal!important;text-wrap:wrap!important;overflow-wrap:anywhere!important;word-break:normal!important;position:static!important;inset:auto!important;transform:none!important}
+body.bmd-premium-layout #main > .page-header .site-breadcrumbs{box-sizing:border-box!important;max-width:100%!important;white-space:normal!important;overflow-wrap:anywhere!important;text-align:left!important}
+@media(max-width:959px){
+html{max-width:100%;overflow-x:clip}
+body.bmd-premium-layout{max-width:100%;overflow-x:clip}
+body.bmd-premium-layout #outer-wrap,body.bmd-premium-layout #wrap,body.bmd-premium-layout #main,body.bmd-premium-layout #main #content-wrap{box-sizing:border-box!important;max-width:100%!important;min-width:0!important}
+body.bmd-premium-layout #site-header-inner{box-sizing:border-box!important;width:calc(100% - 32px)!important;max-width:100%!important;margin-inline:auto!important;min-width:0!important;padding-inline:0!important}
+body.bmd-premium-layout #main > .page-header > .page-header-inner{width:calc(100% - 36px)!important;max-width:calc(100% - 36px)!important}
+body.bmd-premium-layout #main > .page-header .page-header-title{width:100%!important;margin:0!important;padding:0!important;font-size:clamp(24px,6vw,32px)!important;line-height:1.19!important;letter-spacing:-.7px!important}
+body.bmd-premium-layout #main #content-wrap{width:calc(100% - 32px)!important;max-width:calc(100% - 32px)!important;min-width:0!important;padding-inline:0!important;margin-inline:auto!important}
+body.bmd-premium-layout .bmd-home-topics,body.bmd-premium-layout .bmd-home-tools,body.bmd-premium-layout #primary,body.bmd-premium-layout #content{box-sizing:border-box!important;max-width:100%!important;min-width:0!important}
+body.bmd-premium-layout .bmd-home-topics a,body.bmd-premium-layout .bmd-evergreen-guides a{overflow-wrap:anywhere}
+body.bmd-premium-layout #site-logo{min-width:0!important;max-width:calc(100% - 60px)!important}
+body.bmd-premium-layout #site-logo .site-title{white-space:normal!important;overflow-wrap:break-word!important;display:block!important}
+body.bmd-premium-layout .oceanwp-mobile-menu-icon{flex:0 0 auto!important;position:relative!important;right:auto!important;top:auto!important}
+}
+@media(max-width:480px){
+body.bmd-premium-layout #main > .page-header{padding-top:20px!important;padding-bottom:23px!important}
+body.bmd-premium-layout #main > .page-header .page-header-title{font-size:clamp(24px,6.5vw,29px)!important;line-height:1.2!important}
+body.bmd-premium-layout #main #content-wrap{padding-top:20px!important}
+body.bmd-premium-layout .bmd-home-topics{padding:17px!important;margin-top:0!important}
+}
 
 </style>
 BMD_STYLE;
