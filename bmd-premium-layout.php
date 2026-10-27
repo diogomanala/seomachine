@@ -11,6 +11,20 @@ if (!defined('ABSPATH')) { exit; }
  * Keep original menu settings and legal/footer links untouched.
  * Only suppress this specific, redundant front-end sidebar widget.
  */
+
+/**
+ * Article header semantics: show the real post title as the page H1.
+ * OceanWP otherwise prints the generic word "Blog" above the story.
+ * The existing duplicate H2 is visually suppressed by CSS below.
+ */
+add_filter('ocean_title',function($title){
+    if(!is_admin() && is_singular('post')){
+        $post_id=get_queried_object_id();
+        if($post_id)return get_the_title($post_id);
+    }
+    return $title;
+},30);
+
 add_filter('widget_display_callback', function($instance,$widget,$args){
     if(is_admin())return $instance;
     if(isset($widget->id) && $widget->id==='nav_menu-5') {
@@ -323,6 +337,17 @@ body.bmd-premium-layout .bmd-evergreen-guides ul{grid-template-columns:1fr!impor
 body.bmd-premium-layout #blog-entries .blog-entry-header,body.bmd-premium-layout #blog-entries .blog-entry-summary,body.bmd-premium-layout #blog-entries .meta,body.bmd-premium-layout #blog-entries .blog-entry-readmore{padding-left:15px!important;padding-right:15px!important}
 body.bmd-premium-layout #blog-entries .blog-entry-title{font-size:20px!important}
 }
+
+
+/* Keep card categories AFTER the cover image and BEFORE the title. */
+body.bmd-premium-layout #blog-entries .thumbnail{order:0!important}
+body.bmd-premium-layout #blog-entries .meta{order:1!important}
+body.bmd-premium-layout #blog-entries .blog-entry-header,body.bmd-premium-layout #blog-entries .thumbnail+header.blog-entry-header{order:2!important}
+body.bmd-premium-layout #blog-entries .blog-entry-summary{order:3!important}
+body.bmd-premium-layout #blog-entries .blog-entry-readmore{order:4!important}
+/* The same post title is now the semantic H1 at the top. Hide duplicate H2. */
+body.bmd-premium-layout.single-post #main article .single-post-title{display:none!important}
+body.bmd-premium-layout.single-post #main .page-header .page-header-title{max-width:890px!important}
 
 </style>
 BMD_STYLE;
