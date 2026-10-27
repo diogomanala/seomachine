@@ -59,7 +59,7 @@ add_action( 'rest_api_init', function () {
   'methods' => 'GET',
   'permission_callback' => '__return_true',
   'callback' => function () {
-   $cache_key = 'bmd_assets_audit_20261027_1';
+   $cache_key = 'bmd_assets_audit_20261027_2';
    $cached = get_transient($cache_key);
    if ( is_array($cached) ) return rest_ensure_response($cached);
    $result = array('version'=>'1.2.1-audit', 'pages'=>array());
@@ -85,13 +85,30 @@ add_action( 'rest_api_init', function () {
     }
     preg_match_all('~<style\b[^>]*>(.*?)</style\s*>~is',$html,$matches);
     foreach($matches[1]??array() as $style) $inlinestyle[]=strlen($style);
+    $large_script_meta=array();
+    foreach ( $matches as $m ) { /* matches currently refers to CSS links; inspect the scripts again */ }
+    preg_match_all('~<script\b([^>]*)>(.*?)</script\s*>~is',$html,$script_matches,PREG_SET_ORDER);
+    foreach($script_matches as $m) {
+      $length=strlen(trim($m[2]));
+      if($length<2000 || preg_match('~\bsrc\s*=~i',$m[1])) continue;
+      $id='';
+      $type='';
+      if(preg_match('~\bid\s*=\s*["\x27]([^"\x27]+)~i',$m[1],$im)) $id=substr($im[1],0,120);
+      if(preg_match('~\btype\s*=\s*["\x27]([^"\x27]+)~i',$m[1],$tm)) $type=substr($tm[1],0,70);
+      $signals=array();
+      foreach(array('gtag','google-analytics','googletagmanager','adsbygoogle','elementor','aiblock','ad-inserter','cookie','complianz','recaptcha','rankmath','schema.org','jQuery','oceanwp','wordfence','affiliate','wp-emoji','pixel','facebook','script src','document.write','base64') as $test) {
+       if(stripos($m[2],$test)!==false) $signals[]=$test;
+      }
+      $large_script_meta[]=array('bytes'=>$length,'id'=>$id,'type'=>$type,'head'=>strpos($html,$m[0])<strlen($head),'signals'=>$signals,'classifiers'=>array('has_src_text'=>strpos($m[2],'src=')!==false,'has_jsonld'=>strpos($m[2],'@context')!==false));
+    }
     rsort($inlinejs);rsort($inlinestyle);
+
     $headers=wp_remote_retrieve_headers($res);
     $result['pages'][$key]=array(
       'status'=>wp_remote_retrieve_response_code($res),
       'html_bytes'=>strlen($html),'head_bytes'=>strlen($head),
       'external_js_count'=>count($jss),'external_js'=>$jss,
-      'inline_js_total_bytes'=>array_sum($inlinejs),'inline_js_top_bytes'=>array_slice($inlinejs,0,10),
+      'inline_js_total_bytes'=>array_sum($inlinejs),'inline_js_top_bytes'=>array_slice($inlinejs,0,10),'large_script_meta'=>$large_script_meta,
       'stylesheets_count'=>count($styles),'stylesheets'=>$styles,
       'inline_css_total_bytes'=>array_sum($inlinestyle),'inline_css_top_bytes'=>array_slice($inlinestyle,0,10),
       'images_count'=>preg_match_all('~<img\b~i',$html),
