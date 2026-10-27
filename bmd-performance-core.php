@@ -1,15 +1,17 @@
 <?php
 /**
  * Plugin Name: BMD Performance Core
- * Description: Reducao seletiva de recursos em artigos; preserva formularios, AdSense, Analytics e administracao.
- * Version: 1.0.0
+ * Description: Reducao seletiva de recursos na home e em artigos; preserva formularios, AdSense, Analytics e administracao.
+ * Version: 1.1.0
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 function bmd_perf_is_formless_post() {
-    if ( is_admin() || is_user_logged_in() || is_preview() || is_customize_preview() || ! is_singular( 'post' ) ) { return false; }
+    if ( is_admin() || is_user_logged_in() || is_preview() || is_customize_preview() ) { return false; }
+    if ( is_home() ) { return true; }
+    if ( ! is_singular( 'post' ) ) { return false; }
     $post_id = get_queried_object_id();
     if ( ! $post_id ) { return false; }
     $content = (string) get_post_field( 'post_content', $post_id );
