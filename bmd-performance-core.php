@@ -2,15 +2,11 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 3.3.0
+ * Version: 3.3.1
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
-
-/** Bounded one-time update of distinct automation article search intents. */
-$bmd_automation_intent=__DIR__.'/bmd-automation-intent-once.php';
-if(is_file($bmd_automation_intent))require_once $bmd_automation_intent;
 
 
 /** Curated links + one-time correction of two editorial URLs. */
