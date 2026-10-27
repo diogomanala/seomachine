@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 1.4.0
+ * Version: 1.5.0
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -54,6 +54,9 @@ function bmd_perf_is_formless_post() {
 add_action( 'wp_enqueue_scripts', function () {
     if ( ! bmd_perf_is_formless_post() ) { return; }
     wp_dequeue_style( 'dashicons' );
+    foreach ( array( 'ow-flickity', 'oceanwp-slider', 'ow-magnific-popup', 'oceanwp-lightbox', 'oceanwp-select' ) as $unused_handle ) {
+        wp_dequeue_script( $unused_handle );
+    }
     wp_dequeue_script( 'comment-reply' );
     wp_dequeue_script( 'wp-embed' );
 }, 999 );
