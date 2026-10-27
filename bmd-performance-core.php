@@ -2,11 +2,16 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 2.9.0
+ * Version: 2.9.1
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
+
+/** One-time verified-media migration, safe batches and private backups. */
+$bmd_media_migrator=__DIR__.'/bmd-migrate-legacy-media.php';
+if(is_file($bmd_media_migrator))require_once $bmd_media_migrator;
+
 
 /** Temporary, read-only legacy media audit. */
 $bmd_asset_audit = __DIR__ . '/bmd-legacy-assets-audit.php';
