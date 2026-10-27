@@ -15,3 +15,10 @@ add_filter('the_content',function($content){
  if(!$links)return $content;
  return $content.'<nav class="bmd-topic-next" aria-label="Leituras complementares" style="border-top:1px solid #e4e8ee;margin:24px 0;padding:16px 0"><strong>Continue aprendendo</strong><p style="margin:8px 0">'.implode(' · ',$links).'</p></nav>';
 },46);
+
+add_filter('rank_math/frontend/description',function($description){
+ if(!is_admin() && is_singular('post') && (int)get_queried_object_id()===1515){
+  return 'Veja 3 ferramentas gratuitas para X (Twitter): busque conversas, pesquise tendências e crie links UTM para medir visitas. Guia atualizado com exemplos.';
+ }
+ return $description;
+},30);
