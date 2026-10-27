@@ -185,6 +185,12 @@ $raw=get_option('ad_inserter');
   }
   $shape['matching_flags']=array_slice($flat,0,100);
 
+  $shape['javascript_code_mode'] = isset($settings['global']['JAVASCRIPT_CODE_MODE']) ? substr((string)$settings['global']['JAVASCRIPT_CODE_MODE'],0,40) : '(unset)';
+  $shape['wait_for_jquery'] = isset($settings['global']['WAIT_FOR_JQUERY']) ? substr((string)$settings['global']['WAIT_FOR_JQUERY'],0,40) : '(unset)';
+  $shape['disable_js_code'] = isset($settings['global']['DISABLE_JS_CODE']) ? substr((string)$settings['global']['DISABLE_JS_CODE'],0,40) : '(unset)';
+  $shape['adblock_settings'] = isset($settings['global']['ADB_ACTION']) ? substr((string)$settings['global']['ADB_ACTION'],0,40) : '(unset)';
+
+
   $shape['global_option_keys']=isset($settings['global'])&&is_array($settings['global'])?array_slice(array_map('strval',array_keys($settings['global'])),0,140):array();
   $blocks=array();
   foreach($settings as $k=>$v){
