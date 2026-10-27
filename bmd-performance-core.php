@@ -2,11 +2,43 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 1.3.1
+ * Version: 1.4.0
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
+
+
+/**
+ * One-time guarded switch to Ad Inserter external JavaScript.
+ * The complete original option is retained as a non-autoloaded backup.
+ * Does not touch the ad code or placements.
+ */
+add_action( 'init', function () {
+    if ( get_option( 'bmd_perf_adinserter_external_20261027', false ) ) { return; }
+    $original = get_option( 'ad_inserter' );
+    if ( ! is_string( $original ) || substr( $original, 0, 4 ) !== ':AI:' ) { return; }
+    $decoded = base64_decode( substr( $original, 4 ), true );
+    if ( $decoded === false || ! is_serialized( $decoded ) ) { return; }
+    $settings = @unserialize( $decoded, array( 'allowed_classes' => false ) );
+    if ( ! is_array( $settings ) || ! isset( $settings['global'] ) || ! is_array( $settings['global'] ) ) { return; }
+    $mode = isset( $settings['global']['JAVASCRIPT_CODE_MODE'] ) ? (string) $settings['global']['JAVASCRIPT_CODE_MODE'] : null;
+    $jquery = isset( $settings['global']['WAIT_FOR_JQUERY'] ) ? (string) $settings['global']['WAIT_FOR_JQUERY'] : null;
+    if ( $mode !== '0' || $jquery !== '0' ) { return; }
+    if ( ! add_option( 'bmd_perf_adinserter_original_20261027', $original, '', false ) ) {
+        if ( ! is_string( get_option( 'bmd_perf_adinserter_original_20261027' ) ) ) { return; }
+    }
+    $settings['global']['JAVASCRIPT_CODE_MODE'] = '1';
+    $updated = ':AI:' . base64_encode( serialize( $settings ) );
+    if ( update_option( 'ad_inserter', $updated ) ) {
+        update_option( 'bmd_perf_adinserter_external_20261027', array(
+            'old' => '0',
+            'new' => '1',
+            'old_sha256' => hash( 'sha256', $original ),
+            'new_sha256' => hash( 'sha256', $updated ),
+        ), false );
+    }
+}, 20 );
 
 function bmd_perf_is_formless_post() {
     if ( is_admin() || is_user_logged_in() || is_preview() || is_customize_preview() ) { return false; }
@@ -93,3 +125,39 @@ add_filter( 'the_content', function( $content ) {
     $box .= ' <span style="opacity:.8"> — ' . esc_html( $description ) . '</span></aside>';
     return $content . "\n" . $box;
 }, 35 );
+
+/* Temporary numerical audit, removed after the comparison. */
+add_action( 'rest_api_init', function () {
+    register_rest_route( 'bmd-performance/v1', '/js-mode', array(
+        'methods' => 'GET',
+        'permission_callback' => '__return_true',
+        'callback' => function () {
+            $raw = get_option( 'ad_inserter' );
+            $settings = is_string( $raw ) && substr( $raw, 0, 4 ) === ':AI:'
+                ? @unserialize( base64_decode( substr( $raw, 4 ), true ), array( 'allowed_classes' => false ) )
+                : array();
+            $mode = isset( $settings['global']['JAVASCRIPT_CODE_MODE'] ) ? (string) $settings['global']['JAVASCRIPT_CODE_MODE'] : 'unknown';
+            $result = array( 'module_version' => '1.4.0', 'javascript_code_mode' => $mode,
+                             'switch_applied' => (bool) get_option( 'bmd_perf_adinserter_external_20261027', false ), 'pages' => array() );
+            foreach ( array( 'home' => '/', 'article' => '/como-clonar-um-site-completo/', 'contact' => '/contato/' ) as $label => $path ) {
+                $response = wp_remote_get( home_url( $path ), array( 'timeout' => 12, 'redirection' => 2, 'headers' => array( 'Accept' => 'text/html' ) ) );
+                if ( is_wp_error( $response ) ) { $result['pages'][$label] = array( 'error' => 'fetch_failed' ); continue; }
+                $html = (string) wp_remote_retrieve_body( $response );
+                $js_total = 0;
+                preg_match_all( '~<script\b([^>]*)>(.*?)</script\s*>~is', $html, $all, PREG_SET_ORDER );
+                foreach ( $all as $tag ) {
+                    if ( ! preg_match( '~\bsrc\s*=~i', $tag[1] ) ) { $js_total += strlen( trim( $tag[2] ) ); }
+                }
+                $result['pages'][$label] = array(
+                    'http' => (int) wp_remote_retrieve_response_code( $response ),
+                    'html_bytes' => strlen( $html ), 'inline_js_bytes' => $js_total,
+                    'external_ai_file' => strpos( $html, '/ai-functions' ) !== false,
+                    'has_adsense' => strpos( $html, 'adsbygoogle.js' ) !== false,
+                    'has_referral' => strpos( $html, 'clubedigitalpro' ) !== false,
+                    'has_native_note' => strpos( $html, 'bmd-native-note' ) !== false,
+                );
+            }
+            return rest_ensure_response( $result );
+        },
+    ) );
+} );
