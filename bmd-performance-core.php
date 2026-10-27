@@ -182,6 +182,31 @@ add_action( 'rest_api_init', function () {
    $file=WP_CONTENT_DIR . '/webp-express/webp-images/uploads/2025/07/cupom-hostinger.jpg.webp';
    $dims=is_file($file)?@getimagesize($file):false;
    $result['hostinger_banner_file']=array('exists'=>is_file($file),'dimensions'=>$dims?array($dims[0],$dims[1]):null);
+
+   $candidates=array(
+      'uploads_jpg'=>WP_CONTENT_DIR.'/uploads/2025/07/cupom-hostinger.jpg',
+      'uploads_webp'=>WP_CONTENT_DIR.'/uploads/2025/07/cupom-hostinger.jpg.webp',
+      'webp_in_uploads'=>WP_CONTENT_DIR.'/uploads-webpc/uploads/2025/07/cupom-hostinger.jpg.webp',
+      'webp_cache'=>WP_CONTENT_DIR.'/webp-express/webp-images/uploads/2025/07/cupom-hostinger.jpg.webp',
+   );
+   $result['banner_candidates']=array();
+   foreach($candidates as $name=>$candidate){
+      $info=is_file($candidate)?@getimagesize($candidate):false;
+      $result['banner_candidates'][$name]=array('exists'=>is_file($candidate),'size'=>$info?array($info[0],$info[1]):null);
+   }
+   $widget=get_option('widget_block',array());
+   $inst=is_array($widget)&&isset($widget[2])?$widget[2]:array();
+   $widget_html=isset($inst['content'])?(string)$inst['content']:'';
+   preg_match('~<img\b[^>]*>~i',$widget_html,$wm);
+   $tag=isset($wm[0])?$wm[0]:'';
+   $result['banner_markup']=array(
+      'has_image'=>$tag!=='',
+      'width_attr'=>preg_match('~\bwidth=~i',$tag)===1,
+      'height_attr'=>preg_match('~\bheight=~i',$tag)===1,
+      'css_dimensions'=>preg_match('~\bstyle=["\x27][^"\x27]*(?:width|height)~i',$tag)===1,
+      'src_path'=>preg_match('~\bsrc=["\x27]([^"\x27]+)~i',$tag,$mt)?(string)wp_parse_url(html_entity_decode($mt[1]),PHP_URL_PATH):null,
+   );
+
    return rest_ensure_response($result);
   }
  ));
