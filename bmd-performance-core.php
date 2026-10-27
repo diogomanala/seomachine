@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 2.0.0
+ * Version: 2.0.1
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -26,7 +26,7 @@ add_action( 'init', function() {
  * Keep reCAPTCHA untouched on contact, Elementor forms and other pages.
  */
 add_filter( 'script_loader_tag', function( $tag, $handle, $src ) {
-    if ( ! is_admin() && is_page( 'gerador-de-utm' ) &&
+    if ( ! is_admin() && ( is_page( 'gerador-de-utm' ) || is_page( 'calculadora-roas-cac-lucro' ) ) &&
         preg_match( '~(?:^|https?://)(?:www\.)?google\.com/recaptcha/api\.js~i', html_entity_decode( (string) $src ) ) ) {
         return '';
     }
@@ -35,7 +35,7 @@ add_filter( 'script_loader_tag', function( $tag, $handle, $src ) {
 
 function bmd_perf_is_formless_post() {
     if ( is_admin() || is_user_logged_in() || is_preview() || is_customize_preview() ) { return false; }
-    if ( is_home() || is_front_page() || is_page( 'gerador-de-utm' ) ) { return true; }
+    if ( is_home() || is_front_page() || is_page( 'gerador-de-utm' ) || is_page( 'calculadora-roas-cac-lucro' ) ) { return true; }
     if ( ! is_singular( 'post' ) ) { return false; }
     $post_id = get_queried_object_id();
     if ( ! $post_id ) { return false; }
@@ -402,6 +402,16 @@ add_filter( 'the_content', function( $content ) {
     if ( ! in_array( $slug, $related, true ) ||
          stripos( $content, '/calculadora-roas-cac-lucro/' ) !== false ) {
         return $content;
+    }
+    // One compact resources section instead of two consecutive promotions.
+    $existing_note = strpos( $content, 'class="bmd-related-utm"' );
+    if ( $existing_note !== false ) {
+        $close = strpos( $content, '</aside>', $existing_note );
+        if ( $close !== false ) {
+            $insert = '<br><strong>Planejamento:</strong> Simule também seu ';
+            $insert .= '<a href="' . esc_url( home_url( '/calculadora-roas-cac-lucro/' ) ) . '">ROAS, CAC e lucro de campanhas</a>.';
+            return substr_replace( $content, $insert, $close, 0 );
+        }
     }
     $tool = '<aside class="bmd-related-calc" style="border-top:1px solid #e6e9ee;margin:14px 0;padding:14px 0;font-size:.93em;line-height:1.65;">';
     $tool .= '<strong>Ferramenta gratuita:</strong> Descubra se sua campanha está dando lucro usando nossa ';
