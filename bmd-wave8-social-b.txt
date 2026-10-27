@@ -1,0 +1,19 @@
+<h2>Erro 6 — Medir somente seguidores, alcance ou curtidas</h2>
+<p>Métricas de distribuição são úteis, mas não explicam sozinhas se houve contatos qualificados, vendas ou satisfação do cliente. Um post com muitas visualizações pode atrair visitantes errados; uma demonstração com audiência menor pode ajudar mais pessoas próximas de uma compra.</p>
+<p><strong>Correção:</strong> separe os indicadores por objetivo. Para distribuição, observe alcance e visualizações; para relacionamento, conversas pertinentes e qualidade do atendimento; para negócios, visitantes qualificados, orçamentos e vendas. Identifique campanhas externas com o <a href="/gerador-de-utm/">gerador de UTM</a> e, em anúncios, considere receita e custos com a <a href="/calculadora-roas-cac-lucro/">calculadora de ROAS e CAC</a>.</p>
+<h2>Diagnóstico rápido: por onde começar?</h2>
+<div style="overflow-x:auto"><table><thead><tr><th>O que acontece</th><th>O que investigar</th><th>Primeira melhoria</th></tr></thead><tbody>
+<tr><td>Publica muito e recebe poucas perguntas</td><td>Conteúdo distante das dúvidas dos clientes.</td><td>Responder cinco perguntas recorrentes do atendimento.</td></tr>
+<tr><td>Gera cliques, mas poucos contatos</td><td>Oferta ou página de destino pouco clara.</td><td>Testar o caminho completo no celular.</td></tr>
+<tr><td>Consegue interações sem vendas</td><td>Audiência fora do perfil de comprador.</td><td>Comparar temas, campanhas e qualidade dos leads.</td></tr>
+<tr><td>A equipe não dá conta das redes</td><td>Excesso de canais e processos manuais.</td><td>Reduzir canais e organizar responsáveis.</td></tr>
+<tr><td>Tem críticas repetidas</td><td>Problema operacional ou atendimento inconsistente.</td><td>Corrigir a causa e acompanhar resolução.</td></tr>
+</tbody></table></div>
+<h2>Plano de correção em 30 dias</h2>
+<ol><li><strong>Semana 1:</strong> escolha público, meta e um canal principal; revise o perfil e a página de destino.</li><li><strong>Semana 2:</strong> publique dúvidas respondidas e demonstrações reais em formatos adequados.</li><li><strong>Semana 3:</strong> observe conversas, dúvidas recorrentes, atendimento e visitantes originados dos canais.</li><li><strong>Semana 4:</strong> compare resultados, documente os problemas encontrados e atualize a pauta. Não aumente o orçamento apenas porque um post teve mais alcance.</li></ol>
+<h2>Perguntas frequentes</h2>
+<h3>É melhor postar mais ou melhorar o conteúdo?</h3><p>Não há frequência universal. Quando a operação já publica muito sem resultados, revisar temas, clareza e a jornada do usuário costuma ser mais útil do que aumentar volume automaticamente.</p>
+<h3>Toda empresa precisa contratar um gestor de redes sociais?</h3><p>Não necessariamente. Uma operação pequena pode começar internamente com uma rotina clara, mas profissionais especializados podem ajudar quando a complexidade, o volume e os riscos justificam.</p>
+<h3>Como saber se os anúncios nas redes estão dando lucro?</h3><p>Analise receita atribuída e custos envolvidos — mídia, produto, taxas, comissões e operação. ROAS isolado não comprova lucro.</p>
+<h3>Devo apagar todas as avaliações negativas?</h3><p>Não. Críticas legítimas merecem tratamento e solução. Conteúdos que violam regras da plataforma podem ser denunciados pelos canais apropriados.</p>
+<p>Para planejar a próxima ação, veja também nosso guia de <a href="/3-ferramentas-gratuitas-para-midias-sociais/">análise gratuita de redes sociais</a> e o artigo sobre <a href="/4-passos-para-construcao-de-uma-marca-forte/">construção de uma marca forte</a>.</p>
