@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: BMD Performance Core
- * Description: Reducao seletiva de recursos na home e em artigos; preserva formularios, AdSense, Analytics e administracao.
- * Version: 1.2.1
+ * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
+ * Version: 1.3.0
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -52,6 +52,59 @@ foreach ( array( 'litespeed_optimize_js_excludes', 'litespeed_optm_js_defer_exc'
     } );
 }
 
+
+
+/**
+ * Remove only the legacy Hostinger referral image widget.
+ * Keep editorial content, AdSense, and all unrelated sidebar widgets.
+ */
+add_filter( 'widget_display_callback', function( $instance, $widget, $args ) {
+    if ( ! is_admin() && isset( $widget->id ) && $widget->id === 'block-2' && is_array( $instance ) &&
+         strpos( serialize( $instance ), 'clubedigitalpro' ) !== false ) {
+        return false;
+    }
+    return $instance;
+}, 10, 3 );
+
+/**
+ * Editorial recommendation: one subtle, relevant text link in a post.
+ * No popups, no images, no tracking JavaScript, no price promises.
+ */
+add_filter( 'the_content', function( $content ) {
+    if ( is_admin() || ! is_main_query() || ! in_the_loop() || ! is_singular( 'post' ) ||
+         is_feed() || is_preview() ) {
+        return $content;
+    }
+    $post_id = get_the_ID();
+    if ( ! $post_id || post_password_required( $post_id ) ) {
+        return $content;
+    }
+    $subject = remove_accents( strtolower( get_the_title( $post_id ) . ' ' . get_post_field( 'post_name', $post_id ) ) );
+    $product = null;
+    if ( preg_match( '~(instagram|direct|reels|comentarios)~', $subject ) &&
+         preg_match( '~(instagram|direct|automac|automatiz|respostas|comentarios)~', $subject ) ) {
+        $product = 'autodminsta';
+    } elseif ( preg_match( '~(clonar|clonagem|clone|landing.page|elementor|webflow|framer|site.completo)~', $subject ) ) {
+        $product = 'sitecloner';
+    }
+    if ( ! $product ) {
+        return $content;
+    }
+    $offer_url = $product === 'autodminsta' ? 'https://autodminsta.com/' : 'https://siteclonerpro.com.br/';
+    if ( stripos( $content, $offer_url ) !== false ||
+         stripos( $content, rtrim( $offer_url, '/' ) ) !== false ) {
+        return $content;
+    }
+    $offer_name = $product === 'autodminsta' ? 'Autodminsta' : 'SiteCloner Pro';
+    $description = $product === 'autodminsta'
+        ? 'Automatize respostas a comentarios e mensagens no Instagram.'
+        : 'Capture referencias visuais e personalize seus projetos web.';
+    $box = '<aside class="bmd-native-note" aria-label="Ferramenta relacionada" style="margin:24px 0 10px;padding:11px 14px;border-left:2px solid #bec7d1;background:transparent;font-size:.91em;line-height:1.5;">';
+    $box .= '<span style="opacity:.68">Ferramenta relacionada:</span> ';
+    $box .= '<a href="' . esc_url( $offer_url ) . '" rel="sponsored nofollow">' . esc_html( $offer_name ) . '</a>';
+    $box .= ' <span style="opacity:.8"> — ' . esc_html( $description ) . '</span></aside>';
+    return $content . "\n" . $box;
+}, 35 );
 
 /* Diagnostic-only endpoint, to be removed after the audit. Fixed URLs, no secrets. */
 add_action( 'rest_api_init', function () {
