@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 1.8.2
+ * Version: 1.9.0
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -243,3 +243,145 @@ add_filter( 'the_content', function ( $content ) {
     }
     return $table . $content;
 }, 24 );
+
+
+/**
+ * Link-worthy utility: lightweight GA4 campaign URL builder.
+ * Entirely browser-side, no remote APIs, pixels, cookies or storage.
+ */
+add_shortcode( 'bmd_utm_builder', function () {
+    return <<<'BMDUTMHTML'
+<div id="bmd-utm-tool" class="bmd-utm">
+<style>
+.bmd-utm{--ink:#172237;--muted:#5c697d;--accent:#d54f26;font-family:inherit;color:var(--ink);max-width:970px;margin:24px 0}.bmd-utm *{box-sizing:border-box}
+.bmd-utm .bmd-card{border:1px solid #e4e9f0;border-radius:15px;padding:22px;background:#fff;box-shadow:0 8px 30px rgba(25,38,55,.035)}
+.bmd-utm .bmd-utm-presets{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
+.bmd-utm .bmd-preset{background:#f4f6f9;color:#293a52;border:1px solid #dce3ed;border-radius:999px;padding:7px 11px;font-size:13px;cursor:pointer}
+.bmd-utm .bmd-preset:hover,.bmd-utm .bmd-preset:focus-visible{border-color:#d54f26;color:#ad3e20}
+.bmd-utm .bmd-fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.bmd-utm .bmd-full{grid-column:1/-1}.bmd-utm label{display:block;font-weight:650;font-size:14px;margin:0 0 5px}
+.bmd-utm input{display:block;width:100%;border:1px solid #cdd5e0;border-radius:8px;padding:11px 12px;background:#fff;color:#172237;font-size:15px;line-height:1.4;min-height:43px}
+.bmd-utm input:focus{outline:2px solid #f0b6a3;outline-offset:1px;border-color:#ca4a27}
+.bmd-utm .bmd-help{display:block;font-size:12px;color:#637084;margin:5px 0 0}
+.bmd-utm .bmd-result{background:#f8fafc;border:1px solid #e1e7ee;padding:14px;border-radius:10px;margin-top:18px}
+.bmd-utm .bmd-result output{display:block;overflow-wrap:anywhere;line-height:1.6;min-height:35px;font-size:14px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;color:#243852}
+.bmd-utm .bmd-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:10px}
+.bmd-utm .bmd-primary{padding:11px 19px;border:0;border-radius:8px;background:#d54f26;color:#fff;font-weight:700;cursor:pointer}
+.bmd-utm .bmd-primary:hover{background:#ae3f20}.bmd-utm .bmd-primary:disabled{background:#9ca3af;cursor:not-allowed}
+.bmd-utm .bmd-status{font-size:13px;color:#59687a}.bmd-utm .bmd-status[role=alert]{color:#af2e1a}
+.bmd-utm .bmd-detail{border:1px solid #e4e9f0;border-radius:8px;margin:13px 0;padding:8px 12px}
+.bmd-utm .bmd-detail summary{cursor:pointer;font-weight:600}
+@media(max-width:650px){.bmd-utm .bmd-card{padding:15px}.bmd-utm .bmd-fields{grid-template-columns:1fr}.bmd-utm input{font-size:16px}}
+</style>
+<div class="bmd-card">
+<p style="margin:0 0 11px;color:#5c697d;font-size:14px">Escolha um canal ou preencha os campos. O link é gerado neste navegador.</p>
+<div class="bmd-utm-presets" aria-label="Modelos de canais">
+<button type="button" class="bmd-preset" data-source="instagram" data-medium="organic_social">Instagram orgânico</button>
+<button type="button" class="bmd-preset" data-source="instagram" data-medium="paid_social">Instagram Ads</button>
+<button type="button" class="bmd-preset" data-source="facebook" data-medium="paid_social">Facebook Ads</button>
+<button type="button" class="bmd-preset" data-source="whatsapp" data-medium="referral">WhatsApp</button>
+<button type="button" class="bmd-preset" data-source="newsletter" data-medium="email">E-mail</button>
+<button type="button" class="bmd-preset" data-source="youtube" data-medium="organic_video">YouTube</button>
+</div>
+<form id="bmd-utm-form" autocomplete="off" novalidate>
+<div class="bmd-fields">
+<div class="bmd-full"><label for="bmd-url">URL do site ou página <span aria-hidden="true">*</span></label><input id="bmd-url" name="landing_url" type="text" inputmode="url" placeholder="https://seusite.com.br/oferta/" required><span class="bmd-help">Aceita URLs com parâmetros já existentes e preserva a âncora (#).</span></div>
+<div><label for="bmd-source">Origem — utm_source *</label><input id="bmd-source" name="utm_source" placeholder="instagram" required><span class="bmd-help">A plataforma que enviou a visita.</span></div>
+<div><label for="bmd-medium">Mídia — utm_medium *</label><input id="bmd-medium" name="utm_medium" placeholder="paid_social" required><span class="bmd-help">O tipo do canal: email, paid_social, referral...</span></div>
+<div class="bmd-full"><label for="bmd-campaign">Campanha — utm_campaign *</label><input id="bmd-campaign" name="utm_campaign" placeholder="lancamento_outubro" required><span class="bmd-help">Use uma convenção estável para nomes e campanhas.</span></div>
+</div>
+<details class="bmd-detail"><summary>Campos avançados (opcionais)</summary><div class="bmd-fields" style="margin-top:13px">
+<div><label for="bmd-content">Criativo — utm_content</label><input id="bmd-content" name="utm_content" placeholder="reels_abertura_a"></div>
+<div><label for="bmd-term">Termo — utm_term</label><input id="bmd-term" name="utm_term" placeholder="palavra_chave"></div>
+<div class="bmd-full"><label for="bmd-id">ID — utm_id</label><input id="bmd-id" name="utm_id" placeholder="campanha_001"></div>
+</div></details>
+<div class="bmd-result"><strong>URL com UTM</strong><output id="bmd-utm-output" aria-live="polite">Preencha a URL e os três campos obrigatórios.</output>
+<div class="bmd-actions"><button class="bmd-primary" type="submit" id="bmd-utm-copy" disabled>Copiar URL</button><span class="bmd-status" id="bmd-utm-status" aria-live="polite"></span></div>
+</div></form>
+</div>
+<p style="font-size:13px;color:#637084;margin-top:11px">Privacidade: a URL e os parâmetros digitados não são enviados ao nosso servidor. A geração é local, no seu dispositivo.</p>
+<script>
+(function(){
+'use strict';
+var root=document.getElementById('bmd-utm-tool');if(!root||root.dataset.ready==='1')return;root.dataset.ready='1';
+var form=root.querySelector('#bmd-utm-form'),out=root.querySelector('#bmd-utm-output'),copy=root.querySelector('#bmd-utm-copy'),status=root.querySelector('#bmd-utm-status');
+var ids={'utm_source':'bmd-source','utm_medium':'bmd-medium','utm_campaign':'bmd-campaign','utm_content':'bmd-content','utm_term':'bmd-term','utm_id':'bmd-id'};
+var last='';
+function clean(v){return String(v||'').trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9._-]+/g,'_').replace(/^_+|_+$/g,'').replace(/_+/g,'_');}
+function field(k){return root.querySelector('#'+ids[k]).value;}
+function make(){
+var val=root.querySelector('#bmd-url').value.trim();
+if(!val){return{error:'Informe a URL de destino.'};}
+if(!/^https?:\/\//i.test(val)){if(/^[a-z][a-z0-9+.-]*:/i.test(val))return{error:'Use apenas URLs HTTP ou HTTPS.'};val='https://'+val;}
+var u;try{u=new URL(val);}catch(e){return{error:'Informe uma URL válida.'};}
+if(!/^https?:$/.test(u.protocol)||!u.hostname||(!u.hostname.includes('.')&&u.hostname!=='localhost'))return{error:'Informe um site válido com HTTP ou HTTPS.'};
+for(var k of ['utm_source','utm_medium','utm_campaign'])if(!clean(field(k)))return{error:'Preencha origem, mídia e campanha.'};
+for(var key in ids){var value=clean(field(key));if(value)u.searchParams.set(key,value);else if(u.searchParams.has(key))u.searchParams.delete(key);}
+return{url:u.href};
+}
+function render(){var v=make();last=v.url||'';out.textContent=last||'Preencha uma URL válida, origem, mídia e campanha.';copy.disabled=!last;status.textContent='';status.removeAttribute('role');}
+root.querySelectorAll('input').forEach(function(i){i.addEventListener('input',render);});
+root.querySelectorAll('[data-source]').forEach(function(b){b.addEventListener('click',function(){root.querySelector('#bmd-source').value=b.dataset.source;root.querySelector('#bmd-medium').value=b.dataset.medium;render();root.querySelector('#bmd-campaign').focus();});});
+form.addEventListener('submit',function(e){
+e.preventDefault();var v=make();if(!v.url){status.textContent=v.error;status.setAttribute('role','alert');return;}
+var done=function(){status.textContent='URL copiada!';status.removeAttribute('role');};
+var fallback=function(){var temp=document.createElement('textarea');temp.value=v.url;temp.style.position='fixed';temp.style.opacity='0';document.body.appendChild(temp);temp.select();var ok=false;try{ok=document.execCommand('copy');}catch(e){}document.body.removeChild(temp);if(ok)done();else{status.textContent='Cópia automática indisponível. Selecione a URL acima.';status.setAttribute('role','alert');}};
+if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(v.url).then(done,fallback);else fallback();
+});
+render();
+})();
+</script>
+</div>
+BMDUTMHTML;
+} );
+
+/**
+ * Publish exactly one useful evergreen utility in the blog.
+ * Never overwrite an editor-created page with the same slug.
+ */
+add_action( 'init', function () {
+    if ( get_option( 'bmd_create_utm_page_20261027', false ) ) { return; }
+    $existing = get_page_by_path( 'gerador-de-utm', OBJECT, 'page' );
+    if ( $existing ) {
+        update_option( 'bmd_create_utm_page_20261027', 'existing_page_' . (int) $existing->ID, false );
+        return;
+    }
+    $content = <<<'BMDUTMPAGE'
+<p>Precisa descobrir de onde vieram as visitas de uma campanha? Use este <strong>gerador de UTM gratuito</strong> para criar links rastreáveis para Instagram, Facebook, WhatsApp, newsletter e outros canais. Sem cadastro, sem planilhas e sem enviar suas URLs para um servidor.</p>
+[bmd_utm_builder]
+<h2>O que é uma UTM?</h2>
+<p>UTMs são parâmetros adicionados ao endereço de uma página para identificar a origem, a mídia e a campanha que trouxe um visitante. Por exemplo, um link divulgado no Instagram pode informar ao Google Analytics 4 (GA4) que a visita veio de uma publicação orgânica ou de um anúncio, desde que o rastreamento do destino esteja configurado corretamente.</p>
+<h2>Como criar um link com UTM em 3 passos</h2>
+<ol><li>Cole o endereço da página para onde o visitante deve ir, incluindo caminhos e parâmetros existentes.</li><li>Escolha o canal ou informe <code>utm_source</code> (origem), <code>utm_medium</code> (mídia) e <code>utm_campaign</code> (nome da campanha).</li><li>Copie o link gerado e utilize-o em anúncios, e-mails, posts, vídeos ou mensagens externas.</li></ol>
+<h2>Quais parâmetros UTM usar?</h2>
+<ul><li><strong>utm_source:</strong> quem enviou a visita, como <code>instagram</code>, <code>facebook</code> ou <code>newsletter</code>.</li><li><strong>utm_medium:</strong> tipo de canal, como <code>paid_social</code>, <code>email</code> ou <code>referral</code>.</li><li><strong>utm_campaign:</strong> nome consistente da campanha, por exemplo <code>black_friday_2026</code>.</li><li><strong>utm_content:</strong> opcional, diferencia criativos, botões ou versões do mesmo anúncio.</li><li><strong>utm_term:</strong> opcional, normalmente associado a palavras-chave.</li><li><strong>utm_id:</strong> opcional, identificador estável da campanha, útil em determinadas integrações de dados.</li></ul>
+<h2>Boas práticas para rastrear sem bagunçar o GA4</h2>
+<p>Padronize tudo em letras minúsculas, escolha um nome estável para cada canal e evite criar grafias diferentes da mesma campanha. Nossa ferramenta normaliza espaços e acentos, mantém parâmetros de URL não relacionados às UTMs e substitui parâmetros UTM que já estiverem presentes.</p>
+<p>Use UTMs principalmente em <strong>links de distribuição externa</strong>. Em geral, não acrescente UTMs a links entre páginas do mesmo site: isso pode confundir a atribuição da sessão. Nos anúncios do Google Ads, verifique primeiro sua configuração de codificação automática (auto-tagging) e sua integração com GA4.</p>
+<h2>Perguntas frequentes</h2>
+<h3>O gerador de UTM é realmente grátis?</h3>
+<p>Sim. Os links são montados no próprio navegador, sem login, licença ou cobrança.</p>
+<h3>O link rastreável funciona no WhatsApp e no Instagram?</h3>
+<p>Sim. Você pode usá-lo no WhatsApp, na bio, nos stories, em anúncios e em e-mails. Para os acessos aparecerem no Analytics, o site de destino precisa ter a medição configurada.</p>
+<h3>O link com UTM aumenta o tráfego do site?</h3>
+<p>Não por si só. A UTM mede a origem das visitas; quem gera as visitas é a distribuição e a campanha. Esse controle ajuda a identificar quais esforços funcionam.</p>
+<h3>O gerador encurta a URL?</h3>
+<p>Não. Ele mantém o endereço original e adiciona os parâmetros de rastreamento. Encurtadores são serviços separados e podem adicionar redirecionamentos.</p>
+<p><small>Referência: <a href="https://support.google.com/analytics/answer/10917952?hl=pt-BR" rel="noopener noreferrer">orientações oficiais do Google Analytics sobre parâmetros de campanha</a>.</small></p>
+BMDUTMPAGE;
+    $id = wp_insert_post( array(
+        'post_type' => 'page',
+        'post_status' => 'publish',
+        'post_title' => 'Gerador de UTM Grátis: Crie Links Rastreáveis para Instagram, WhatsApp e GA4',
+        'post_name' => 'gerador-de-utm',
+        'post_content' => wp_slash( $content ),
+        'meta_input' => array(
+            'rank_math_title' => 'Gerador de UTM Grátis para GA4, Instagram e WhatsApp',
+            'rank_math_description' => 'Crie links com UTM grátis para Instagram, WhatsApp, Facebook e e-mail. Gerador online para GA4 com copiar URL, exemplos e sem cadastro.',
+            'rank_math_focus_keyword' => 'gerador de utm',
+        ),
+    ), true );
+    if ( ! is_wp_error( $id ) && $id ) {
+        update_option( 'bmd_create_utm_page_20261027', (int) $id, false );
+    }
+}, 30 );
