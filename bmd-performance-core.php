@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 1.5.0
+ * Version: 1.5.1
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -54,8 +54,32 @@ function bmd_perf_is_formless_post() {
 add_action( 'wp_enqueue_scripts', function () {
     if ( ! bmd_perf_is_formless_post() ) { return; }
     wp_dequeue_style( 'dashicons' );
-    foreach ( array( 'ow-flickity', 'oceanwp-slider', 'ow-magnific-popup', 'oceanwp-lightbox', 'oceanwp-select' ) as $unused_handle ) {
-        wp_dequeue_script( $unused_handle );
+    // Apply only when content does not use galleries, sliders, or lightbox.
+    $content = is_singular( 'post' ) ? (string) get_post_field( 'post_content', get_queried_object_id() ) : '';
+    $interactive_media = preg_match( '~\[(?:gallery|envira|slider|carousel)\b|wp-block-gallery|data-fancybox|lightbox|oceanwp-slider|flickity|swiper|slick|elementor-gallery~i', $content );
+    if ( ! $interactive_media ) {
+        $unneeded = array( 'ow-flickity', 'oceanwp-slider', 'ow-magnific-popup', 'oceanwp-lightbox', 'oceanwp-select' );
+        foreach ( $unneeded as $unused_handle ) {
+            wp_dequeue_script( $unused_handle );
+        }
+        // OceanWP accumulates vendor deps in subsequent scroll/utility scripts.
+        // Remove only the unused vendor dependencies from OceanWP-owned scripts;
+        // never change third-party dependencies, navigation or core jQuery.
+        $scripts = wp_scripts();
+        if ( $scripts && ! empty( $scripts->registered ) ) {
+            foreach ( $scripts->registered as $handle => $script ) {
+                $src = isset( $script->src ) ? (string) $script->src : '';
+                if ( strpos( $src, '/themes/oceanwp/assets/js/' ) === false ) {
+                    continue;
+                }
+                if ( in_array( $handle, $unneeded, true ) ) {
+                    continue;
+                }
+                $script->deps = array_values( array_diff( (array) $script->deps, array( 'ow-flickity', 'ow-magnific-popup' ) ) );
+            }
+        }
+        wp_dequeue_script( 'ow-flickity' );
+        wp_dequeue_script( 'ow-magnific-popup' );
     }
     wp_dequeue_script( 'comment-reply' );
     wp_dequeue_script( 'wp-embed' );
