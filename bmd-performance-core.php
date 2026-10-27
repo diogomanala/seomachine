@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 1.9.1
+ * Version: 1.9.2
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -22,7 +22,7 @@ add_action( 'init', function() {
 
 function bmd_perf_is_formless_post() {
     if ( is_admin() || is_user_logged_in() || is_preview() || is_customize_preview() ) { return false; }
-    if ( is_home() || is_front_page() ) { return true; }
+    if ( is_home() || is_front_page() || is_page( 'gerador-de-utm' ) ) { return true; }
     if ( ! is_singular( 'post' ) ) { return false; }
     $post_id = get_queried_object_id();
     if ( ! $post_id ) { return false; }
@@ -413,3 +413,31 @@ add_filter( 'the_content', function( $content ) {
     $link .= 'Monte URLs rastreáveis para anúncios, e-mails e redes sociais sem cadastro.</aside>';
     return $content . "\n" . $link;
 }, 39 );
+
+
+/* Short-lived read-only check; to be removed immediately after deployment verification. */
+add_action( 'rest_api_init', function() {
+    register_rest_route( 'bmd-performance/v1', '/utm-check', array(
+        'methods' => 'GET',
+        'permission_callback' => '__return_true',
+        'callback' => function() {
+            $result = array('plugin_version' => '1.9.2', 'pages' => array());
+            foreach (array('tool'=>'/gerador-de-utm/','home'=>'/','contact'=>'/contato/') as $name=>$path) {
+                $res=wp_remote_get(home_url($path),array('timeout'=>12,'redirection'=>2));
+                if(is_wp_error($res)){$result['pages'][$name]=array('error'=>'fetch-failed');continue;}
+                $html=(string)wp_remote_retrieve_body($res);
+                $result['pages'][$name]=array(
+                    'status'=>wp_remote_retrieve_response_code($res),
+                    'bytes'=>strlen($html),
+                    'utm_form'=>strpos($html,'id="bmd-utm-form"')!==false,
+                    'utm_copy'=>strpos($html,'id="bmd-utm-copy"')!==false,
+                    'utm_script'=>strpos($html,"root.dataset.ready='1'")!==false,
+                    'recaptcha'=>strpos($html,'recaptcha/api.js')!==false,
+                    'adsense'=>strpos($html,'adsbygoogle.js')!==false,
+                    'has_referral'=>strpos($html,'clubedigitalpro')!==false,
+                );
+            }
+            return rest_ensure_response($result);
+        },
+    ));
+});
