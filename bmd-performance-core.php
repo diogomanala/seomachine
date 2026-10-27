@@ -59,7 +59,7 @@ add_action( 'rest_api_init', function () {
   'methods' => 'GET',
   'permission_callback' => '__return_true',
   'callback' => function () {
-   $cache_key = 'bmd_assets_audit_20261027_3';
+   $cache_key = 'bmd_assets_audit_20261027_4';
    $cached = get_transient($cache_key);
    if ( is_array($cached) ) return rest_ensure_response($cached);
    $result = array('version'=>'1.2.1-audit', 'pages'=>array());
@@ -119,6 +119,9 @@ add_action( 'rest_api_init', function () {
       'recaptcha_in_head'=>strpos($head,'recaptcha/api.js')!==false,
       'adsense_in_head'=>strpos($head,'adsbygoogle.js')!==false,
       'litecache_header'=>isset($headers['x-litespeed-cache'])?(string)$headers['x-litespeed-cache']:'',
+
+      'hostinger_affiliate_anchors'=>array_map(function($v){return array('text'=>mb_substr(strip_tags($v[2]),0,90),'full_tag_bytes'=>strlen($v[0]),'tag_head'=>mb_substr($v[1],0,120));},array_slice((function($h){preg_match_all('~<a\b([^>]*)href=["\x27]([^"\x27]*hostinger\.com\.br[^"\x27]*)["\x27][^>]*>(.*?)</a>~is',$h,$m,PREG_SET_ORDER);return $m;} )($html),0,5)),
+
     );
    }
    set_transient($cache_key,$result,90);
