@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 1.6.0
+ * Version: 1.6.1
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -157,83 +157,3 @@ add_filter( 'the_content', function( $content ) {
     $box .= ' <span style="opacity:.8"> — ' . esc_html( $description ) . '</span></aside>';
     return $content . "\n" . $box;
 }, 35 );
-
-
-/* Read-only short-lived audit endpoint (remove after analysis). */
-add_action( 'rest_api_init', function () {
- register_rest_route( 'bmd-performance/v1', '/check-icons', array(
-  'methods' => 'GET', 'permission_callback' => '__return_true',
-  'callback' => function () {
-   $mods = array('ocean_performance_fontawesome','ocean_performance_simple_line_icons','ocean_site_icons','ocean_performance_emoji','ocean_performance_lightbox','ocean_performance_custom_select','ocean_performance_scroll_effect');
-   $settings=array();
-   foreach($mods as $m){ $settings[$m] = get_theme_mod($m,'(default)'); }
-   $result=array('version'=>'1.5.2-icons','theme_settings'=>$settings,'pages'=>array());
-   foreach(array('home'=>'/','post'=>'/como-clonar-um-site-completo/','contact'=>'/contato/') as $label=>$path){
-    $res=wp_remote_get(home_url($path),array('timeout'=>12,'redirection'=>2,'headers'=>array('Accept'=>'text/html')));
-    if(is_wp_error($res)){ $result['pages'][$label]=array('error'=>'fetch-failed');continue; }
-    $html=(string)wp_remote_retrieve_body($res);
-    $body=preg_replace('~<script\b[^>]*>.*?</script\s*>|<style\b[^>]*>.*?</style\s*>~is','',$html);
-    $fa=array();$sli=array();
-    preg_match_all('~<[^>]+\bclass=["\x27]([^"\x27]+)["\x27][^>]*>~i',$body,$tags);
-    foreach($tags[1]??array() as $classes){
-      foreach(preg_split('~\s+~',trim($classes)) as $cls){
-        if(preg_match('~^(fa|fas|far|fab|fal|fad|fa-[a-z])~',$cls))$fa[$cls]=($fa[$cls]??0)+1;
-        if(preg_match('~^icon-[a-z]~',$cls))$sli[$cls]=($sli[$cls]??0)+1;
-      }
-    }
-    $images=array();
-    preg_match_all('~<img\b[^>]*>~i',$html,$im);
-    foreach(array_slice($im[0],0,8) as $img){
-     $src='';
-     if(preg_match('~\bsrc=["\x27]([^"\x27]+)~i',$img,$sm)){$src=html_entity_decode($sm[1]);}
-     $alt='';
-     if(preg_match('~\balt=["\x27]([^"\x27]*)~i',$img,$am)){$alt=$am[1];}
-     $images[]=array('path'=>(string)wp_parse_url($src,PHP_URL_PATH),
-       'has_width'=>preg_match('~\bwidth=~i',$img)===1,
-       'has_height'=>preg_match('~\bheight=~i',$img)===1,
-       'lazy'=>preg_match('~\bloading=["\x27]lazy~i',$img)===1,
-       'fetchpriority_high'=>preg_match('~\bfetchpriority=["\x27]high~i',$img)===1,
-       'alt_len'=>strlen($alt));
-    }
-    $result['pages'][$label]=array('http'=>wp_remote_retrieve_response_code($res),
-      'bytes'=>strlen($html),'fa_classes'=>$fa,'simple_line_classes'=>$sli,
-      'image_count'=>count($im[0]),'first_images'=>$images,
-      'has_wp_emoji_module'=>strpos($html,'wp-emoji')!==false,
-      'has_fontawesome_css'=>strpos($html,'fontawesome/css/all.min.css')!==false,
-      'has_simple_icons_css'=>strpos($html,'simple-line-icons.min.css')!==false,
-      'has_analytics'=>strpos($html,'gtag/js')!==false,
-      'footer_emoji_loader'=>strpos($html,'id="wp-emoji-settings"')!==false || strpos($html,'wp-emoji')!==false,
-      'has_adsense'=>strpos($html,'adsbygoogle.js')!==false);
-   }
-   $file=WP_CONTENT_DIR . '/webp-express/webp-images/uploads/2025/07/cupom-hostinger.jpg.webp';
-   $dims=is_file($file)?@getimagesize($file):false;
-   $result['hostinger_banner_file']=array('exists'=>is_file($file),'dimensions'=>$dims?array($dims[0],$dims[1]):null);
-
-   $candidates=array(
-      'uploads_jpg'=>WP_CONTENT_DIR.'/uploads/2025/07/cupom-hostinger.jpg',
-      'uploads_webp'=>WP_CONTENT_DIR.'/uploads/2025/07/cupom-hostinger.jpg.webp',
-      'webp_in_uploads'=>WP_CONTENT_DIR.'/uploads-webpc/uploads/2025/07/cupom-hostinger.jpg.webp',
-      'webp_cache'=>WP_CONTENT_DIR.'/webp-express/webp-images/uploads/2025/07/cupom-hostinger.jpg.webp',
-   );
-   $result['banner_candidates']=array();
-   foreach($candidates as $name=>$candidate){
-      $info=is_file($candidate)?@getimagesize($candidate):false;
-      $result['banner_candidates'][$name]=array('exists'=>is_file($candidate),'size'=>$info?array($info[0],$info[1]):null);
-   }
-   $widget=get_option('widget_block',array());
-   $inst=is_array($widget)&&isset($widget[2])?$widget[2]:array();
-   $widget_html=isset($inst['content'])?(string)$inst['content']:'';
-   preg_match('~<img\b[^>]*>~i',$widget_html,$wm);
-   $tag=isset($wm[0])?$wm[0]:'';
-   $result['banner_markup']=array(
-      'has_image'=>$tag!=='',
-      'width_attr'=>preg_match('~\bwidth=~i',$tag)===1,
-      'height_attr'=>preg_match('~\bheight=~i',$tag)===1,
-      'css_dimensions'=>preg_match('~\bstyle=["\x27][^"\x27]*(?:width|height)~i',$tag)===1,
-      'src_path'=>preg_match('~\bsrc=["\x27]([^"\x27]+)~i',$tag,$mt)?(string)wp_parse_url(html_entity_decode($mt[1]),PHP_URL_PATH):null,
-   );
-
-   return rest_ensure_response($result);
-  }
- ));
-});
