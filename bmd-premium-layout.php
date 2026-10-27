@@ -5,6 +5,22 @@
  */
 if (!defined('ABSPATH')) { exit; }
 
+
+/**
+ * The sidebar still renders a second copy of the old 8-item menu.
+ * Keep original menu settings and legal/footer links untouched.
+ * Only suppress this specific, redundant front-end sidebar widget.
+ */
+add_filter('widget_display_callback', function($instance,$widget,$args){
+    if(is_admin())return $instance;
+    if(isset($widget->id) && $widget->id==='nav_menu-5' &&
+       isset($args['id']) && $args['id']==='sidebar') {
+        return false;
+    }
+    return $instance;
+}, 10, 3 );
+
+
 function bmd_premium_tools() {
     return array(
         array('name'=>'Calculadora de ROAS e CAC','desc'=>'Descubra margem, lucro, CPA e ponto de equilíbrio da sua campanha.','url'=>'/calculadora-roas-cac-lucro/','tag'=>'Tráfego pago','mark'=>'01'),
@@ -259,6 +275,56 @@ body.bmd-premium-layout .bmd-pro-links strong{font-size:16px;font-weight:780}
 body.bmd-premium-layout .bmd-pro-links span{font-size:13px;color:var(--bmd-muted);line-height:1.55}
 @media(max-width:640px){body.bmd-premium-layout .bmd-pro-links{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}body.bmd-premium-layout .bmd-tool-tile{transition:none}body.bmd-premium-layout .bmd-tool-tile:hover{transform:none}}
+
+/* Editorial refinement: compact reading grid and clear content hierarchy. */
+body.bmd-premium-layout #blog-entries{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch;gap:23px!important;margin:0!important}
+body.bmd-premium-layout #blog-entries>.blog-entry{float:none!important;clear:none!important;display:block!important;width:100%!important;margin:0!important;max-width:100%;height:100%}
+body.bmd-premium-layout #blog-entries>.blog-entry>.blog-entry-inner{display:flex!important;flex-direction:column!important;align-items:stretch;min-height:100%;background:#fff;border:1px solid #e5eaf1;border-radius:13px;overflow:hidden;box-shadow:0 8px 28px rgba(27,38,56,.025);padding:0 0 17px!important}
+body.bmd-premium-layout #blog-entries .thumbnail{margin:0 0 17px!important;overflow:hidden;width:100%;aspect-ratio:16/9;background:#eef2f6;position:relative;flex:0 0 auto}
+body.bmd-premium-layout #blog-entries .thumbnail>a{display:block;width:100%;height:100%;position:relative}
+body.bmd-premium-layout #blog-entries .thumbnail img{display:block;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center;transform:none!important}
+body.bmd-premium-layout #blog-entries .thumbnail .overlay{display:none!important}
+body.bmd-premium-layout #blog-entries .blog-entry-header,body.bmd-premium-layout #blog-entries .blog-entry-summary,body.bmd-premium-layout #blog-entries .meta,body.bmd-premium-layout #blog-entries .blog-entry-readmore{float:none!important;display:block;padding:0 19px!important;margin:0 0 12px!important;min-width:0}
+body.bmd-premium-layout #blog-entries .blog-entry-header{order:0}
+body.bmd-premium-layout #blog-entries .blog-entry-title{margin:0!important;line-height:1.32!important;font-size:clamp(17px,1.65vw,21px)!important;letter-spacing:-.45px!important;font-weight:760!important}
+body.bmd-premium-layout #blog-entries .blog-entry-title a{color:#172338!important;text-decoration:none!important}
+body.bmd-premium-layout #blog-entries .blog-entry-title a:hover{color:#bb4c31!important}
+body.bmd-premium-layout #blog-entries .meta{display:flex!important;align-items:center;flex-wrap:wrap;gap:6px;font-size:11px;color:#7c8899;order:-1;line-height:1.3;margin-bottom:9px!important}
+body.bmd-premium-layout #blog-entries .meta>li.meta-author,body.bmd-premium-layout #blog-entries .meta>li.meta-date{display:none!important}
+body.bmd-premium-layout #blog-entries .meta .meta-cat{font-size:11px;font-weight:780;letter-spacing:.5px;text-transform:uppercase;color:#bc553c!important;display:block!important}
+body.bmd-premium-layout #blog-entries .meta .meta-cat i{display:none}
+body.bmd-premium-layout #blog-entries .meta .meta-cat a{color:#bc553c!important}
+body.bmd-premium-layout #blog-entries .blog-entry-summary{font-size:13px!important;color:#617085!important;line-height:1.6!important;flex:1 1 auto}
+body.bmd-premium-layout #blog-entries .blog-entry-summary p{margin:0!important;line-height:1.65!important;color:#617085!important}
+body.bmd-premium-layout #blog-entries .blog-entry-readmore{margin:auto 0 0!important;padding-top:7px!important}
+body.bmd-premium-layout #blog-entries .blog-entry-readmore a{border:0!important;padding:0!important;text-transform:none!important;letter-spacing:0!important;color:#ca4b31!important;font-size:13px!important;font-weight:760!important;background:none!important}
+body.bmd-premium-layout #blog-entries .blog-entry-readmore a:hover{text-decoration:underline!important}
+body.bmd-premium-layout #blog-entries .thumbnail+header.blog-entry-header{order:0}
+body.bmd-premium-layout #right-sidebar #nav_menu-5{display:none!important}
+body.bmd-premium-layout #right-sidebar .sidebar-box:not(:last-child){margin-bottom:23px}
+body.bmd-premium-layout #right-sidebar #search-5{padding:18px;border:1px solid var(--bmd-line);border-radius:12px;background:#fff}
+body.bmd-premium-layout #right-sidebar #search-5 input[type=search]{font-size:14px;border-radius:7px;min-height:43px}
+body.bmd-premium-layout .bmd-evergreen-guides ul{list-style:none!important;margin:8px 0 0!important;padding:0!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px!important}
+body.bmd-premium-layout .bmd-evergreen-guides li{list-style:none!important;margin:0!important}
+body.bmd-premium-layout .bmd-evergreen-guides li a{display:block;padding:12px 13px;border:1px solid #e7eaf0;border-radius:8px;color:#3a4a60;font-weight:670;line-height:1.45;text-decoration:none;background:#fbfcfd}
+body.bmd-premium-layout .bmd-evergreen-guides li a:hover{border-color:#d4b6aa;color:#b44a32;background:#fffaf8}
+body.bmd-premium-layout #main .single-post-article .entry{font-size:17px;line-height:1.8}
+body.bmd-premium-layout #main .single-post-article .entry h2{margin-top:35px}
+body.bmd-premium-layout #main .single-post-article .entry img{max-width:100%;height:auto}
+body.bmd-premium-layout #footer-widgets:not(:has(.footer-box > *)){display:none!important}
+body.bmd-premium-layout #footer-bottom{padding-top:16px!important;padding-bottom:16px!important}
+body.bmd-premium-layout .bmd-footer-quick{border-bottom:1px solid rgba(166,177,193,.23);margin-bottom:12px;padding-bottom:18px;line-height:1.6}
+@media(max-width:959px){
+body.bmd-premium-layout #blog-entries{gap:17px!important}
+body.bmd-premium-layout #blog-entries>.blog-entry>.blog-entry-inner{padding-bottom:14px!important}
+}
+@media(max-width:680px){
+body.bmd-premium-layout #blog-entries{grid-template-columns:minmax(0,1fr)!important;gap:20px!important}
+body.bmd-premium-layout .bmd-evergreen-guides ul{grid-template-columns:1fr!important}
+body.bmd-premium-layout #blog-entries .blog-entry-header,body.bmd-premium-layout #blog-entries .blog-entry-summary,body.bmd-premium-layout #blog-entries .meta,body.bmd-premium-layout #blog-entries .blog-entry-readmore{padding-left:15px!important;padding-right:15px!important}
+body.bmd-premium-layout #blog-entries .blog-entry-title{font-size:20px!important}
+}
+
 </style>
 BMD_STYLE;
 },65);
