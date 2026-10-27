@@ -148,6 +148,23 @@ add_action('rest_api_init',function(){
    }
    $items[]=$item;
   }
-  return rest_ensure_response(array('options'=>$items));
+$raw=get_option('ad_inserter');
+  $data=is_string($raw)?json_decode($raw,true):$raw;
+  $shape=array('raw_type'=>gettype($raw),'json_valid'=>json_last_error()===JSON_ERROR_NONE,'is_serialized'=>is_string($raw)&&is_serialized($raw),'root_keys'=>is_array($data)?array_keys($data):array());
+  $found=array();
+  $walk=function($node,$path='', $depth=0) use (&$walk,&$found) {
+    if(!is_array($node)||$depth>4) return;
+    foreach($node as $k=>$val){
+     $p=$path===''?(string)$k:$path.'.'.$k;
+     if(preg_match('~(?:javascript|jquery|js_code|frontend|external|adblock|ad_block|js_file|file_js|inline_js|script)~i',(string)$k)) {
+       $found[]=array('path'=>$p,'type'=>gettype($val),'safe_value'=>is_scalar($val)&&in_array((string)$val,array('0','1','2','3','4','5','file','inline','on','off','yes','no','true','false'),true)?(string)$val:'[hidden]');
+     }
+     if(is_array($val))$walk($val,$p,$depth+1);
+    }
+  };
+  $walk($data);
+  $shape['candidate_paths']=array_slice($found,0,90);
+  return rest_ensure_response(array('ad_inserter_shape'=>$shape));
+
  }));
 });
