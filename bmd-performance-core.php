@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 2.3.1
+ * Version: 2.3.2
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -213,6 +213,8 @@ add_action( 'ocean_before_content_inner', function () {
         'Como descobrir a tecnologia de um site' => '/como-descobrir-plataforma-do-site/',
         'Como automatizar o Direct no Instagram' => '/automatizar-direct-instagram-comentarios/',
         'Quanto custa anunciar no Google Ads' => '/quanto-custa-google-ads/',
+        'Glossário de SEO: 8 termos essenciais' => '/8-termos-de-seo-voce-precisa-saber/',
+        '7 mitos de marketing digital' => '/mitos-e-verdades-sobre-marketing-digital/',
     );
     echo '<div class="bmd-evergreen-guides" style="margin-top:13px;">';
     echo '<h3 style="font-size:1.05em;line-height:1.4;margin:0 0 6px;">Leituras recomendadas</h3>';
