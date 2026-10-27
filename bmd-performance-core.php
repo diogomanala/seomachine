@@ -185,6 +185,25 @@ $raw=get_option('ad_inserter');
   }
   $shape['matching_flags']=array_slice($flat,0,100);
 
+  $shape['global_option_keys']=isset($settings['global'])&&is_array($settings['global'])?array_slice(array_map('strval',array_keys($settings['global'])),0,140):array();
+  $blocks=array();
+  foreach($settings as $k=>$v){
+   if(!ctype_digit((string)$k)||!is_array($v))continue;
+   $v_str=serialize($v);
+   $signals=array();
+   foreach(array('sitecloner','autodminsta','love','freelove','hostinger','ferramentas','googlesyndication','adsbygoogle','pub-3155268230972642','iframe','amazon','referral') as $token){
+    if(stripos($v_str,$token)!==false)$signals[]=$token;
+   }
+   $blocks[]=array(
+    'slot'=>(string)$k,
+    'bytes'=>strlen($v_str),
+    'top_keys'=>array_slice(array_map('strval',array_keys($v)),0,55),
+    'signals'=>$signals
+   );
+  }
+  $shape['blocks']=array_slice($blocks,0,95);
+
+
   return rest_ensure_response(array('ad_inserter_shape'=>$shape));
 
  }));
