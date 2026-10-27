@@ -126,3 +126,28 @@ add_action( 'rest_api_init', function () {
   }
  ));
 });
+
+
+/* Temporary safe settings inspection, no option values or credentials. */
+add_action('rest_api_init',function(){
+ register_rest_route('bmd-performance/v1','/options',array('methods'=>'GET','permission_callback'=>'__return_true','callback'=>function(){
+  global $wpdb;
+  $rows=$wpdb->get_results("SELECT option_name, LENGTH(option_value) AS bytes FROM {$wpdb->options} WHERE option_name LIKE '%ad_inserter%' OR option_name LIKE 'ai_%' ORDER BY option_name LIMIT 75",ARRAY_A);
+  $items=array();
+  foreach($rows as $row){
+   $name=$row['option_name'];$raw=get_option($name);
+   $item=array('name'=>$name,'bytes'=>(int)$row['bytes'],'type'=>gettype($raw));
+   if(is_array($raw)){
+    $item['keys']=array_slice(array_map('strval',array_keys($raw)),0,150);
+    $possible=array();
+    foreach($raw as $key=>$val){
+     if(preg_match('~(?:javascript|js_code|jquery|frontend|external|_file|adblock|block_detection)~i',(string)$key))
+       $possible[] = array('key'=>(string)$key,'type'=>gettype($val),'scalar'=>is_scalar($val)?(in_array((string)$val,array('0','1','2','3','4','inline','file','enabled','disabled','yes','no','on','off'),true)?(string)$val:'[redacted]'):'[complex]');
+    }
+    $item['candidate_keys']=$possible;
+   }
+   $items[]=$item;
+  }
+  return rest_ensure_response(array('options'=>$items));
+ }));
+});
