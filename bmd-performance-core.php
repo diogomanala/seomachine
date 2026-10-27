@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Reducao seletiva de recursos na home e em artigos; preserva formularios, AdSense, Analytics e administracao.
- * Version: 1.2.0
+ * Version: 1.2.1
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -51,65 +51,3 @@ foreach ( array( 'litespeed_optimize_js_excludes', 'litespeed_optm_js_defer_exc'
         return array_unique( array_merge( (array) $excludes, array( 'adsbygoogle' ) ) );
     } );
 }
-
-
-/**
- * Temporary read-only diagnostics: fixed internal URLs only, cached for 2 min.
- * No credentials, content, or arbitrary user-provided URLs are returned.
- */
-add_action( 'rest_api_init', function () {
-    register_rest_route( 'bmd-performance/v1', '/status', array(
-        'methods' => 'GET',
-        'permission_callback' => '__return_true',
-        'callback' => function () {
-            $cached = get_transient( 'bmd_performance_diagnostic_20261027b' );
-            if ( is_array( $cached ) ) { return rest_ensure_response( $cached ); }
-
-            $loc = get_nav_menu_locations();
-            $menu = get_term_by( 'slug', 'menuzao', 'nav_menu' );
-            $res = array(
-                'plugin_version' => '1.2.0',
-                'theme' => wp_get_theme()->get_stylesheet(),
-                'menus' => array(
-                    'menuzao_id' => $menu ? (int) $menu->term_id : null,
-                    'menuzao_items' => $menu ? count( wp_get_nav_menu_items( $menu ) ?: array() ) : 0,
-                    'active_location_ids' => array_map( 'intval', $loc ),
-                ),
-                'pages' => array(),
-            );
-            foreach ( array( 'home' => '/', 'post' => '/como-clonar-um-site-completo/', 'contact' => '/contato/' ) as $name => $path ) {
-                $response = wp_remote_get( home_url( $path ), array(
-                    'timeout' => 9,
-                    'redirection' => 2,
-                    'sslverify' => true,
-                    'headers' => array( 'Accept' => 'text/html' ),
-                    'user-agent' => 'BMD-Performance-Diagnostics/1.0',
-                ) );
-                if ( is_wp_error( $response ) ) {
-                    $res['pages'][$name] = array( 'error' => substr( $response->get_error_message(), 0, 100 ) );
-                    continue;
-                }
-                $body = (string) wp_remote_retrieve_body( $response );
-                $head = explode( '</head>', $body, 2 )[0];
-                $headers = wp_remote_retrieve_headers( $response );
-                $res['pages'][$name] = array(
-                    'http' => (int) wp_remote_retrieve_response_code( $response ),
-                    'bytes' => strlen( $body ),
-                    'recaptcha_script' => strpos( $head, 'recaptcha/api.js' ) !== false,
-                    'adsbygoogle_script' => strpos( $head, 'adsbygoogle.js' ) !== false,
-                    'dashicons_stylesheet' => preg_match( '~dashicons(?:\.min)?\.css~i', $head ) === 1,
-                    'simple_social_buttons' => stripos( $body, 'simple-social-buttons' ) !== false,
-                    'links_to_privacy' => strpos( $body, '/politica-de-privacidade/' ) !== false,
-                    'headers' => array(
-                        'cache_control' => isset( $headers['cache-control'] ) ? (string) $headers['cache-control'] : '',
-                        'x_litespeed_cache' => isset( $headers['x-litespeed-cache'] ) ? (string) $headers['x-litespeed-cache'] : '',
-                        'x_hcdn_cache_status' => isset( $headers['x-hcdn-cache-status'] ) ? (string) $headers['x-hcdn-cache-status'] : '',
-                        'age' => isset( $headers['age'] ) ? (string) $headers['age'] : '',
-                    ),
-                );
-            }
-            set_transient( 'bmd_performance_diagnostic_20261027b', $res, 120 );
-            return rest_ensure_response( $res );
-        },
-    ) );
-} );
