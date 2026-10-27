@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 1.9.0
+ * Version: 1.9.1
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -192,6 +192,7 @@ add_action( 'ocean_before_content_inner', function () {
         'Como descobrir a tecnologia de um site' => '/como-descobrir-plataforma-do-site/',
         'Como automatizar o Direct no Instagram' => '/automatizar-direct-instagram-comentarios/',
         'Quanto custa anunciar no Google Ads' => '/quanto-custa-google-ads/',
+        'Gerador de UTM grátis para campanhas' => '/gerador-de-utm/',
     );
     echo '<div class="bmd-evergreen-guides" style="margin-top:13px;">';
     echo '<h3 style="font-size:1.05em;line-height:1.4;margin:0 0 6px;">Guias essenciais</h3>';
@@ -385,3 +386,30 @@ BMDUTMPAGE;
         update_option( 'bmd_create_utm_page_20261027', (int) $id, false );
     }
 }, 30 );
+
+
+/**
+ * Add context-sensitive internal discovery links only to verified relevant guides.
+ * Does not auto-edit stored content, rankings, or sponsored ads.
+ */
+add_filter( 'the_content', function( $content ) {
+    if ( is_admin() || ! is_main_query() || ! in_the_loop() || ! is_singular( 'post' ) || is_preview() || is_feed() ) {
+        return $content;
+    }
+    $eligible = array(
+        'quanto-custa-google-ads',
+        'automatizar-direct-instagram-comentarios',
+        'mensagens-black-friday-2026-whatsapp-instagram',
+        'ferramentas-digitais-para-analisar-desempenho-de-campanhas-online',
+    );
+    if ( ! in_array( get_post_field( 'post_name', get_the_ID() ), $eligible, true ) ) {
+        return $content;
+    }
+    $target = home_url( '/gerador-de-utm/' );
+    if ( stripos( $content, '/gerador-de-utm/' ) !== false ) { return $content; }
+    $link = '<aside class="bmd-related-utm" style="border-top:1px solid #e6e9ee;margin:24px 0 10px;padding:13px 0;font-size:.93em;line-height:1.65;">';
+    $link .= '<strong>Recurso gratuito:</strong> Para identificar de onde vêm suas visitas, use nosso ';
+    $link .= '<a href="' . esc_url( $target ) . '">gerador de links UTM para Google Analytics 4</a>. ';
+    $link .= 'Monte URLs rastreáveis para anúncios, e-mails e redes sociais sem cadastro.</aside>';
+    return $content . "\n" . $link;
+}, 39 );
