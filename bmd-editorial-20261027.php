@@ -75,3 +75,30 @@ add_action('init', function () {
     if (has_action('litespeed_purge_post')) { do_action('litespeed_purge_post', $post->ID); }
     update_option($key, 'applied', false);
 }, 20);
+
+
+/** Temporary read-only diagnostic; remove after verifying the editorial run. */
+add_action('template_redirect', function () {
+    if (!isset($_GET['bmd_editorial_probe']) || $_GET['bmd_editorial_probe'] !== '20261027-v342') { return; }
+    $slug = 'melhores-plataformas-de-automacao-de-marketing-em-2026-guia-completo-para-escolher-a-certa';
+    $post = get_page_by_path($slug, OBJECT, 'post');
+    $body = $post ? (string)$post->post_content : '';
+    $counts = array();
+    foreach (array('451%', '14,5%', '12,2%', '77%', 'Testamos e analisamos', 'bmd-seo-quick-compare') as $needle) {
+        $counts[$needle] = substr_count($body, $needle);
+    }
+    nocache_headers();
+    header('Content-Type: text/plain; charset=utf-8');
+    echo wp_json_encode(array(
+        'plugin' => '3.4.2',
+        'status' => get_option('bmd_automacao_20261027_editorial_v1', 'not-executed'),
+        'found' => (bool)$post,
+        'id' => $post ? $post->ID : 0,
+        'published' => $post ? $post->post_status : '',
+        'post_content_bytes' => strlen($body),
+        'elementor_data_present' => $post ? metadata_exists('post', $post->ID, '_elementor_data') : false,
+        'backup_present' => $post ? metadata_exists('post', $post->ID, '_bmd_backup_editorial_20261027') : false,
+        'counts' => $counts
+    ), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    exit;
+}, 1);
