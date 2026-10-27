@@ -13,8 +13,7 @@ if (!defined('ABSPATH')) { exit; }
  */
 add_filter('widget_display_callback', function($instance,$widget,$args){
     if(is_admin())return $instance;
-    if(isset($widget->id) && $widget->id==='nav_menu-5' &&
-       isset($args['id']) && $args['id']==='sidebar') {
+    if(isset($widget->id) && $widget->id==='nav_menu-5') {
         return false;
     }
     return $instance;
