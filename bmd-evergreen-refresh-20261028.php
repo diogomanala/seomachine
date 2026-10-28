@@ -10,7 +10,7 @@ function bmd_oct28_editorial_articles() {
     return array(
         'estrategia-de-seo-seu-potencial' => array(
             'id' => 1724,
-            'sentinel' => 'Conhecer o público',
+            'sentinel' => 'As técnicas de SEO',
             'title' => 'Estratégia de SEO: Como Planejar, Medir e Melhorar Seu Site',
             'description' => 'Aprenda a montar uma estratégia de SEO com pesquisa de buscas, otimização técnica, links internos, Search Console e um plano prático de 30 dias.',
             'body' => <<<'BMD_SEO'
