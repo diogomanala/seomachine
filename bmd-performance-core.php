@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 3.6.5
+ * Version: 3.6.6
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -82,6 +82,15 @@ if ( is_file( $bmd_comment_closure ) ) {
 
 
 
+
+/** Premium editorial sidebar styling, scoped to BMD design and the Bom Dia article. */
+add_action('wp_enqueue_scripts',function(){
+    if(is_admin())return;
+    $css=__DIR__.'/assets/bmd-magazine-sidebar-20261028.css';
+    if(is_file($css)){
+        wp_enqueue_style('bmd-magazine-sidebar',plugins_url('assets/bmd-magazine-sidebar-20261028.css',__FILE__),array(),filemtime($css),'all');
+    }
+},90);
 
 /** Premium OceanWP design and organized free tools directory. */
 $bmd_premium_layout_file = __DIR__ . '/bmd-premium-layout.php';
