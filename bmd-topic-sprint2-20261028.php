@@ -99,7 +99,6 @@ BMD_CREATIVE
 <p>Não escolha o mesmo conjunto para todos os negócios. Uma campanha de geração de leads, uma loja virtual e um canal de conteúdo exigem prioridades diferentes.</p>
 
 <h2>Os nove KPIs de marketing digital e como calcular</h2>
-<div class="bmd-sprint-matrix" role="region" aria-label="Tabela de fórmulas de indicadores de marketing" tabindex="0">
 <table><thead><tr><th>Indicador</th><th>Fórmula</th><th>Como interpretar</th></tr></thead><tbody>
 <tr><td><strong>1. CTR</strong> (taxa de clique)</td><td>Cliques ÷ impressões × 100</td><td>Ajuda a avaliar o interesse gerado pelo anúncio ou resultado exibido; não mede vendas</td></tr>
 <tr><td><strong>2. CPC</strong> (custo por clique)</td><td>Gasto com anúncios ÷ cliques</td><td>Quanto foi gasto por clique na campanha</td></tr>
@@ -110,7 +109,7 @@ BMD_CREATIVE
 <tr><td><strong>7. ROI</strong> (retorno sobre investimento)</td><td>(Retorno financeiro líquido atribuído − investimento) ÷ investimento × 100</td><td>Exige definir o que entra em retorno e nos custos; não substitua por ROAS</td></tr>
 <tr><td><strong>8. LTV</strong> (valor do cliente)</td><td>Receita ou margem esperada ao longo do relacionamento, conforme o modelo</td><td>Estimativa que depende de retenção, margem e janela; declarar metodologia</td></tr>
 <tr><td><strong>9. Retenção</strong></td><td>Clientes da coorte ainda ativos ÷ clientes iniciais elegíveis × 100</td><td>Capacidade de manter clientes, com coorte e prazo claramente definidos</td></tr>
-</tbody></table></div>
+</tbody></table>
 <p><strong>Atenção ao ROI:</strong> existem variações de cálculo em relatórios empresariais. Defina explicitamente quais receitas, despesas e investimentos entram na fórmula antes de comparar campanhas. O mesmo cuidado vale para LTV e conversão.</p>
 
 <h2>Exemplo numérico: a mesma campanha vista por CTR, CAC e ROAS</h2>
