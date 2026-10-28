@@ -69,7 +69,7 @@ add_shortcode('bmd_bomdia_cards', function () {
 .bmd-bomdia-privacy{font-size:12px;color:#6d7a8a;line-height:1.6;margin:12px 0 0!important}
 .bmd-bomdia-preview{display:flex;flex-direction:column;align-items:center;gap:10px;min-width:0;background:#f5f7fb;padding:18px;border-radius:13px}
 .bmd-bomdia-preview>span{font-size:10px;letter-spacing:.1em;font-weight:850;color:#718097}
-.bmd-bomdia-preview canvas{display:block;width:auto;max-width:100%;max-height:490px;height:auto;aspect-ratio:9/16;border-radius:7px;box-shadow:0 8px 25px rgba(38,45,63,.14);background:#ffe8cb}
+.bmd-bomdia-preview canvas{display:block;width:auto;max-width:100%;max-height:490px;height:auto;border-radius:7px;box-shadow:0 8px 25px rgba(38,45,63,.14);background:#ffe8cb}
 .bmd-bomdia-preview small{font-size:11px;color:#6f7a8c;line-height:1.5;text-align:center}
 @media(max-width:760px){.bmd-bomdia-grid{grid-template-columns:1fr;gap:20px}.bmd-bomdia-preview canvas{max-height:400px}}
 @media(max-width:430px){.bmd-bomdia-fields{grid-template-columns:1fr}.bmd-bomdia-grid{padding:17px}.bmd-bomdia-preview{padding:14px}}
