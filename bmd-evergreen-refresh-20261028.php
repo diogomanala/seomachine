@@ -319,3 +319,36 @@ add_filter('the_content',function($content){
     if (!$extra) { return $content; }
     return $content.'<nav class="bmd-topical-link" aria-label="Guia complementar" style="border-top:1px solid #e3e8ef;margin:26px 0;padding:18px 0"><strong>Aprofunde este assunto</strong><p style="margin:9px 0 0">'.implode(' · ',$extra).'</p></nav>';
 },50);
+
+
+/** Frontend metadata remains coherent if a theme/SEO setting has a stale custom value. */
+add_filter('rank_math/frontend/title', function($title) {
+    if (is_admin() || !is_singular('post')) { return $title; }
+    $slug = (string)get_post_field('post_name', get_queried_object_id());
+    $posts = bmd_oct28_editorial_articles();
+    if (!isset($posts[$slug])) { return $title; }
+    return $posts[$slug]['title'].' | BMD';
+}, 65);
+add_filter('rank_math/frontend/description', function($description) {
+    if (is_admin() || !is_singular('post')) { return $description; }
+    $slug = (string)get_post_field('post_name', get_queried_object_id());
+    $posts = bmd_oct28_editorial_articles();
+    if (!isset($posts[$slug])) { return $description; }
+    return $posts[$slug]['description'];
+}, 65);
+
+/** Native tables remain usable on small screens without expanding the page width. */
+add_filter('the_content',function($content) {
+    if (is_admin() || !is_main_query() || !in_the_loop() || is_preview() || !is_singular('post')) { return $content; }
+    $slug=(string)get_post_field('post_name',get_the_ID());
+    $posts=bmd_oct28_editorial_articles();
+    if (!isset($posts[$slug]) || strpos($content,'<table')===false) { return $content; }
+    return preg_replace('~(<table\b[^>]*>.*?</table>)~is','<div class="bmd-table-scroll" role="region" aria-label="Tabela de orientação" tabindex="0">$1</div>',$content);
+},43);
+add_action('wp_head',function(){
+    if (is_admin() || !is_singular('post')) { return; }
+    $slug=(string)get_post_field('post_name',get_queried_object_id());
+    $posts=bmd_oct28_editorial_articles();
+    if(!isset($posts[$slug])) { return; }
+    echo '<style>.entry-content .bmd-table-scroll{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid #e5eaf0;border-radius:10px;margin:20px 0}.entry-content .bmd-table-scroll table{min-width:540px;width:100%;margin:0;border-collapse:collapse}.entry-content .bmd-table-scroll th,.entry-content .bmd-table-scroll td{padding:12px 14px;text-align:left;vertical-align:top;font-size:14px;line-height:1.5;border-bottom:1px solid #e6eaf0}.entry-content .bmd-table-scroll th{background:#f5f7fa;font-weight:750}</style>';
+},80);
