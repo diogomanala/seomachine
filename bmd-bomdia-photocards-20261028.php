@@ -138,5 +138,18 @@ add_filter('the_content',function($content){
     $pos=strpos($content,$needle);
     $photo_pos=strpos($content,'1657822901_921_Imagens-de-bom-dia');
     if($pos===false || $photo_pos===false || $photo_pos>$pos){ return $content; }
-    return substr($content,0,$pos).do_shortcode('[bmd_bomdia_photo_gallery]').substr($content,$pos);
+    // Visitors were missing the new collection because this article is long.
+    // Add a clear jump link in the existing table of contents, without writing
+    // anything to the post database or duplicating the photographic gallery.
+    $content=substr($content,0,$pos).do_shortcode('[bmd_bomdia_photo_gallery]').substr($content,$pos);
+    $old_nav='<li><a href="#imagens">Imagens para baixar</a></li>';
+    if(strpos($content,'href="#imagens-bom-dia-fotograficas"')===false &&
+       strpos($content,$old_nav)!==false){
+        $content=str_replace(
+            $old_nav,
+            $old_nav."\n".'<li><a href="#imagens-bom-dia-fotograficas"><strong>Novas imagens fotográficas (6)</strong></a></li>',
+            $content
+        );
+    }
+    return $content;
 },83);
