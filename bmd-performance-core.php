@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 3.6.3
+ * Version: 3.6.4
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -35,7 +35,7 @@ $bmd_seo_foundations = __DIR__ . '/bmd-seo-foundations-20261028.php';
 if ( is_file($bmd_seo_foundations) ) { require_once $bmd_seo_foundations; }
 
 /** Original browser-only good-morning share cards, scoped to one GSC opportunity. */
-$bmd_bomdia_cards = __DIR__ . '/bmd-bomdia-cards-20261028.php';
+$bmd_bomdia_cards = __DIR__ . '/bmd-bomdia-gallery-20261028.php';
 if ( is_file($bmd_bomdia_cards) ) { require_once $bmd_bomdia_cards; }
 
 /** Verified 2026 contact routes and current Instagram apps (three reversible posts). */
