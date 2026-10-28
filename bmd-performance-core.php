@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 3.5.9
+ * Version: 3.6.0
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -33,6 +33,10 @@ if ( is_file($bmd_topic_sprint2) ) { require_once $bmd_topic_sprint2; }
 /** Google-grounded SEO foundation and scenario-only Google Ads budget estimator. */
 $bmd_seo_foundations = __DIR__ . '/bmd-seo-foundations-20261028.php';
 if ( is_file($bmd_seo_foundations) ) { require_once $bmd_seo_foundations; }
+
+/** Search intent: mobile-first WhatsApp transfer chooser with official help links. */
+$bmd_wa_migration = __DIR__ . '/bmd-whatsapp-transfer-guide-20261028.php';
+if ( is_file($bmd_wa_migration) ) { require_once $bmd_wa_migration; }
 
 /** Search-intent response blocks benchmarked against current public SERPs. */
 $bmd_search_intent = __DIR__ . '/bmd-search-intent-seo-geo-20261028.php';
