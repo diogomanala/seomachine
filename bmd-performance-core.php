@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 3.6.8
+ * Version: 3.6.9
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -101,6 +101,16 @@ add_action('wp_head', function() {
     $style_url = add_query_arg('ver', (string)filemtime($style_path), $style_url);
     echo '<link id="bmd-editorial-wordmark-css" rel="stylesheet" href="' . esc_url($style_url) . '" media="all">' . "\n";
 }, 115);
+
+/** Compact editorial footer rail on full-width WordPress pages: scoped and reversible. */
+add_action('wp_head',function(){
+    if (is_admin() || !is_page()) { return; }
+    $file=__DIR__ . '/assets/bmd-page-bottom-rail-20261028.css';
+    if (!is_file($file)) { return; }
+    $url=plugins_url('assets/bmd-page-bottom-rail-20261028.css', __FILE__);
+    $url=add_query_arg('ver',(string)filemtime($file),$url);
+    echo '<link id="bmd-page-bottom-rail-css" rel="stylesheet" href="' . esc_url($url) . '" media="all">' . "\n";
+},125);
 
 /** Premium editorial sidebar styling, scoped to BMD design and the Bom Dia article. */
 add_action('wp_enqueue_scripts',function(){
