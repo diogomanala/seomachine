@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 3.6.7
+ * Version: 3.6.8
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -83,12 +83,12 @@ if ( is_file( $bmd_comment_closure ) ) {
 
 
 
-/** Brand typography: one editorial webfont and a late CSS override for theme alignment. */
+/** Brand typography: one premium sans-serif webfont and a late CSS override for theme alignment. */
 add_action('wp_enqueue_scripts', function() {
     if (is_admin()) { return; }
     wp_enqueue_style(
         'bmd-wordmark-font',
-        'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap',
+        'https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap',
         array(),
         null
     );
