@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 3.6.6
+ * Version: 3.6.7
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -82,6 +82,25 @@ if ( is_file( $bmd_comment_closure ) ) {
 
 
 
+
+/** Brand typography: one editorial webfont and a late CSS override for theme alignment. */
+add_action('wp_enqueue_scripts', function() {
+    if (is_admin()) { return; }
+    wp_enqueue_style(
+        'bmd-wordmark-font',
+        'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap',
+        array(),
+        null
+    );
+}, 22);
+add_action('wp_head', function() {
+    if (is_admin()) { return; }
+    $style_path = __DIR__ . '/assets/bmd-editorial-wordmark-20261028.css';
+    if (!is_file($style_path)) { return; }
+    $style_url = plugins_url('assets/bmd-editorial-wordmark-20261028.css', __FILE__);
+    $style_url = add_query_arg('ver', (string)filemtime($style_path), $style_url);
+    echo '<link id="bmd-editorial-wordmark-css" rel="stylesheet" href="' . esc_url($style_url) . '" media="all">' . "\n";
+}, 115);
 
 /** Premium editorial sidebar styling, scoped to BMD design and the Bom Dia article. */
 add_action('wp_enqueue_scripts',function(){
