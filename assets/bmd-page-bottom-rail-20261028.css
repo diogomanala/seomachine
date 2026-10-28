@@ -1,0 +1,259 @@
+/*
+ * BMD 28/10/2026 — Page bottom companion rail.
+ * Pages / tools: full-width useful content, widgets become a restrained
+ * editorial section below it (NOT an oversized 100%-width banner).
+ * No WP widget changes or external assets. OceanWP CSS specificity scoped.
+ */
+@media(min-width:0px){
+body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #main #content-wrap{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  width:min(1180px,calc(100% - 40px))!important;
+  max-width:1180px!important;
+  min-width:0!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+  padding-left:0!important;
+  padding-right:0!important;
+}
+body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #main #content-wrap > #primary{
+  display:block!important;
+  flex:0 0 auto!important;
+  float:none!important;
+  clear:none!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+}
+body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #main #content-wrap > #right-sidebar{
+  display:block!important;
+  position:static!important;
+  flex:0 0 auto!important;
+  float:none!important;
+  clear:both!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  margin:clamp(36px,5vw,62px) 0 0!important;
+  padding:24px 0 0!important;
+  border:0!important;
+  border-top:1px solid #e9e9eb!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #main #content-wrap > #right-sidebar::before{
+  content:"CONTINUE EXPLORANDO";
+  display:block!important;
+  position:static!important;
+  clear:both;
+  margin:0 0 17px!important;
+  padding:0!important;
+  color:#75777d!important;
+  font:800 10px/1.4 "Manrope",system-ui,sans-serif!important;
+  letter-spacing:.15em!important;
+  text-transform:uppercase!important;
+}
+body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #right-sidebar #right-sidebar-inner{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.45fr) minmax(270px,.8fr)!important;
+  grid-template-rows:auto auto!important;
+  grid-template-areas:"categories search" "categories affiliate"!important;
+  align-items:start!important;
+  align-content:start!important;
+  justify-content:stretch!important;
+  column-gap:clamp(16px,2.4vw,30px)!important;
+  row-gap:13px!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+}
+body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #right-sidebar #right-sidebar-inner::before,
+body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #right-sidebar #right-sidebar-inner::after{
+  display:none!important;
+  content:none!important;
+}
+body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #right-sidebar #right-sidebar-inner > .sidebar-box{
+  float:none!important;
+  position:static!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+}
+body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #right-sidebar #search-5{
+  grid-area:search!important;
+  align-self:start!important;
+  padding:18px 20px!important;
+  background:#fafafa!important;
+  border:1px solid #e9e9eb!important;
+  border-radius:13px!important;
+  box-shadow:none!important;
+}
+body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #right-sidebar #search-5::before{
+  margin-bottom:9px!important;
+  color:#a92e35!important;
+}
+body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #right-sidebar #search-5 input[type=search]{
+  height:45px!important;
+  min-height:45px!important;
+  padding:10px 40px 10px 12px!important;
+  background:#fff!important;
+  border-radius:8px!important;
+}
+body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #right-sidebar #block-3{
+  grid-area:categories!important;
+  align-self:start!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:22px 23px!important;
+  background:#fff!important;
+  border:1px solid #e9e9eb!important;
+  border-radius:14px!important;
+  box-shadow:0 4px 20px rgba(10,12,16,.025)!important;
+}
+body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #right-sidebar #block-3 h3{
+  margin-bottom:2px!important;
+  font-size:19px!important;
+  color:#1c1d20!important;
+}
+body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #right-sidebar #block-3 h3::after{
+  color:#83848a!important;
+  margin:7px 0 13px!important;
+}
+body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #right-sidebar #block-3 ul.wp-block-categories{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:0 clamp(10px,2vw,23px)!important;
+  width:100%!important;
+  margin:0!important;
+  padding:0!important;
+  list-style:none!important;
+}
+body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #right-sidebar #block-3 li.cat-item{
+  min-width:0!important;
+  float:none!important;
+  list-style:none!important;
+  margin:0!important;
+  border-bottom:1px solid #f0f0f1!important;
+}
+body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #right-sidebar #block-3 li.cat-item>a{
+  min-height:42px!important;
+  padding:9px 1px!important;
+  overflow-wrap:break-word!important;
+  font-size:12.5px!important;
+  font-weight:620!important;
+  line-height:1.38!important;
+}
+body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #right-sidebar #block-2{
+  grid-area:affiliate!important;
+  align-self:start!important;
+  max-width:100%!important;
+  min-width:0!important;
+  padding:0!important;
+  margin:0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #right-sidebar #block-2 a{
+  display:block!important;
+  width:100%!important;
+  max-width:350px!important;
+  max-height:355px!important;
+  margin:0 auto!important;
+  overflow:hidden!important;
+  border:1px solid #e9e9eb!important;
+  border-radius:13px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #right-sidebar #block-2 a img{
+  display:block!important;
+  box-sizing:border-box!important;
+  max-width:100%!important;
+  width:100%!important;
+  max-height:350px!important;
+  height:auto!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  margin:0!important;
+  border:0!important;
+  border-radius:12px!important;
+  box-shadow:none!important;
+}
+body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #right-sidebar #text-90002{
+  display:none!important; /* Existing empty WordPress widget */
+}
+}
+@media(min-width:960px){
+  body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #main #content-wrap{
+    padding-bottom:62px!important;
+  }
+}
+@media(max-width:850px){
+  body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #main #content-wrap{
+    width:calc(100% - 32px)!important;
+    max-width:calc(100% - 32px)!important;
+  }
+  body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #right-sidebar #right-sidebar-inner{
+    grid-template-columns:minmax(0,1.28fr) minmax(220px,.9fr)!important;
+    gap:13px!important;
+  }
+  body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #right-sidebar #block-3 ul.wp-block-categories{
+    grid-template-columns:1fr!important;
+  }
+}
+@media(max-width:640px){
+  body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #main #content-wrap{
+    width:calc(100% - 32px)!important;
+    max-width:calc(100% - 32px)!important;
+  }
+  body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #main #content-wrap > #right-sidebar{
+    margin:30px 0 0!important;
+    padding:19px 0 0!important;
+  }
+  body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #right-sidebar #right-sidebar-inner{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    gap:12px!important;
+  }
+  body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #right-sidebar #search-5{
+    order:1!important;
+    width:100%!important;
+  }
+  body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #right-sidebar #block-3{
+    order:2!important;
+    padding:19px!important;
+  }
+  body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #right-sidebar #block-3 ul.wp-block-categories{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:0 12px!important;
+  }
+  body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #right-sidebar #block-2{
+    order:3!important;
+    align-self:center!important;
+    width:100%!important;
+    max-width:340px!important;
+    margin:7px auto 0!important;
+  }
+  body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #right-sidebar #block-2 a{
+    max-width:320px!important;
+    max-height:320px!important;
+  }
+  body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #right-sidebar #block-2 img{
+    max-height:320px!important;
+  }
+}
+@media(max-width:350px){
+  body.bmd-premium-layout.page:is(.bmd-tool-page,.page-template-default) #right-sidebar #block-3 ul.wp-block-categories{
+    grid-template-columns:1fr!important;
+  }
+}
