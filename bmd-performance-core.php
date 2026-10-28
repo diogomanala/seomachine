@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 3.5.4
+ * Version: 3.5.5
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -21,6 +21,10 @@ if ( is_file($bmd_editorial_patch) ) { require_once $bmd_editorial_patch; }
 /** Guarded one-time update for SiteCloner annual-license copy. */
 $bmd_sitecloner_patch = __DIR__ . '/bmd-sitecloner-license-20261028.php';
 if ( is_file( $bmd_sitecloner_patch ) ) { require_once $bmd_sitecloner_patch; }
+
+/** Curated on-page tools and precise editorial SEO fixes (28 October). */
+$bmd_editorial_lab = __DIR__ . '/bmd-editorial-lab-20261028.php';
+if ( is_file($bmd_editorial_lab) ) { require_once $bmd_editorial_lab; }
 
 /** Curated links + one-time correction of two editorial URLs. */
 foreach(array('bmd-topic-links.php') as $bmd_rel){$bmd_file=__DIR__.'/'.$bmd_rel;if(is_file($bmd_file))require_once $bmd_file;}
