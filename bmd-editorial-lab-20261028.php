@@ -264,8 +264,11 @@ add_filter('the_content',function($content){
         $content=str_replace('\n<p><small><strong>Critérios editoriais','<p><small><strong>Critérios editoriais',$content);
     }
     if ($slug==='headlines-de-alta-conversao-para-seus-anuncios-e-paginas-de-vendas') {
-        $content=str_replace('Seleção de mais de 169 títulos poderosos de alta conversão que já faturaram mais de 1 milhão de reais em vendas esse ano.',
-            'Arquivo com 169 modelos de títulos para estudar estruturas de copywriting. As promessas e resultados presentes nos exemplos não foram verificados; adapte os modelos com informações comprováveis e evite alegações médicas ou financeiras sem evidência.',$content);
+        // The legacy boast had bold HTML around its figures, so a plain-text
+        // replacement did not match. Replace only the exact audited paragraph.
+        $old_claim='<p>Seleção de mais de <strong>169 títulos poderosos de alta conversão</strong> que já faturaram mais de <strong>1 milhão de reais em vendas</strong> esse ano.</p>';
+        $new_intro='<p>Arquivo editorial com <strong>mais de 169 modelos de headlines</strong> para estudar estruturas de copywriting. As promessas e resultados dos exemplos históricos não foram verificados; adapte os modelos a informações comprováveis.</p>';
+        $content=str_replace($old_claim,$new_intro,$content);
         $note='<p style="padding:17px 20px;border:1px solid #e3e9f0;border-radius:12px;background:#f8fafc"><strong>Como usar estes exemplos:</strong> trate-os como modelos históricos, não como provas de eficácia. Nosso <a href="'.esc_url(home_url('/ferramenta-p-criar-e-analisar-as-melhores-headlines-titulos-100-gratis/')).'">laboratório gratuito de headlines</a> ajuda a escrever versões claras sem inventar garantias de resultado.</p>';
         $content=$note.$content;
     }
