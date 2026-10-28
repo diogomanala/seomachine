@@ -230,12 +230,6 @@ add_filter('the_content', function($content) {
 }, 68);
 
 /** Make tables for the new SEO guide usable on narrow screens. */
-add_filter('the_content', function($content) {
-    if (is_admin() || !is_main_query() || !in_the_loop() || is_preview() || !is_singular('post')) { return $content; }
-    if ((string)get_post_field('post_name', get_the_ID()) !== 'significado-o-que-e-seo-e-para-que-serve') { return $content; }
-    if (strpos($content,'bmd-geo-table') === false) { return $content; }
-    return $content;
-}, 70);
 add_action('wp_head',function(){
     if (is_admin() || !is_singular('post') ||
         get_post_field('post_name',get_queried_object_id()) !== 'significado-o-que-e-seo-e-para-que-serve') { return; }
