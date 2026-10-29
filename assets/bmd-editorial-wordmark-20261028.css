@@ -471,3 +471,25 @@ body.bmd-premium-layout.bmd-bomdia-page #post-4977 .bmd-photo-edit{
     transition:none!important;
   }
 }
+
+
+/* BMD 2026-10-29: minimum WCAG contrast on the self-service UTM generator.
+   Its original #d54f26 with white text was ~4.22:1, below 4.5:1 for
+   normal-size text. Preserve button sizing, functionality and state. */
+body.bmd-premium-layout.page-id-8730 #bmd-utm-tool .bmd-primary:not(:disabled){
+  background:#191a1d!important;
+  color:#fff!important;
+}
+body.bmd-premium-layout.page-id-8730 #bmd-utm-tool .bmd-primary:not(:disabled):hover{
+  background:#3b3d42!important;
+  color:#fff!important;
+}
+body.bmd-premium-layout.page-id-8730 #bmd-utm-tool .bmd-primary:disabled{
+  background:#6a6d74!important;
+  color:#fff!important;
+}
+body.bmd-premium-layout.page-id-8730 #bmd-utm-tool .bmd-preset:hover,
+body.bmd-premium-layout.page-id-8730 #bmd-utm-tool .bmd-preset:focus-visible{
+  border-color:#cf303b!important;
+  color:#a92732!important;
+}
