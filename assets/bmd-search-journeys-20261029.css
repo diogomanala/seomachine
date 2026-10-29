@@ -1,0 +1,76 @@
+/* BMD 2026-10-29: accessible, compact editorial journey links.
+ * Works without JS. A single branded panel fits Apple-like black/red identity.
+ */
+body.bmd-premium-layout .entry-content .bmd-search-journey-20261029{
+  --bmd-j-ink:#17181b;--bmd-j-muted:#60646a;--bmd-j-red:#c9303d;
+  box-sizing:border-box;
+  width:100%;
+  max-width:100%;
+  margin:38px 0 31px;
+  padding:clamp(20px,3vw,28px);
+  background:#fbfbfc;
+  border:1px solid #e7e8e9;
+  border-radius:16px;
+  box-shadow:0 5px 25px rgba(19,20,25,.025);
+  color:var(--bmd-j-ink);
+  font-family:"Manrope",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+body.bmd-premium-layout .entry-content .bmd-search-journey-20261029 *,
+body.bmd-premium-layout .entry-content .bmd-search-journey-20261029 *::before,
+body.bmd-premium-layout .entry-content .bmd-search-journey-20261029 *::after{box-sizing:border-box}
+body.bmd-premium-layout .entry-content .bmd-search-journey-20261029 .bmd-journey-eyebrow{
+  display:block;margin:0 0 12px;color:#b72632;font-weight:790;
+  font-size:10px;letter-spacing:.125em;line-height:1.4;
+}
+body.bmd-premium-layout .entry-content .bmd-search-journey-20261029 h2{
+  font-size:clamp(21px,2.3vw,28px)!important;
+  line-height:1.23!important;letter-spacing:-.037em!important;
+  font-weight:790!important;color:#1b1b1e!important;
+  margin:0 0 11px!important;padding:0!important;
+}
+body.bmd-premium-layout .entry-content .bmd-search-journey-20261029 p.bmd-journey-intro{
+  margin:0 0 17px!important;padding:0!important;
+  font-size:13px!important;line-height:1.74!important;
+  color:var(--bmd-j-muted)!important;max-width:780px!important;
+}
+body.bmd-premium-layout .entry-content .bmd-search-journey-20261029 ul{
+  display:grid!important;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));
+  gap:10px!important;list-style:none!important;margin:0!important;padding:0!important;
+}
+body.bmd-premium-layout .entry-content .bmd-search-journey-20261029 li{
+  list-style:none!important;min-width:0;margin:0!important;padding:0!important;
+}
+body.bmd-premium-layout .entry-content .bmd-search-journey-20261029 li>a{
+  display:flex!important;flex-direction:column;justify-content:space-between;
+  gap:10px;min-height:100%;padding:16px!important;
+  background:#fff!important;border:1px solid #e6e7e9!important;
+  border-radius:10px;text-decoration:none!important;
+  transition:border-color .16s,transform .16s;
+}
+body.bmd-premium-layout .entry-content .bmd-search-journey-20261029 li>a strong{
+  display:block;font-size:13px!important;letter-spacing:-.012em;
+  font-weight:760!important;line-height:1.5!important;color:#222428!important;
+}
+body.bmd-premium-layout .entry-content .bmd-search-journey-20261029 li>a span{
+  display:block;font-size:11px!important;line-height:1.66!important;
+  color:#666970!important;
+}
+body.bmd-premium-layout .entry-content .bmd-search-journey-20261029 li>a:hover{
+  border-color:#d2a1a5!important;transform:translateY(-1px);
+}
+body.bmd-premium-layout .entry-content .bmd-search-journey-20261029 li>a:hover strong{
+  color:#af2733!important;
+}
+body.bmd-premium-layout .entry-content .bmd-search-journey-20261029 li>a:focus-visible{
+  outline:2px solid #c9303d!important;outline-offset:3px!important;
+}
+@media(max-width:600px){
+  body.bmd-premium-layout .entry-content .bmd-search-journey-20261029{
+    padding:19px 15px!important;margin:28px 0 24px!important;border-radius:12px!important;
+  }
+  body.bmd-premium-layout .entry-content .bmd-search-journey-20261029 ul{grid-template-columns:1fr!important}
+  body.bmd-premium-layout .entry-content .bmd-search-journey-20261029 li>a{padding:14px!important;gap:7px}
+}
+@media(prefers-reduced-motion:reduce){
+  body.bmd-premium-layout .entry-content .bmd-search-journey-20261029 li>a{transition:none!important}
+}
