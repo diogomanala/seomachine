@@ -347,7 +347,7 @@ function bmdseo_bulk_admin_page() {
        <div><strong data-bmd="scanned"><?php echo esc_html((string)$s['scanned']); ?></strong><span>Páginas verificadas</span></div>
        <div><strong data-bmd="repaired_posts"><?php echo esc_html((string)$s['repaired_posts']); ?></strong><span>Publicações corrigidas</span></div>
        <div><strong data-bmd="repaired_links"><?php echo esc_html((string)$s['repaired_links']); ?></strong><span>Links restaurados</span></div>
-       <div><strong data-bmd="issues"><?php echo esc_html((string)array_sum($s['issue_counts'])); ?></strong><span>Pendências para revisão</span></div>
+       <div><strong data-bmd="issues"><?php echo esc_html((string)array_sum($s['issue_counts'])); ?></strong><span>Ocorrências na 1ª análise</span></div>
       </div>
       <section class="bmdseo-bulk-section" aria-labelledby="bmdseo-bulk-status-label">
        <h2 id="bmdseo-bulk-status-label">Andamento: <span id="bmdseo-bulk-phase"><?php echo esc_html($s['status']); ?></span></h2>
@@ -369,8 +369,9 @@ function bmdseo_bulk_admin_page() {
          <tr><td><?php echo esc_html($key); ?></td><td><?php echo (int)$count; ?></td></tr>
         <?php endforeach; ?>
        </tbody></table>
-       <p>Os detalhes, URLs e IDs das publicações estão disponíveis no CSV, acessível apenas a administradores.</p>
+       <p>O relatório registra os achados da primeira varredura. Recursos da hospedagem antiga podem ter sido recuperados na etapa 2; compare com o relatório de mídia abaixo.</p>
       </section>
+      <?php if (function_exists('bmdseo_media_admin_section')) { bmdseo_media_admin_section(); } ?>
     </div>
     <?php
 }
