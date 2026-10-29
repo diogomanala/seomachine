@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 3.6.10
+ * Version: 3.6.11
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -101,6 +101,10 @@ add_action('wp_head', function() {
     $style_url = add_query_arg('ver', (string)filemtime($style_path), $style_url);
     echo '<link id="bmd-editorial-wordmark-css" rel="stylesheet" href="' . esc_url($style_url) . '" media="all">' . "\n";
 }, 115);
+
+/** Search Console-driven, manual and transparent SEO audit worklist. */
+$bmd_seo_audit_worklist = __DIR__ . '/bmd-seo-audit-worklist-20261029.php';
+if(is_file($bmd_seo_audit_worklist)){ require_once $bmd_seo_audit_worklist; }
 
 /** WordPress-hosted affiliate banner with verified intrinsic dimensions. */
 $bmd_local_banner = __DIR__ . '/bmd-widget-banner-local-20261029.php';
