@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 3.6.14
+ * Version: 3.6.15
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -101,6 +101,10 @@ add_action('wp_head', function() {
     $style_url = add_query_arg('ver', (string)filemtime($style_path), $style_url);
     echo '<link id="bmd-editorial-wordmark-css" rel="stylesheet" href="' . esc_url($style_url) . '" media="all">' . "\n";
 }, 115);
+
+/** Exclude standalone browser-only tools from Elementor frontend JS safely. */
+$bmd_tool_lightweight = __DIR__ . '/bmd-utility-elementor-assets-20261029.php';
+if (is_file($bmd_tool_lightweight)) { require_once $bmd_tool_lightweight; }
 
 /** Avoid an incompatible Elementor quote popup on two standalone tools. */
 $bmd_utility_popup_scope = __DIR__ . '/bmd-utility-popup-scope-20261029.php';
