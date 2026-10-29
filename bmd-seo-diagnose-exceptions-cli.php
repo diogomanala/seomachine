@@ -30,8 +30,20 @@ foreach (($state['issues']??array()) as $issue) {
         $relative=substr($path,strlen('/wp-content/uploads/'));
         $dest['file_exists']=is_file(trailingslashit($uploads['basedir']).rawurldecode($relative));
     }
-    $out['items'][]=array('kind'=>$kind,'post_id'=>$issue['post_id']??null,'url'=>$url,'path'=>$path,
+    $source_post=get_post((int)($issue['post_id']??0));
+    $source_html=$source_post?(string)$source_post->post_content:'';
+    $offset=strpos($source_html,$url);
+    if($offset===false && strpos($url, 'https://blogdemarketingdigital.com.br')===0) {
+        $offset=strpos($source_html, substr($url,strlen('https://blogdemarketingdigital.com.br')));
+    }
+    $context=$offset!==false?substr($source_html,max(0,$offset-250),750):'not_in_post_content';
+    $out['items'][]=array('source_title'=>$source_post?$source_post->post_title:'', 'context'=>$context, 'kind'=>$kind,'post_id'=>$issue['post_id']??null,'url'=>$url,'path'=>$path,
         'published_post'=>$post&&$post->post_status==='publish'?get_permalink($post):null,
         'terms'=>$terms,'destination'=>$dest);
+}
+$terms=array('riscos da ia','funil de vendas','vpn','empreendedorismo','negócio online','instagram','emoticons');
+foreach($terms as $term) {
+    $matches=get_posts(array('post_type'=>'post','post_status'=>'publish','s'=>$term,'posts_per_page'=>8,'fields'=>'ids','suppress_filters'=>true));
+    $out['suggestions'][$term]=array_map(static function($id){return array('id'=>$id,'title'=>get_the_title($id),'url'=>get_permalink($id));},$matches);
 }
 echo wp_json_encode($out, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
