@@ -45,7 +45,7 @@
       document.body.appendChild(node);node.focus();node.select();
       try{
         if(document.execCommand && document.execCommand('copy')){
-          feedback.textContent='Checklist copiado.';return;
+          node.remove();feedback.textContent='Checklist copiado.';return;
         }
       }catch(e){}
       feedback.textContent='Não foi possível copiar automaticamente. Selecione as etapas e copie manualmente.';
