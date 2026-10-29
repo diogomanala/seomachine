@@ -13,8 +13,8 @@ if (!defined('ABSPATH')) { exit; }
 add_action('wp', function() {
     if (is_admin() || is_preview() || is_customize_preview()) { return; }
     if (!is_page(array('calculadora-roas-cac-lucro','gerador-de-utm'))) { return; }
-    if (!class_exists('\ElementorPro\\Plugin')) { return; }
-    $plugin = \ElementorPro\\Plugin::instance();
+    if (!class_exists('\ElementorPro\Plugin')) { return; }
+    $plugin = \ElementorPro\Plugin::instance();
     if (!isset($plugin->modules_manager)) { return; }
     $popup_module = $plugin->modules_manager->get_modules('popup');
     if (!$popup_module || !is_callable(array($popup_module,'print_popups'))) { return; }
