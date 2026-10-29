@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 3.6.20
+ * Version: 3.6.21
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -113,6 +113,10 @@ if ( is_file($bmd_utility_popup_scope) ) { require_once $bmd_utility_popup_scope
 /** Phase 2: restore historic WordPress media links only where exact file exists. */
 $bmd_seo_legacy_media = __DIR__ . '/bmd-seo-legacy-media-repair-20261029.php';
 if (is_file($bmd_seo_legacy_media)) { require_once $bmd_seo_legacy_media; }
+
+/** Phase 3: resolve eight confirmed historic references, with original backups and admin review. */
+$bmd_seo_exceptions = __DIR__ . '/bmd-seo-phase3-exceptions-20261029.php';
+if (is_file($bmd_seo_exceptions)) { require_once $bmd_seo_exceptions; }
 
 /** Sitewide SEO link audit and safe batch repair, with private backups and admin report. */
 $bmd_bulk_seo = __DIR__ . '/bmd-seo-bulk-auditor-20261029.php';
