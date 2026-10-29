@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 3.6.17
+ * Version: 3.6.18
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -109,6 +109,10 @@ if (is_file($bmd_tool_lightweight)) { require_once $bmd_tool_lightweight; }
 /** Avoid an incompatible Elementor quote popup on two standalone tools. */
 $bmd_utility_popup_scope = __DIR__ . '/bmd-utility-popup-scope-20261029.php';
 if ( is_file($bmd_utility_popup_scope) ) { require_once $bmd_utility_popup_scope; }
+
+/** Repair misleading legacy indexing tutorials with per-post backups and official guidance. */
+$bmd_indexing_accuracy = __DIR__ . '/bmd-indexation-accuracy-repair-20261029.php';
+if (is_file($bmd_indexing_accuracy)) { require_once $bmd_indexing_accuracy; }
 
 /** Contextual site-building journeys: internal links only where missing. */
 $bmd_search_journeys = __DIR__ . '/bmd-search-journeys-20261029.php';
