@@ -1,0 +1,45 @@
+/*
+ * BMD audit worklist, page-scoped; near-black/red, responsive and accessible.
+ * Works without JavaScript: the five steps and source links remain visible.
+ */
+#bmd-seo-worklist{
+  --bmd-w-ink:#191a1d;--bmd-w-muted:#60636b;--bmd-w-line:#e7e8ea;--bmd-w-red:#c93240;
+  box-sizing:border-box;max-width:1040px;margin:24px 0 34px;
+  border:1px solid var(--bmd-w-line);border-radius:18px;
+  overflow:hidden;background:#fff;color:var(--bmd-w-ink);
+  box-shadow:0 9px 32px rgba(20,23,28,.035);
+  font-family:"Manrope",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
+}
+#bmd-seo-worklist *{box-sizing:border-box}
+#bmd-seo-worklist .bmd-seo-worklist-head{padding:clamp(21px,3vw,30px) clamp(17px,3vw,31px) 20px;background:linear-gradient(115deg,#fff,#fafafa);border-bottom:1px solid #ececee}
+#bmd-seo-worklist .bmd-seo-worklist-eyebrow{display:block;margin-bottom:11px;font-size:10px;font-weight:830;letter-spacing:.14em;color:#bd3341}
+#bmd-seo-worklist .bmd-seo-worklist-head h2{font-size:clamp(23px,3vw,32px)!important;letter-spacing:-.047em;line-height:1.2!important;font-weight:800;margin:0 0 12px!important;color:#191a1d!important}
+#bmd-seo-worklist .bmd-seo-worklist-head p{margin:0!important;max-width:760px;font-size:14px;line-height:1.7;color:#62656c}
+#bmd-seo-worklist .bmd-seo-worklist-head p strong{color:#34353a}
+#bmd-seo-worklist .bmd-seo-worklist-toolbar{display:flex;align-items:center;gap:18px;justify-content:space-between;padding:18px clamp(17px,3vw,31px);background:#f9f9fa}
+#bmd-seo-worklist .bmd-seo-worklist-toolbar strong{display:block;font-size:13px;line-height:1.45;font-weight:770;color:#24262a}
+#bmd-seo-worklist .bmd-seo-worklist-toolbar span{display:block;max-width:620px;font-size:11px;line-height:1.6;color:#73767a}
+#bmd-seo-worklist .bmd-seo-worklist-meter{flex:0 0 115px;position:relative;height:7px;border-radius:99px;overflow:hidden;background:#e3e4e6}
+#bmd-seo-worklist .bmd-seo-worklist-meter span{display:block;height:100%;width:0;background:#c93240;border-radius:inherit;transition:width .18s}
+#bmd-seo-worklist .bmd-seo-worklist-items{list-style:none!important;padding:0!important;margin:0!important;counter-reset:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0}
+#bmd-seo-worklist .bmd-seo-worklist-step{list-style:none!important;position:relative;min-width:0;margin:0!important;padding:22px clamp(16px,2.7vw,29px) 23px!important;border-bottom:1px solid #ececee;min-height:204px}
+#bmd-seo-worklist .bmd-seo-worklist-step:nth-child(odd){border-right:1px solid #ececee}
+#bmd-seo-worklist .bmd-seo-worklist-step:last-child{grid-column:1/-1;min-height:0;border-bottom:0;border-right:0}
+#bmd-seo-worklist .bmd-seo-worklist-step-title{display:flex!important;align-items:flex-start!important;gap:12px!important;margin:0!important;cursor:pointer;max-width:100%!important}
+#bmd-seo-worklist .bmd-seo-worklist-step-title input[type=checkbox]{display:block;appearance:auto;-webkit-appearance:checkbox;flex:0 0 18px!important;width:18px!important;height:18px!important;min-width:18px!important;margin:4px 0 0!important;accent-color:#c93240!important;cursor:pointer}
+#bmd-seo-worklist .bmd-seo-worklist-step-title>span{min-width:0}
+#bmd-seo-worklist .bmd-seo-worklist-step-kicker{display:block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#b02d3a;line-height:1.5;margin:0 0 7px}
+#bmd-seo-worklist .bmd-seo-worklist-step-title strong{display:block;font-size:15px;font-weight:770;line-height:1.4;letter-spacing:-.02em;color:#25262a}
+#bmd-seo-worklist .bmd-seo-worklist-step p{margin:10px 0 13px 30px!important;font-size:12px;line-height:1.75;color:#666972}
+#bmd-seo-worklist .bmd-seo-worklist-step>a{display:inline-flex;margin:0 0 0 30px!important;align-items:center;gap:6px;text-decoration:underline;text-decoration-color:#c7c7c9;text-underline-offset:3px;font-size:12px;font-weight:720;line-height:1.45;color:#a92e3b!important}
+#bmd-seo-worklist .bmd-seo-worklist-step>a:hover{color:#701823!important}
+#bmd-seo-worklist .bmd-seo-worklist-step:has(input:checked){background:#fcfcfc}
+#bmd-seo-worklist .bmd-seo-worklist-step:has(input:checked) .bmd-seo-worklist-step-title strong{color:#7c7e82}
+#bmd-seo-worklist .bmd-seo-worklist-foot{padding:20px clamp(17px,3vw,31px) 24px;background:#fafafa;border-top:1px solid #ececee}
+#bmd-seo-worklist .bmd-seo-worklist-foot p{font-size:12px!important;line-height:1.7;color:#686a71;margin:0 0 12px!important;max-width:800px}
+#bmd-seo-worklist #bmd-seo-worklist-copy{display:inline-flex;align-items:center;justify-content:center;min-height:45px;border:0!important;border-radius:9px!important;padding:12px 17px!important;color:#fff!important;background:#1b1c1f!important;font-size:12px!important;line-height:1.4!important;font-weight:790;cursor:pointer;transition:background .16s}
+#bmd-seo-worklist #bmd-seo-worklist-copy:hover{background:#393b3f!important}
+#bmd-seo-worklist #bmd-seo-worklist-feedback{display:inline-block;margin:10px 0 0 12px;font-size:12px;color:#555961}
+#bmd-seo-worklist :is(a,button,input):focus-visible{outline:2px solid #cf303b!important;outline-offset:3px!important}
+@media(max-width:710px){#bmd-seo-worklist .bmd-seo-worklist-items{display:block}#bmd-seo-worklist .bmd-seo-worklist-step{min-height:0;padding:19px 18px!important;border-right:0!important}#bmd-seo-worklist .bmd-seo-worklist-toolbar{display:block}#bmd-seo-worklist .bmd-seo-worklist-meter{width:100%;margin-top:13px}#bmd-seo-worklist .bmd-seo-worklist-step:last-child{grid-column:auto}#bmd-seo-worklist #bmd-seo-worklist-feedback{display:block;margin-left:0}}
+@media(prefers-reduced-motion:reduce){#bmd-seo-worklist .bmd-seo-worklist-meter span{transition:none}#bmd-seo-worklist #bmd-seo-worklist-copy{transition:none}}
