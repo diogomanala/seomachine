@@ -166,10 +166,8 @@ function bmdseo_bulk_check_url($original, $post_id, $attribute, &$state) {
         if ($is_host_fix && (!isset($parts['query']) || $legacy_host)) {
             return $new;
         }
-        // Trailing slash or already-canonical relative URLs can be normalized.
-        if ($is_relative && !$query && rtrim($path,'/')===rtrim((string)wp_parse_url($canonical, PHP_URL_PATH),'/') && $raw!==$new) {
-            return $new;
-        }
+        // Already-valid relative links work correctly and should remain
+        // relative. Mass-converting them into absolute URLs adds no SEO value.
     }
     return null;
 }
