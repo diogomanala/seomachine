@@ -38,8 +38,65 @@ add_action('admin_menu',function(){
  echo '<form method="post" action="options.php">';
  settings_fields('bmd_contact_settings');
  echo '<table class="form-table"><tr><th scope="row"><label for="bmd_contact_notify_email">E-mail de recebimento</label></th><td><input class="regular-text" type="email" name="bmd_contact_notify_email" id="bmd_contact_notify_email" value="'.esc_attr((string)get_option('bmd_contact_notify_email','')).'"/><p class="description">Use um endereço verificado. O WP Mail SMTP precisa estar configurado para o aviso chegar.</p></td></tr></table>';
- submit_button('Salvar endereço');echo '</form></div>';
+ submit_button('Salvar endereço');echo '</form>';
+ $destination=bmd_c_destination();
+ echo '<hr style="margin:27px 0 19px"><h2>Verificação de recebimento</h2>';
+ if($destination){
+  echo '<p>Destino configurado: <strong>'.esc_html($destination).'</strong>.</p>';
+  echo '<p>O teste cria uma proposta privada identificada como <strong>TESTE INTERNO</strong> e solicita ao WordPress o envio de um e-mail. Nenhum visitante recebe esse teste.</p>';
+  echo '<form method="post" action="'.esc_url(admin_url('admin-post.php')).'">';
+  echo '<input type="hidden" name="action" value="bmd_contact_test_flow">';
+  wp_nonce_field('bmd_contact_test_flow_20261030');
+  submit_button('Criar proposta de teste e testar notificação','secondary','submit',true);
+  echo '</form>';
+ } else {
+  echo '<p><strong>Falta cadastrar um destinatário válido.</strong> Salve o endereço acima antes de iniciar o teste.</p>';
+ }
+ $last=get_option('bmd_contact_last_test_20261030',array());
+ if(is_array($last)&&!empty($last['when'])){
+  echo '<div class="notice notice-info inline"><p><strong>Último teste: </strong>'.esc_html((string)$last['when']).'. ';
+  $saved=!empty($last['saved']);
+  $sent=!empty($last['mail_accepted']);
+  echo $saved?'Registro privado: criado. ':'Registro privado: falhou. ';
+  echo $sent?'E-mail: aceito pelo sistema de envio. ':'E-mail: não foi aceito pelo sistema de envio. ';
+  echo '<br>O aceite do servidor não confirma entrega na caixa de entrada. Confira também a pasta de spam.';
+  if(!empty($last['id'])) echo ' <a href="'.esc_url(admin_url('post.php?post='.(int)$last['id'].'&action=edit')).'">Ver proposta de teste</a>.';
+  echo '</p></div>';
+ }
+ echo '</div>';
  });
+});
+add_action('admin_post_bmd_contact_test_flow',function(){
+ if(!current_user_can('manage_options')) wp_die('Acesso negado');
+ check_admin_referer('bmd_contact_test_flow_20261030');
+ $to=bmd_c_destination();
+ if(!$to){wp_safe_redirect(admin_url('options-general.php?page=bmd-contact-settings'));exit;}
+ if(get_transient('bmd_contact_test_guard_20261030')){
+  wp_safe_redirect(admin_url('options-general.php?page=bmd-contact-settings'));exit;
+ }
+ set_transient('bmd_contact_test_guard_20261030',1,MINUTE_IN_SECONDS);
+ $id=wp_insert_post(array(
+  'post_type'=>'bmd_proposta','post_status'=>'private',
+  'post_title'=>'[TESTE INTERNO] Verificação de contato BMD',
+  'post_content'=>'Mensagem de teste gerada pelo administrador para verificar o cadastro privado e o aviso por e-mail. Não é proposta comercial.',
+  'post_author'=>get_current_user_id(),'comment_status'=>'closed','ping_status'=>'closed'
+ ),true);
+ $saved=!is_wp_error($id)&&is_numeric($id)&&(int)$id>0;
+ $sent=false;
+ if($saved){
+  update_post_meta($id,'_bmd_c_topic','outro');
+  update_post_meta($id,'_bmd_c_name','Teste interno');
+  update_post_meta($id,'_bmd_c_org','BMD');
+  update_post_meta($id,'_bmd_c_email',$to);
+  update_post_meta($id,'_bmd_c_test',1);
+  $msg="Teste do formulário de contato do Blog de Marketing Digital.\n\nO registro privado de teste foi criado no WordPress sob o ID #".(int)$id.".\n\nSe esta mensagem chegou, o canal de notificação está operacional. Nenhuma proposta real foi enviada.";
+  $sent=(bool)wp_mail($to,'[BMD] Teste interno de recebimento',$msg,array('Content-Type: text/plain; charset=UTF-8'));
+  update_post_meta($id,'_bmd_c_mail',$sent?'sent':'failed');
+ }
+ update_option('bmd_contact_last_test_20261030',array(
+  'when'=>current_time('mysql'),'saved'=>$saved,'mail_accepted'=>$sent,'id'=>$saved?(int)$id:0
+ ),false);
+ wp_safe_redirect(admin_url('options-general.php?page=bmd-contact-settings'));exit;
 });
 add_filter('manage_bmd_proposta_posts_columns',function(){
  return array('cb'=>'<input type="checkbox"/>','title'=>'Assunto / remetente','bmd_email'=>'E-mail','bmd_status'=>'Aviso por e-mail','date'=>'Recebido');
