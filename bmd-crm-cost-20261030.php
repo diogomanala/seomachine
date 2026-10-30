@@ -104,6 +104,20 @@ HTML;
  update_option($key,array('post_id'=>(int)$id,'status'=>'created','at'=>current_time('mysql')),false);
 },35);
 
+/**
+ * One-shot editorial classification: prevent the new commercial guide
+ * from staying inside WordPress default "Uncategorized".
+ */
+add_action('init',static function(){
+ $key='bmd_crm_cost_category_20261030_v1';
+ if(get_option($key))return;
+ $post=get_page_by_path('quanto-custa-crm-para-pequenas-empresas',OBJECT,'post');
+ $category=get_term_by('slug','ferramentas-marketing','category');
+ if(!$post instanceof WP_Post||!$category instanceof WP_Term)return;
+ $result=wp_set_post_categories((int)$post->ID,array((int)$category->term_id),false);
+ if(!is_wp_error($result))update_option($key,array('post_id'=>(int)$post->ID,'category'=>(int)$category->term_id),false);
+},55);
+
 /** A single unobtrusive, relevant link for established articles in this cluster. */
 add_filter('the_content',static function($content){
  if(is_admin()||is_feed()||!is_singular('post')||!in_the_loop()||!is_main_query())return $content;
