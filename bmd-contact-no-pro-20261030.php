@@ -27,6 +27,21 @@ function bmd_c_destination(){
  if(is_email($admin) && !preg_match('/nonexisting|noreply|no-reply|example\.|invalid/i',$admin)) return $admin;
  return '';
 }
+
+function bmd_c_mailer_diagnostic(){
+ $opt=get_option('wp_mail_smtp',array());
+ $mail=is_array($opt)&&isset($opt['mail'])&&is_array($opt['mail'])?$opt['mail']:array();
+ $smtp=is_array($opt)&&isset($opt['smtp'])&&is_array($opt['smtp'])?$opt['smtp']:array();
+ $mailer=sanitize_key((string)($mail['mailer']??''));
+ $from=sanitize_email((string)($mail['from_email']??''));
+ $host=sanitize_text_field((string)($smtp['host']??''));
+ return array('mailer'=>$mailer?:'mail','from'=>$from,'smtp_host'=>$host);
+}
+add_action('wp_mail_failed',function($error){
+ if(!get_transient('bmd_c_test_active_20261030')||!is_wp_error($error))return;
+ update_option('bmd_contact_test_mail_error_20261030',sanitize_text_field(substr($error->get_error_message(),0,500)),false);
+},10,1);
+
 add_action('admin_init',function(){
  register_setting('bmd_contact_settings','bmd_contact_notify_email',array('type'=>'string','sanitize_callback'=>'sanitize_email','default'=>''));
 });
@@ -40,6 +55,18 @@ add_action('admin_menu',function(){
  echo '<table class="form-table"><tr><th scope="row"><label for="bmd_contact_notify_email">E-mail de recebimento</label></th><td><input class="regular-text" type="email" name="bmd_contact_notify_email" id="bmd_contact_notify_email" value="'.esc_attr((string)get_option('bmd_contact_notify_email','')).'"/><p class="description">Use um endereço verificado. O WP Mail SMTP precisa estar configurado para o aviso chegar.</p></td></tr></table>';
  submit_button('Salvar endereço');echo '</form>';
  $destination=bmd_c_destination();
+ $transport=bmd_c_mailer_diagnostic();
+ echo '<hr style="margin:27px 0 19px"><h2>Diagnóstico do envio</h2>';
+ echo '<table class="widefat striped" style="max-width:770px"><tbody>';
+ echo '<tr><th>Destino do aviso</th><td>'.($destination?esc_html($destination):'<strong>Não configurado</strong>').'</td></tr>';
+ echo '<tr><th>Método informado ao WP Mail SMTP</th><td><strong>'.esc_html($transport['mailer']==='mail'?'PHP Mail (sem SMTP autenticado identificado)':$transport['mailer']).'</strong></td></tr>';
+ echo '<tr><th>Remetente informado</th><td>'.($transport['from']?esc_html($transport['from']):'Não definido nas opções do plugin').'</td></tr>';
+ if($transport['mailer']==='smtp') echo '<tr><th>Servidor SMTP</th><td>'.($transport['smtp_host']?esc_html($transport['smtp_host']):'<strong>Não informado</strong>').'</td></tr>';
+ echo '</tbody></table>';
+ if($transport['mailer']==='mail'){
+  echo '<div class="notice notice-warning inline" style="max-width:740px;margin-top:14px"><p><strong>Possível causa:</strong> não foi encontrado um serviço SMTP autenticado nas opções do WP Mail SMTP. Informar somente o e-mail de destino não configura o envio. Se não houver uma configuração alternativa feita por código, o WordPress tentará o envio pelo serviço PHP padrão, que pode não entregar.</p></div>';
+ }
+ echo '<p><a class="button" href="'.esc_url(admin_url('admin.php?page=wp-mail-smtp')).'">Abrir WP Mail SMTP e configurar o envio</a></p>';
  echo '<hr style="margin:27px 0 19px"><h2>Verificação de recebimento</h2>';
  if($destination){
   echo '<p>Destino configurado: <strong>'.esc_html($destination).'</strong>.</p>';
@@ -59,6 +86,7 @@ add_action('admin_menu',function(){
   $sent=!empty($last['mail_accepted']);
   echo $saved?'Registro privado: criado. ':'Registro privado: falhou. ';
   echo $sent?'E-mail: aceito pelo sistema de envio. ':'E-mail: não foi aceito pelo sistema de envio. ';
+  if(!$sent&&!empty($last['error'])) echo '<br><strong>Erro retornado:</strong> '.esc_html((string)$last['error']);
   echo '<br>O aceite do servidor não confirma entrega na caixa de entrada. Confira também a pasta de spam.';
   if(!empty($last['id'])) echo ' <a href="'.esc_url(admin_url('post.php?post='.(int)$last['id'].'&action=edit')).'">Ver proposta de teste</a>.';
   echo '</p></div>';
@@ -90,11 +118,17 @@ add_action('admin_post_bmd_contact_test_flow',function(){
   update_post_meta($id,'_bmd_c_email',$to);
   update_post_meta($id,'_bmd_c_test',1);
   $msg="Teste do formulário de contato do Blog de Marketing Digital.\n\nO registro privado de teste foi criado no WordPress sob o ID #".(int)$id.".\n\nSe esta mensagem chegou, o canal de notificação está operacional. Nenhuma proposta real foi enviada.";
+  delete_option('bmd_contact_test_mail_error_20261030');
+  set_transient('bmd_c_test_active_20261030',1,60);
   $sent=(bool)wp_mail($to,'[BMD] Teste interno de recebimento',$msg,array('Content-Type: text/plain; charset=UTF-8'));
+  delete_transient('bmd_c_test_active_20261030');
   update_post_meta($id,'_bmd_c_mail',$sent?'sent':'failed');
  }
  update_option('bmd_contact_last_test_20261030',array(
-  'when'=>current_time('mysql'),'saved'=>$saved,'mail_accepted'=>$sent,'id'=>$saved?(int)$id:0
+  'when'=>current_time('mysql'),'saved'=>$saved,'mail_accepted'=>$sent,
+  'id'=>$saved?(int)$id:0,
+  'mailer'=>bmd_c_mailer_diagnostic()['mailer'],
+  'error'=>(string)get_option('bmd_contact_test_mail_error_20261030','')
  ),false);
  wp_safe_redirect(admin_url('options-general.php?page=bmd-contact-settings'));exit;
 });
