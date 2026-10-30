@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 3.6.21
+ * Version: 3.6.22
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -72,6 +72,10 @@ if(is_file($bmd_safe_media))require_once $bmd_safe_media;
 
 
 
+
+/** Contact page no longer depends on Elementor Pro. */
+$bmd_contact_no_pro=__DIR__.'/bmd-contact-no-pro-20261030.php';
+if(is_file($bmd_contact_no_pro)) require_once $bmd_contact_no_pro;
 
 /** Close all comments and pingbacks without deleting existing records. */
 $bmd_comment_closure = __DIR__ . '/bmd-comments-closed.php';
