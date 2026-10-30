@@ -52,19 +52,19 @@ add_shortcode('bmd_whatsapp_cost_2026',static function(){
       </div>
       <div class="bmd-wac-results" aria-live="polite">
         <span class="bmd-wac-kicker">SUA SIMULAÇÃO</span>
-        <p>Custo mensal total estimado</p><strong data-wa-result="monthly">R$ 0,00</strong>
+        <p>Custo mensal total estimado</p><strong data-wa-result="monthly">R$ 581,34</strong>
         <div class="bmd-wac-divider"></div>
-        <div class="bmd-wac-line"><span>Meta: marketing</span><b data-wa-result="marketingCost">R$ 0,00</b></div>
-        <div class="bmd-wac-line"><span>Meta: utilidade</span><b data-wa-result="utilityCost">R$ 0,00</b></div>
+        <div class="bmd-wac-line"><span>Meta: marketing</span><b data-wa-result="marketingCost">R$ 64,34</b></div>
+        <div class="bmd-wac-line"><span>Meta: utilidade</span><b data-wa-result="utilityCost">R$ 28,00</b></div>
         <div class="bmd-wac-line"><span>Meta: autenticação</span><b data-wa-result="authCost">R$ 0,00</b></div>
-        <div class="bmd-wac-line"><span>Meta: serviço (após franquia)</span><b data-wa-result="serviceCost">R$ 0,00</b></div>
-        <div class="bmd-wac-line"><span>Provedor e plataforma</span><b data-wa-result="platformCost">R$ 0,00</b></div>
-        <div class="bmd-wac-line"><span>Automação e IA</span><b data-wa-result="aiCost">R$ 0,00</b></div>
+        <div class="bmd-wac-line"><span>Meta: serviço (após franquia)</span><b data-wa-result="serviceCost">R$ 70,00</b></div>
+        <div class="bmd-wac-line"><span>Provedor e plataforma</span><b data-wa-result="platformCost">R$ 299,00</b></div>
+        <div class="bmd-wac-line"><span>Automação e IA</span><b data-wa-result="aiCost">R$ 120,00</b></div>
         <div class="bmd-wac-line"><span>Taxa extra por mensagem</span><b data-wa-result="markupCost">R$ 0,00</b></div>
         <div class="bmd-wac-divider"></div>
-        <p>Primeiro ano, com implantação</p><strong data-wa-result="year">R$ 0,00</strong>
-        <p>Custo equivalente mensal no primeiro ano</p><strong data-wa-result="effective">R$ 0,00</strong>
-        <p class="bmd-wac-service-note" data-wa-result="serviceInfo"></p>
+        <p>Primeiro ano, com implantação</p><strong data-wa-result="year">R$ 7.876,08</strong>
+        <p>Custo equivalente mensal no primeiro ano</p><strong data-wa-result="effective">R$ 656,34</strong>
+        <p class="bmd-wac-service-note" data-wa-result="serviceInfo">1.000 mensagens de serviço consideradas na franquia; 2.000 cobradas pela Meta na simulação.</p>
         <small>Estimativa apenas para mensagens classificadas nos volumes digitados. Descontos por escala, categorias, janelas gratuitas, impostos, câmbio e outras taxas do fornecedor podem alterar a fatura.</small>
       </div>
     </div>
