@@ -67,7 +67,7 @@ function bmd_c_html(){
  $status=isset($_GET['bmd_recebido'])?sanitize_key(wp_unslash($_GET['bmd_recebido'])):'';
  $time=time();$sig=hash_hmac('sha256',(string)$time,wp_salt('nonce'));
  ob_start(); ?>
- <main class="bmd-contact-v2" id="bmd-contacto">
+ <div class="bmd-contact-v2" id="bmd-contacto">
   <header class="bmd-c-hero">
     <span class="bmd-c-eyebrow"><i aria-hidden="true"></i> CONTATO & COLABORAÇÕES</span>
     <h2>Tem uma proposta que faz sentido para o nosso público?</h2>
@@ -107,7 +107,7 @@ function bmd_c_html(){
     </form>
    </div>
   </section>
- </main>
+ </div>
  <?php return ob_get_clean();
 }
 add_filter('the_content',function($content){
@@ -120,6 +120,18 @@ add_action('wp_footer',function(){
  echo '<div class="bmd-c-fallback">'.bmd_c_html().'</div>';
  echo '<script>(function(){var e=document.querySelector(".bmd-c-fallback"),t=document.querySelector("#content .entry-content")||document.querySelector(".site-content");if(e&&t)t.appendChild(e);})();</script>';
 },15);
+
+
+function bmd_c_length($text){return function_exists('mb_strlen')?mb_strlen($text,'UTF-8'):strlen($text);}
+add_filter('rank_math/frontend/title',function($title){
+ return !is_admin()&&is_page(1928)?'Anúncios e Parcerias | Blog de Marketing Digital':$title;
+},60);
+add_filter('rank_math/frontend/description',function($description){
+ return !is_admin()&&is_page(1928)?'Quer anunciar, propor uma pauta ou desenvolver uma parceria com o Blog de Marketing Digital? Envie sua proposta. Não fazemos troca de links ou venda de backlinks.':$description;
+},60);
+add_filter('rank_math/opengraph/facebook/og_description',function($description){
+ return !is_admin()&&is_page(1928)?'Anúncios, patrocínios, projetos e colaborações editoriais. Envie sua proposta ao Blog de Marketing Digital. Não trabalhamos com troca de links.':$description;
+},60);
 
 function bmd_c_redirect($status){
  wp_safe_redirect(add_query_arg('bmd_recebido',$status,home_url('/contato/')),303);exit;
@@ -142,7 +154,7 @@ function bmd_c_submit(){
  $message=isset($_POST['bmd_message'])?sanitize_textarea_field(wp_unslash($_POST['bmd_message'])):'';
  $consent=isset($_POST['bmd_consent'])?(string)wp_unslash($_POST['bmd_consent']):'';
  $topics=bmd_c_topics();
- if($consent!=='1'||!is_email($email)||!isset($topics[$topic])||mb_strlen($name)<2||mb_strlen($name)>90||mb_strlen($org)>110||mb_strlen($message)<35||mb_strlen($message)>4500||preg_match_all('~https?://|www\.~i',$message)>2) bmd_c_redirect('erro');
+ if($consent!=='1'||!is_email($email)||!isset($topics[$topic])||bmd_c_length($name)<2||bmd_c_length($name)>90||bmd_c_length($org)>110||bmd_c_length($message)<35||bmd_c_length($message)>4500||preg_match_all('~https?://|www\.~i',$message)>2) bmd_c_redirect('erro');
  set_transient($hour,(int)get_transient($hour)+1,HOUR_IN_SECONDS);set_transient($short,1,45);
  $id=wp_insert_post(array('post_type'=>'bmd_proposta','post_status'=>'private','post_title'=>$topics[$topic].' | '.$name,'post_content'=>$message,'post_author'=>0,'comment_status'=>'closed','ping_status'=>'closed'),true);
  if(is_wp_error($id)||!$id){delete_transient($short);bmd_c_redirect('erro');}
