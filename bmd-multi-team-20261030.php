@@ -47,7 +47,10 @@ add_shortcode('bmd_multi_figure',static function($atts){
  if($key==='hero')$attrs['fetchpriority']='high';
  $html=wp_get_attachment_image($attachment,'large',false,$attrs);
  if(!$html)return '';
- return '<figure class="bmd-multi-figure bmd-multi-scene-'.esc_attr($key).'">'.$html.'<figcaption>'.esc_html($a['caption']).'</figcaption></figure>';
+ $caption=(string)$a['caption'];
+ if($key==='hero')$caption.=' Os indicadores mostrados na arte são fictícios.';
+ if($key==='custos')$caption.=' Atenção: na cobrança vigente da API oficial, a unidade é a mensagem entregue, não a conversa inteira.';
+ return '<figure class="bmd-multi-figure bmd-multi-scene-'.esc_attr($key).'">'.$html.'<figcaption>'.esc_html($caption).'</figcaption></figure>';
 });
 add_action('init',static function(){
  $key='bmd_multi_team_article_20261030_v1';if(get_option($key))return;
