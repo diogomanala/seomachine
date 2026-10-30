@@ -44,6 +44,7 @@ function bmd_premium_tools() {
         array('name'=>'Removedor de metadados','desc'=>'Confira e remova EXIF, XMP e informações de IA das suas imagens.','url'=>'/remover-metadados-ia/','tag'=>'Imagem e IA','mark'=>'03'),
         array('name'=>'Simulador de taxas do cartão','desc'=>'Calcule o valor líquido com as taxas informadas do seu contrato.','url'=>'/simulador-de-vendas-no-cartao-calculo-de-taxas-mercado-pago/','tag'=>'Vendas e taxas','mark'=>'04'),
         array('name'=>'Laboratório de headlines','desc'=>'Revise títulos para artigos, anúncios e Reels com exemplos práticos.','url'=>'/ferramenta-p-criar-e-analisar-as-melhores-headlines-titulos-100-gratis/','tag'=>'Conteúdo e copy','mark'=>'05'),
+        array('name'=>'Calculadora de custos do WhatsApp','desc'=>'Simule tarifas da API oficial, provedor, IA e o gasto total em 12 meses.','url'=>'/quanto-custa-automatizar-whatsapp-business-api/#simulador-custo-whatsapp','tag'=>'Automação e IA','mark'=>'06'),
     );
 }
 function bmd_premium_tools_html( $limit=6 ) {
@@ -60,7 +61,7 @@ function bmd_premium_tools_html( $limit=6 ) {
 
 add_shortcode('bmd_tools_hub', function() {
     $html='<section class="bmd-hub" aria-label="Catálogo de ferramentas">';
-    $html.='<p class="bmd-hub-lede">Ferramentas gratuitas para calcular campanhas e taxas, criar links rastreáveis, revisar títulos e preparar imagens. Escolha o que precisa e comece sem procurar em menus extensos.</p>';
+    $html.='<p class="bmd-hub-lede">Calcule campanhas, taxas e custos de automação no WhatsApp, crie links rastreáveis, revise títulos e prepare imagens. Seis ferramentas gratuitas, direto no navegador.</p>';
     $html.=bmd_premium_tools_html();
 
     $html.='<section class="bmd-pro-solutions" aria-labelledby="bmd-pro-title">';
@@ -137,7 +138,7 @@ add_action('ocean_before_content_inner', function(){
     echo '<div class="bmd-tools-section-heading"><div><span class="bmd-eyebrow">BIBLIOTECA DE RECURSOS</span><h2 id="bmd-home-tools-label">Ferramentas para usar agora.</h2>';
     echo '<p>Menos teoria, mais execução. Recursos gratuitos, direto no navegador.</p></div>';
     echo '<a class="bmd-all-tools-link" href="'.esc_url(home_url('/ferramentas-gratis/')).'">Ver todas as ferramentas <span aria-hidden="true">↗</span></a></div>';
-    echo bmd_premium_tools_html(5).'</section>';
+    echo bmd_premium_tools_html(6).'</section>';
 },7);
 
 add_filter('the_content',function($content){
@@ -155,7 +156,7 @@ add_filter('the_content',function($content){
  */
 add_action('ocean_before_footer_bottom_inner', function(){
     echo '<nav class="bmd-footer-quick" aria-label="Links rápidos de ferramentas"><strong>Ferramentas</strong>';
-    foreach(array_slice(bmd_premium_tools(),0,5) as $tool){
+    foreach(array_slice(bmd_premium_tools(),0,6) as $tool){
         echo '<a href="'.esc_url(home_url($tool['url'])).'">'.esc_html($tool['name']).'</a>';
     }
     echo '<a href="'.esc_url(home_url('/ferramentas-gratis/')).'">Ver todas ↗</a></nav>';
