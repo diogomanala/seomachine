@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 3.6.26
+ * Version: 3.7.0
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -72,6 +72,10 @@ if(is_file($bmd_safe_media))require_once $bmd_safe_media;
 
 
 
+
+/** Original B2B comparison guide with an interactive total-CRM-cost calculator. */
+$bmd_crm_cost=__DIR__.'/bmd-crm-cost-20261030.php';
+if(is_file($bmd_crm_cost))require_once $bmd_crm_cost;
 
 /** Contact page no longer depends on Elementor Pro. */
 $bmd_contact_no_pro=__DIR__.'/bmd-contact-no-pro-20261030.php';
