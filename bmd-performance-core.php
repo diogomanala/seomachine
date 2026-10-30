@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 3.7.4
+ * Version: 3.7.5
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -72,6 +72,10 @@ if(is_file($bmd_safe_media))require_once $bmd_safe_media;
 
 
 
+
+/** 3, 5, 10 attendant cost comparison and simulator. */
+$bmd_multi_file=__DIR__.'/bmd-multi-team-20261030.php';
+if(is_file($bmd_multi_file))require_once $bmd_multi_file;
 
 /** WhatsApp Business API cost breakdown + calculator, editorial 2026. */
 $bmd_wa_cost=__DIR__.'/bmd-whatsapp-cost-20261030.php';
