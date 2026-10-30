@@ -36,11 +36,18 @@ add_shortcode('bmd_multi_figure',static function($atts){
  $key=preg_replace('/[^a-z0-9_-]/','',strtolower($a['scene']));
  $allowed=array('hero','equipes','custos','api-qr');
  if(!in_array($key,$allowed,true))return '';
- $map=get_option('bmd_multi_images_20261030',array());$attachment=(int)($map[$key]??0);
+ // Four approved, optimized WebP media items imported 30/10/2026.
+ $defaults=array('hero'=>9085,'equipes'=>9086,'custos'=>9087,'api-qr'=>9088);
+ $saved=get_option('bmd_multi_images_20261030',array());
+ $map=array_merge($defaults,is_array($saved)?$saved:array());
+ $attachment=(int)($map[$key]??0);
  if(!$attachment||!wp_attachment_is_image($attachment))return '';
- $html=wp_get_attachment_image($attachment,'large',false,array('loading'=>'lazy','decoding'=>'async','class'=>'bmd-multi-illustration','alt'=>esc_attr($a['caption'])));
+ $alt=(string)get_post_meta($attachment,'_wp_attachment_image_alt',true);
+ $attrs=array('loading'=>$key==='hero'?'eager':'lazy','decoding'=>'async','class'=>'bmd-multi-illustration','alt'=>$alt?:$a['caption']);
+ if($key==='hero')$attrs['fetchpriority']='high';
+ $html=wp_get_attachment_image($attachment,'large',false,$attrs);
  if(!$html)return '';
- return '<figure class="bmd-multi-figure">'.$html.'<figcaption>'.esc_html($a['caption']).'</figcaption></figure>';
+ return '<figure class="bmd-multi-figure bmd-multi-scene-'.esc_attr($key).'">'.$html.'<figcaption>'.esc_html($a['caption']).'</figcaption></figure>';
 });
 add_action('init',static function(){
  $key='bmd_multi_team_article_20261030_v1';if(get_option($key))return;
