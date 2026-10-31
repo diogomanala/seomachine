@@ -86,22 +86,9 @@ add_filter('the_content', function ($content) {
     return substr($content, 0, $pos) . $blocks[$slug] . substr($content, $pos);
 }, 65);
 
-/** One source-grounded title/description improvement for clone-related intent. */
-add_filter('rank_math/frontend/title', function($title) {
-    if (!is_admin() && is_singular('post') &&
-        get_post_field('post_name', get_queried_object_id()) === 'como-clonar-um-site-completo') {
-        return 'Como Clonar um Site Completo: HTML, CSS, JS e Imagens | BMD';
-    }
-    return $title;
-}, 72);
-add_filter('rank_math/frontend/description', function($description) {
-    if (!is_admin() && is_singular('post') &&
-        get_post_field('post_name', get_queried_object_id()) === 'como-clonar-um-site-completo') {
-        return 'Veja como copiar HTML, CSS, JavaScript e imagens de uma página, comparar métodos, testar os arquivos e reconhecer os limites da captura de front-end.';
-    }
-    return $description;
-}, 72);
-
+/** Clone article title and description are now maintained directly in Rank Math.
+ * Avoid hardcoded frontend filters that silently override editorial changes.
+ */
 add_action('wp_head', function() {
     if (is_admin() || !is_singular('post')) { return; }
     $slug = (string)get_post_field('post_name', get_queried_object_id());
