@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 3.8.4
+ * Version: 3.8.5
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -72,6 +72,10 @@ if(is_file($bmd_safe_media))require_once $bmd_safe_media;
 
 
 
+
+/** Google Ads profitability: commercial-intent CPC threshold estimator. */
+$bmd_ads_breakeven=__DIR__.'/bmd-googleads-profit-20261031.php';
+if(is_file($bmd_ads_breakeven))require_once $bmd_ads_breakeven;
 
 /** Search Console query prioritizer for established organic landing pages. */
 $bmd_search_prioritizer=__DIR__.'/bmd-gsc-opportunities-20261031.php';
