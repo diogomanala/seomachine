@@ -18,6 +18,8 @@ add_action('wp_enqueue_scripts',static function(){
  }
 },20);
 add_shortcode('bmd_n8n_visual_2026',static function(){
+ // OceanWP already renders the featured image above the article. Avoid duplication.
+ if(is_singular('post')&&has_post_thumbnail())return '';
  $image=wp_get_attachment_image(9092,'large',false,array('loading'=>'eager','decoding'=>'async','fetchpriority'=>'high','alt'=>'Servidores de um data center com equipamentos de infraestrutura para hospedar n8n em VPS'));
  if(!$image)return '';
  return '<figure class="bmd-n8n-feature">'.$image.'<figcaption>Infraestrutura real de servidores. Foto: <a href="https://unsplash.com/@tylergm" rel="noopener noreferrer" target="_blank">Tyler / Unsplash</a>. A calculadora abaixo utiliza preços comerciais verificados e hipóteses explícitas de manutenção.</figcaption></figure>';
