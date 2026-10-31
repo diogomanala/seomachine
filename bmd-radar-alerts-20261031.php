@@ -89,9 +89,18 @@ function bmd_radar_alert_collect($limit=10){
  }
  $rows=array_values($rows);
  usort($rows,static function($a,$b){return $b['stamp']<=>$a['stamp'] ?: strcmp($a['plugin'],$b['plugin']);});
+ // Keep the front page representative: at most six advisories per plugin.
+ $balanced=array();$per_plugin=array();
+ foreach($rows as $candidate){
+  $slug=(string)$candidate['slug'];
+  if(isset($per_plugin[$slug])&&$per_plugin[$slug]>=6)continue;
+  $balanced[]=$candidate;
+  $per_plugin[$slug]=isset($per_plugin[$slug])?$per_plugin[$slug]+1:1;
+  if(count($balanced)>=30)break;
+ }
  $snapshot=array(
   'last_checked'=>time(),'window_days'=>90,'plugins_checked'=>$ok,'plugins_monitored'=>$total,
-  'errors'=>$errors,'total_recent'=>count($rows),'items'=>array_slice($rows,0,30),
+  'errors'=>$errors,'total_recent'=>count($rows),'items'=>$balanced,
   'partial'=>$limit<$total||$ok<$count,
  );
  if($ok>=3) {
