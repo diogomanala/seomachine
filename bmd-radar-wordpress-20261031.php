@@ -69,6 +69,10 @@ function bmd_radar_source_links($sources){
   $id=isset($entry['id'])?sanitize_text_field($entry['id']):'';
   if(!$id&&isset($entry['name']))$id=sanitize_text_field($entry['name']);
   if(!$url)continue;
+  if(preg_match('/^[a-f0-9]{32,64}$/i',$id)) {
+   $host=(string)wp_parse_url($url,PHP_URL_HOST);
+   $id= $host?preg_replace('/^www\./','',$host):'Referência';
+  }
   $out[]=array('label'=>mb_substr($id?:'Referência',0,90),'url'=>$url);
   if(count($out)>=3)break;
  }
@@ -125,7 +129,7 @@ function bmd_radar_query(WP_REST_Request $request){
  $risk=$counts['affected']?'affected':($counts['inconclusive']?'inconclusive':'no_known_match');
  $out=array(
   'slug'=>$slug,'plugin'=>sanitize_text_field((string)($data['name']?:$slug)),
-  'version'=>$version,'latest'=>!empty($data['latest'])?sanitize_text_field((string)$data['latest']):null,
+  'version'=>$version,'latest'=>null, // The WPVulnerability 'latest' field is a timestamp, NOT the current plugin version.
   'risk'=>$risk,'counts'=>$counts,'total_records'=>$checked,
   'affected'=>array_slice($affected,0,16),'inconclusive'=>array_slice($inconclusive,0,6),
   'last_updated'=>!empty($feed['updated'])&&is_numeric($feed['updated'])?gmdate('c',(int)$feed['updated']):null,
