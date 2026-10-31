@@ -15,12 +15,5 @@ function bmd_gsc_tech_detection_oct29() {
         (string)get_post_field('post_name',get_queried_object_id()) === 'como-descobrir-plataforma-do-site';
 }
 
-add_filter('rank_math/frontend/title',function($value) {
-    if (!bmd_gsc_tech_detection_oct29()) { return $value; }
-    return 'Como Saber se um Site É WordPress? Descubra a Plataforma';
-},85);
-
-add_filter('rank_math/frontend/description',function($value) {
-    if (!bmd_gsc_tech_detection_oct29()) { return $value; }
-    return 'Aprenda a identificar WordPress, Elementor, Shopify ou outras tecnologias pelo código-fonte, Wappalyzer e WhatCMS. Veja os sinais e suas limitações.';
-},85);
+// SEO metadata now stored directly on WordPress post 4907 (Rank Math).
+// Keep this historical file for audit only; no frontend title/description overrides.
