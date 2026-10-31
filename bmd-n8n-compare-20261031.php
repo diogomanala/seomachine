@@ -19,7 +19,7 @@ add_action('wp_enqueue_scripts',static function(){
 },20);
 add_shortcode('bmd_n8n_visual_2026',static function(){
  // OceanWP already renders the featured image above the article. Avoid duplication.
- if(is_singular('post')&&has_post_thumbnail())return '';
+ if(is_singular('post')&&has_post_thumbnail())return '<p class="bmd-n8n-photo-credit" style="font-size:11px;color:#68778a;margin:0 0 18px">Fotografia ilustrativa do data center: <a href="https://unsplash.com/@tylergm" target="_blank" rel="noopener noreferrer">Tyler / Unsplash</a>.</p>';
  $image=wp_get_attachment_image(9092,'large',false,array('loading'=>'eager','decoding'=>'async','fetchpriority'=>'high','alt'=>'Servidores de um data center com equipamentos de infraestrutura para hospedar n8n em VPS'));
  if(!$image)return '';
  return '<figure class="bmd-n8n-feature">'.$image.'<figcaption>Infraestrutura real de servidores. Foto: <a href="https://unsplash.com/@tylergm" rel="noopener noreferrer" target="_blank">Tyler / Unsplash</a>. A calculadora abaixo utiliza preços comerciais verificados e hipóteses explícitas de manutenção.</figcaption></figure>';
@@ -59,6 +59,12 @@ add_shortcode('bmd_n8n_tco_2026',static function(){
  <p class="bmd-n8n-results-note" style="margin:15px 0 0">Valores de referência das páginas oficiais consultadas em 31/10/2026. A conta não inclui IOF, impostos, custos de APIs de IA, domínio, banco de dados externo, incidentes imprevistos nem upgrades de plano. Preço, cronograma de renovação, suporte e recursos devem ser confirmados no momento da compra. Nenhum dado preenchido é enviado ao servidor.</p></section>
  <?php return ob_get_clean();
 });
+add_filter('wp_get_attachment_image_attributes',static function($attrs,$attachment,$size){
+ if((int)$attachment->ID===9092&&is_singular('post')&&(int)get_queried_object_id()===9091){
+  $attrs['alt']='Equipamentos de servidores em um data center, ilustrando a hospedagem n8n em VPS';
+ }
+ return $attrs;
+},20,3);
 add_action('init',static function(){
  $key='bmd_n8n_article_20261031_v1';if(get_option($key))return;
  $slug='n8n-cloud-vs-vps-custo-real';
