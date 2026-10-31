@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 3.8.3
+ * Version: 3.8.4
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
@@ -72,6 +72,10 @@ if(is_file($bmd_safe_media))require_once $bmd_safe_media;
 
 
 
+
+/** Search Console query prioritizer for established organic landing pages. */
+$bmd_search_prioritizer=__DIR__.'/bmd-gsc-opportunities-20261031.php';
+if(is_file($bmd_search_prioritizer))require_once $bmd_search_prioritizer;
 
 /** B2B commercial research: n8n Cloud vs VPS, 12-36 month TCO. */
 $bmd_n8n_guide=__DIR__.'/bmd-n8n-compare-20261031.php';
