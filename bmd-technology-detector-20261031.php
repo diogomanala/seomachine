@@ -46,4 +46,4 @@ add_filter('the_content',static function($content){
  if(substr_count($content,$needle)!==1)return $content;
  $widget=do_shortcode('[bmd_technology_detector_2026]');
  return str_replace($needle,$widget."\n".$needle,$content);
-},58);
+},78);
