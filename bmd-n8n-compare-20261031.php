@@ -18,7 +18,9 @@ add_action('wp_enqueue_scripts',static function(){
  }
 },20);
 add_shortcode('bmd_n8n_visual_2026',static function(){
- return '<figure class="bmd-n8n-feature"><img src="'.esc_url(plugins_url('assets/bmd-n8n-compare-20261031.svg',__FILE__)).'" alt="Ilustração original comparando n8n Cloud e VPS, com servidor próprio, mensalidade e calculadora de custos" width="1600" height="900" loading="eager" fetchpriority="high" decoding="async"><figcaption>Ilustração editorial: o preço da VPS e o custo completo da operação são contas diferentes.</figcaption></figure>';
+ $image=wp_get_attachment_image(9092,'large',false,array('loading'=>'eager','decoding'=>'async','fetchpriority'=>'high','alt'=>'Servidores de um data center com equipamentos de infraestrutura para hospedar n8n em VPS'));
+ if(!$image)return '';
+ return '<figure class="bmd-n8n-feature">'.$image.'<figcaption>Infraestrutura real de servidores. Foto: <a href="https://unsplash.com/@tylergm" rel="noopener noreferrer" target="_blank">Tyler / Unsplash</a>. A calculadora abaixo utiliza preços comerciais verificados e hipóteses explícitas de manutenção.</figcaption></figure>';
 });
 add_shortcode('bmd_n8n_tco_2026',static function(){
  ob_start();?>
