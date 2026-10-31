@@ -147,6 +147,8 @@ add_action('init',static function(){
  $existing=get_page_by_path(BMD_RADAR_SLUG,OBJECT,'page');
  if($existing)return;
  if(get_option('bmd_radar_page_initialized_v1'))return;
+ // add_option is atomic at the database level; prevent concurrent requests from creating duplicates.
+ if(!add_option('bmd_radar_page_create_lock_v1',(string)time(),'','no'))return;
  $body=<<<'HTML'
 <p>Um plugin pode funcionar normalmente e ainda ter uma vulnerabilidade conhecida em determinadas versões. Se você administra um site WordPress, use este verificador gratuito para comparar a <strong>versão instalada</strong> com avisos públicos da base WPVulnerability. Não é necessário informar a URL do seu site, criar conta ou instalar plugins.</p>
 [bmd_radar_wordpress]
@@ -174,7 +176,7 @@ add_action('init',static function(){
 <p><strong>Próximo passo:</strong> se você está avaliando a tecnologia de outro projeto, veja <a href="/como-descobrir-plataforma-do-site/">como identificar se um site usa WordPress</a>. Para verificar indexação, velocidade e SEO técnico, consulte nossas <a href="/23-ferramentas-gratuitas-de-seo-e-analise-de-websites/">23 ferramentas gratuitas de auditoria de sites</a>.</p>
 HTML;
  $pid=wp_insert_post(array('post_type'=>'page','post_status'=>'publish','post_title'=>'Verificar Plugin WordPress Vulnerável: Consulte Versão e CVE','post_name'=>BMD_RADAR_SLUG,'post_content'=>$body,'post_excerpt'=>'Consulte vulnerabilidades conhecidas de plugins WordPress por versão, com CVEs e referências públicas. Ferramenta gratuita, sem cadastro ou instalação.','comment_status'=>'closed'),true);
- if(is_wp_error($pid)||!$pid)return;
+ if(is_wp_error($pid)||!$pid){delete_option('bmd_radar_page_create_lock_v1');return;}
  update_post_meta($pid,'rank_math_title','Plugin WordPress Vulnerável? Verifique Versão e CVE Grátis');
  update_post_meta($pid,'rank_math_description','Verifique se a versão de um plugin WordPress consta em avisos de segurança. Consulte CVEs e fontes gratuitamente, sem instalar nada ou cadastrar seu site.');
  update_post_meta($pid,'rank_math_focus_keyword','plugin wordpress vulnerável,verificar vulnerabilidade plugin wordpress');
@@ -237,3 +239,18 @@ add_filter('the_content',static function($content){
  $lead='<aside class="bmd-radar-related" style="border:1px solid #dde7f5;border-left:3px solid #005ff4;padding:16px 18px;margin:23px 0;border-radius:9px;font-size:.94em;line-height:1.6;"><strong>Ferramenta gratuita:</strong> usa WordPress? <a href="'.esc_url(home_url('/'.BMD_RADAR_SLUG.'/')).'">Verifique se a versão dos seus plugins aparece em avisos de vulnerabilidades</a>, sem instalar nada.</aside>';
  return $content.$lead;
 },83);
+
+
+/** Web app metadata, limited to this functioning free tool. No fake ratings/reviews. */
+add_action('wp_head',static function(){
+ if(!is_page(BMD_RADAR_SLUG))return;
+ $json=array(
+  '@context'=>'https://schema.org','@type'=>'WebApplication',
+  'name'=>'Radar WordPress: verificador de vulnerabilidades de plugins',
+  'url'=>home_url('/'.BMD_RADAR_SLUG.'/'),
+  'description'=>'Ferramenta gratuita para comparar a versão de plugins WordPress com vulnerabilidades conhecidas e fontes públicas de segurança.',
+  'applicationCategory'=>'SecurityApplication','operatingSystem'=>'Web',
+  'inLanguage'=>'pt-BR','offers'=>array('@type'=>'Offer','price'=>'0','priceCurrency'=>'BRL')
+ );
+ echo '<script type="application/ld+json">'.wp_json_encode($json,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_HEX_TAG|JSON_HEX_AMP).'</script>'."\n";
+},45);
