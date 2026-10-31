@@ -193,7 +193,7 @@ add_action('wp_enqueue_scripts',static function(){
 },20);
 add_shortcode('bmd_radar_wordpress',static function(){
  $catalog=bmd_radar_catalog();ob_start();?>
- <section class="bmd-radar" aria-label="Verificar vulnerabilidades públicas de plugins WordPress" data-endpoint="<?php echo esc_attr(rest_url('bmd-radar/v1/lookup')); ?>">
+ <section class="bmd-radar" id="bmd-radar-app" aria-label="Verificar vulnerabilidades públicas de plugins WordPress" data-endpoint="<?php echo esc_attr(rest_url('bmd-radar/v1/lookup')); ?>">
   <div class="bmd-radar-top"><span class="bmd-radar-eyebrow">RADAR WORDPRESS · VERIFICAÇÃO GRATUITA</span>
   <h2>Seu plugin tem uma vulnerabilidade conhecida?</h2>
   <p>Informe o plugin e sua versão exata. A ferramenta cruza essas informações com avisos públicos de segurança e mostra as fontes para conferência.</p></div>
