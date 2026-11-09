@@ -352,3 +352,104 @@ add_action('wp_head',function(){
     if(!isset($posts[$slug])) { return; }
     echo '<style>.entry-content .bmd-table-scroll{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid #e5eaf0;border-radius:10px;margin:20px 0}.entry-content .bmd-table-scroll table{min-width:540px;width:100%;margin:0;border-collapse:collapse}.entry-content .bmd-table-scroll th,.entry-content .bmd-table-scroll td{padding:12px 14px;text-align:left;vertical-align:top;font-size:14px;line-height:1.5;border-bottom:1px solid #e6eaf0}.entry-content .bmd-table-scroll th{background:#f5f7fa;font-weight:750}</style>';
 },80);
+
+
+/**
+ * BMD 2026-11-09: one-time correction of legacy After Effects download article.
+ * Exact published slug and historic piracy sentinels are required.
+ * Original content, title, excerpt and SEO metadata are backed up privately.
+ */
+add_action('init', function() {
+    $done_key = 'bmd_ae_legal_refresh_20261109_v1';
+    if (get_option($done_key, false) !== false) { return; }
+
+    $slug = 'after-effects-2023-download-gratis-ativador-tutorial';
+    $post = get_page_by_path($slug, OBJECT, 'post');
+    if (!$post || $post->post_status !== 'publish' || $post->post_name !== $slug) {
+        update_option($done_key, 'post-not-found-or-not-published', false);
+        return;
+    }
+
+    $original = (string)$post->post_content;
+    if (strlen($original) < 250 || strlen($original) > 50000 ||
+        stripos($original, 'After_Effetcs_2023_Atualizado') === false ||
+        stripos(wp_strip_all_tags($original), 'pasta crack') === false) {
+        update_option($done_key, 'original-content-guard-mismatch', false);
+        return;
+    }
+    $backup_key = '_bmd_aftereffects_original_20261109';
+    if (metadata_exists('post', $post->ID, $backup_key)) {
+        update_option($done_key, 'backup-already-exists', false);
+        return;
+    }
+
+    $backup = array(
+        'post_title' => (string)$post->post_title,
+        'post_excerpt' => (string)$post->post_excerpt,
+        'post_content' => $original,
+        'rank_math_title' => (string)get_post_meta($post->ID, 'rank_math_title', true),
+        'rank_math_description' => (string)get_post_meta($post->ID, 'rank_math_description', true),
+    );
+    if (!add_post_meta($post->ID, $backup_key, $backup, true)) {
+        update_option($done_key, 'backup-failed', false);
+        return;
+    }
+
+    $new_title = 'After Effects Grátis: Como Baixar o Teste Oficial e Alternativas';
+    $new_description = 'Saiba como baixar o After Effects com segurança pelo teste oficial de 7 dias. Veja o passo a passo e alternativas gratuitas como Blender e DaVinci Resolve.';
+    $new_excerpt = 'Veja como testar o After Effects oficialmente por 7 dias, quais cuidados tomar com a cobrança e quais alternativas gratuitas usar para animação e edição de vídeo.';
+    $new_body = <<<'BMD_AFTER_EFFECTS_2026'
+<p><strong>Quer baixar o Adobe After Effects gratuitamente e com segurança?</strong> A Adobe oferece uma versão de teste oficial e completa por <strong>7 dias</strong>. Depois desse período, a assinatura passa a ser cobrada, a menos que você cancele dentro do prazo. Não existe uma licença vitalícia gratuita e oficial do After Effects.</p>
+<p><strong>Atualizado em novembro de 2026.</strong> Este artigo foi revisado porque as instruções antigas para a versão 2023 indicavam um pacote externo com ativador. Aquele link foi retirado. A seguir estão o procedimento de instalação autorizado pela Adobe e duas alternativas para quem precisa de software gratuito sem assinatura.</p>
+<h2>Como baixar e instalar o After Effects pela Adobe</h2>
+<ol>
+<li>Abra a <a href="https://www.adobe.com/br/products/aftereffects/free-trial-download.html" target="_blank" rel="noopener noreferrer">página oficial de teste do After Effects</a>.</li>
+<li>Clique em <strong>Teste grátis</strong> e confira as condições do plano antes de continuar.</li>
+<li>Entre com uma conta Adobe ou crie uma, seguindo o processo de contratação do teste.</li>
+<li>Baixe o instalador oficial e instale o aplicativo pela Creative Cloud.</li>
+<li>Abra o After Effects e use os tutoriais oficiais para começar a trabalhar com animações e efeitos.</li>
+<li>Se não quiser continuar no plano pago, <strong>cancele antes de terminar o teste</strong> e confira a confirmação de cancelamento na sua conta.</li>
+</ol>
+<p><strong>Atenção:</strong> o teste gratuito exige aceitar as condições apresentadas pela Adobe. Consulte o prazo de cobrança e cancelamento no momento da contratação. Regras e disponibilidade podem mudar.</p>
+<h2>O After Effects é gratuito para sempre?</h2>
+<p>Não. O After Effects é um produto comercial da Adobe e, atualmente, sua opção gratuita oficial é um período de avaliação de 7 dias. A versão de avaliação inclui os recursos do programa completo. Ao fim do período, a assinatura se torna paga se você não cancelar. Consulte sempre a <a href="https://www.adobe.com/br/products/aftereffects/free-trial-download.html" target="_blank" rel="noopener noreferrer">página da Adobe</a> para confirmar condições atualizadas.</p>
+<h2>Alternativas gratuitas ao After Effects para animações e vídeo</h2>
+<div style="overflow-x:auto"><table><thead><tr><th>Programa</th><th>Onde faz sentido</th><th>Licença e download</th></tr></thead><tbody>
+<tr><td><strong>Blender</strong></td><td>Animação 2D/3D, composição, efeitos visuais e renderização. Exige aprendizado, especialmente para quem vem do After Effects.</td><td>Gratuito e de código aberto. <a href="https://www.blender.org/download/" target="_blank" rel="noopener noreferrer">Site oficial</a>.</td></tr>
+<tr><td><strong>DaVinci Resolve</strong></td><td>Edição de vídeo, correção de cor, composição e motion graphics com Fusion. Alguns recursos são exclusivos do Studio pago.</td><td>Possui uma versão gratuita. <a href="https://www.blackmagicdesign.com/br/products/davinciresolve" target="_blank" rel="noopener noreferrer">Site oficial</a>.</td></tr>
+</tbody></table></div>
+<p>Esses aplicativos não abrem obrigatoriamente todos os projetos ou plugins do After Effects com a mesma fidelidade. A escolha depende do seu trabalho e dos formatos que você precisa entregar.</p>
+<h2>E o download do After Effects 2023 que aparecia aqui?</h2>
+<p>A publicação original foi feita em 2023 e mencionava um ativador de origem não oficial. Retiramos esse procedimento e o link externo. Executáveis modificados e pacotes de terceiros podem representar risco de malware, roubo de informações e problemas de licença. Para instalar o After Effects, utilize a distribuição oficial da Adobe.</p>
+<h2>Perguntas frequentes</h2>
+<h3>Preciso de cartão ou dados de pagamento para testar?</h3>
+<p>Confira o processo de contratação e as formas de pagamento exigidas na página da Adobe no momento do cadastro. Se não desejar pagar depois, programe o cancelamento antes do fim do período gratuito.</p>
+<h3>O teste do After Effects funciona no Windows e no macOS?</h3>
+<p>Sim, em sistemas compatíveis com os requisitos atuais. Antes de baixar, consulte a página oficial de requisitos do programa para a versão disponível.</p>
+<h3>É seguro instalar um pacote com ativador de site desconhecido?</h3>
+<p>Não é recomendável. Baixe softwares somente dos sites oficiais e mantenha o sistema e o antivírus atualizados. O blog não distribui ativadores nem cópias modificadas do aplicativo.</p>
+<h3>Qual opção escolher se eu não puder pagar uma assinatura?</h3>
+<p>Comece pelo Blender se o foco for animação e 3D, ou pelo DaVinci Resolve se você também precisa editar vídeos e trabalhar com composição e motion graphics. Confira os limites e requisitos de cada opção.</p>
+<p><strong>Fontes:</strong> <a href="https://www.adobe.com/br/products/aftereffects/free-trial-download.html" target="_blank" rel="noopener noreferrer">Adobe After Effects</a>, <a href="https://www.blender.org/about/license/" target="_blank" rel="noopener noreferrer">licença do Blender</a> e <a href="https://www.blackmagicdesign.com/br/products/davinciresolve" target="_blank" rel="noopener noreferrer">Blackmagic Design</a>.</p>
+BMD_AFTER_EFFECTS_2026;
+
+    $updated = wp_update_post(array(
+        'ID' => $post->ID,
+        'post_title' => $new_title,
+        'post_excerpt' => $new_excerpt,
+        'post_content' => $new_body,
+    ), true);
+    if (is_wp_error($updated) || !$updated) {
+        delete_post_meta($post->ID, $backup_key);
+        update_option($done_key, 'wp-update-failed', false);
+        return;
+    }
+    update_post_meta($post->ID, 'rank_math_title', $new_title);
+    update_post_meta($post->ID, 'rank_math_description', $new_description);
+    clean_post_cache($post->ID);
+    if (has_action('litespeed_purge_post')) {
+        do_action('litespeed_purge_post', $post->ID);
+    }
+    update_option($done_key, 'applied', false);
+}, 31);
+
