@@ -30,7 +30,7 @@ function bmd_aff_editor_box($post) {
   bmd_aff_meta_field('headline',$cfg['headline']??'','Título do bloco');
   bmd_aff_meta_field('answer',$cfg['answer']??'','Resposta direta para o leitor',3);
   bmd_aff_meta_field('reviewed',$cfg['reviewed']??'','Revisão editorial (AAAA-MM-DD)');
-  echo '<label for="bmd_aff_cat" style="display:block;font-weight:600;margin:10px 0 4px">Categoria do comparativo</label><select name="bmd_aff[category]" id="bmd_aff_cat"><option value="audio" '.selected(($cfg['category']??'audio'),'audio',false).'>Áudio / criadores</option><option value="office" '.selected(($cfg['category']??''),'office',false).'>Home office</option><option value="tools" '.selected(($cfg['category']??''),'tools',false).'>Ferramentas</option></select>';
+  echo '<label for="bmd_aff_cat" style="display:block;font-weight:600;margin:10px 0 4px">Categoria do comparativo</label><select name="bmd_aff[category]" id="bmd_aff_cat"><option value="audio" '.selected(($cfg['category']??'audio'),'audio',false).'>Áudio / criadores</option><option value="office" '.selected(($cfg['category']??''),'office',false).'>Home office</option><option value="tools" '.selected(($cfg['category']??''),'tools',false).'>Ferramentas</option><option value="games" '.selected(($cfg['category']??''),'games',false).'>Games / Consoles</option></select>';
   echo '<p style="margin-top:12px"><strong>Produtos (até 6).</strong> Não adicione preço ou nota sem fonte autorizada. O botão é composto do ASIN e da tag de afiliado.</p>';
   for($i=0;$i<6;$i++){
     $p=$cfg['products'][$i]??array();
@@ -52,7 +52,7 @@ add_action('save_post_post',function($post_id,$post,$update){
  $cfg=array();
  $cfg['headline']=sanitize_text_field($in['headline']??'');
  $cfg['answer']=sanitize_textarea_field($in['answer']??'');
- $cfg['category']=in_array($in['category']??'audio',array('audio','office','tools'),true)?$in['category']:'audio';
+ $cfg['category']=in_array($in['category']??'audio',array('audio','office','tools','games'),true)?$in['category']:'audio';
  $review=(string)($in['reviewed']??'');
  $cfg['reviewed']=preg_match('/^\d{4}-\d{2}-\d{2}$/D',$review)&&strtotime($review)?$review:'';
  $cfg['products']=array();
@@ -78,6 +78,7 @@ function bmd_aff_criteria($category) {
  $sets=array(
  'audio'=>array('Conexão certa para celular ou câmera','Número de transmissores necessários','Proteção contra vento e ambiente da gravação','Acessórios, estojo e garantia'),
  'office'=>array('Dimensões e compatibilidade','Capacidade de peso e fixação','Ergonomia real no espaço disponível','Garantia e reposição de peças'),
+ 'games'=>array('Compatibilidade real do jogo com o console','Mídias físicas versus biblioteca digital','Espaço de SSD para instalar o jogo','Procedência, garantia e acesso à conta'),
  'tools'=>array('Compatibilidade com equipamentos','Material, precisão e variedade de pontas','Segurança, armazenamento e reposição','Garantia e peças incluídas'));
  return $sets[$category]??$sets['audio'];
 }
