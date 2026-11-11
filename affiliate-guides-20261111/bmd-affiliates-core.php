@@ -95,7 +95,7 @@ add_shortcode('bmd_comparativo',function($atts=array()){
  <section class="bmd-aff-hero" aria-labelledby="bmd-aff-title">
  <div class="bmd-aff-hero-copy">
  <span class="bmd-aff-kicker">GUIA DE COMPRA • COMPARAÇÃO EDITORIAL</span>
- <h2 id="bmd-aff-title"><?php echo esc_html($heading); ?></h2>
+ <h2 id="bmd-aff-title" style="color:#ffffff!important;-webkit-text-fill-color:#ffffff!important;"><?php echo esc_html($heading); ?></h2>
  <p><?php echo esc_html($answer); ?></p>
  <div class="bmd-aff-hero-meta"><span><span aria-hidden="true">✓</span> <?php echo count($items); ?> modelos comparados</span><span>Sem preços desatualizados</span></div>
  </div>
@@ -179,3 +179,10 @@ add_action('wp_dashboard_setup',function(){
   echo '<p style="font-size:12px;color:#646970">Revise ASINs, variantes, disponibilidade e links a cada 45 dias. Nenhuma compra de serviço ou consulta automática é feita.</p>';
  });
 });
+
+
+/* Protect the heading from WordPress theme/global typography overrides. */
+add_action('wp_head', static function() {
+ if(!bmd_aff_is_page())return;
+ echo '<style id="bmd-aff-hero-title-contrast">html body #bmd-aff-v2.bmd-aff .bmd-aff-hero .bmd-aff-hero-copy h2#bmd-aff-title,html body #bmd-aff-v2.bmd-aff .bmd-aff-hero h2#bmd-aff-title{color:#ffffff!important;-webkit-text-fill-color:#ffffff!important;text-shadow:none!important;opacity:1!important}html body #bmd-aff-v2 .bmd-aff-hero .bmd-aff-hero-copy p{color:#f1f5f9!important;-webkit-text-fill-color:#f1f5f9!important}</style>';
+},999);
