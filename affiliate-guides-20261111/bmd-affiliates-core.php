@@ -122,7 +122,7 @@ add_shortcode('bmd_comparativo',function($atts=array()){
  <div class="bmd-aff-sectionhead"><span class="bmd-aff-smallcap">MODELOS SELECIONADOS</span><h2 id="bmd-aff-list-title">Comparação por necessidade</h2><p>Confira a configuração exata do kit antes de finalizar uma compra.</p></div>
  <div class="bmd-aff-cards">
  <?php foreach($items as $i=>$p): ?>
- <article class="bmd-aff-card">
+ <article class="bmd-aff-card" id="bmd-aff-item-<?php echo (int)($i+1); ?>">
  <div class="bmd-aff-card-top"><span>0<?php echo (int)($i+1); ?></span><small><?php echo esc_html($p['badge']); ?></small></div>
  <h3><?php echo esc_html($p['name']); ?></h3>
  <div class="bmd-aff-card-body"><div><span class="bmd-aff-card-label">IDEAL PARA</span><p><?php echo esc_html($p['best']); ?></p></div><div><span class="bmd-aff-card-label">ANTES DE COMPRAR</span><p><?php echo esc_html($p['caution']); ?></p></div></div>
@@ -144,13 +144,25 @@ add_shortcode('bmd_comparativo',function($atts=array()){
  <script id="bmd-aff-chooser-js">(function(){const el=document.getElementById('bmd-aff-v2');if(!el)return;const data=<?php echo wp_json_encode(array_map(function($p){return array('name'=>$p['name'],'text'=>$p['caution'],'url'=>bmd_aff_link($p['asin']));},$items),JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_HEX_TAG|JSON_HEX_AMP); ?>;el.querySelectorAll('input[name="bmd-aff-use"]').forEach(input=>input.addEventListener('change',()=>{const p=data[Number(input.value)];if(!p||!input.checked)return;el.querySelector('#bmd-aff-choice-name').textContent=p.name;el.querySelector('#bmd-aff-choice-text').textContent=p.text;el.querySelector('#bmd-aff-choice-link').href=p.url;}));})();</script>
  <?php return ob_get_clean();
 });
+
+add_action('wp_enqueue_scripts',function(){
+ if(!bmd_aff_is_page())return;
+ wp_enqueue_style('bmd-affiliates-v2',content_url('mu-plugins/bmd-affiliates-style.css'),array(),'20261111c');
+},95);
+add_shortcode('bmd_aff_imagem',function(){
+ $post_id=get_the_ID();
+ $id=(int)get_post_meta($post_id,'_bmd_aff_secondary_id',true);
+ if(!$id || !get_post($id))return '';
+ return '<figure class="bmd-aff-figure">'.wp_get_attachment_image($id,'large',false,array('loading'=>'lazy','decoding'=>'async','sizes'=>'(max-width: 800px) 100vw, 800px')).'<figcaption>Ilustração editorial de uma gravação com microfone de lapela. Não representa um teste do modelo citado.</figcaption></figure>';
+});
+
 add_action('wp_head',function(){
  if(!bmd_aff_is_page())return;
  $cfg=bmd_aff_get_cfg(get_queried_object_id());
  $items=array_values(array_filter($cfg['products']??array(),function($p){return !empty($p['name'])&&bmd_aff_link($p['asin']??'');}));
  if(!$items)return;
  $graph=array('@context'=>'https://schema.org','@type'=>'ItemList','name'=>'Comparativo de equipamentos','itemListOrder'=>'https://schema.org/ItemListOrderUnordered','numberOfItems'=>count($items),'itemListElement'=>array());
- foreach($items as $i=>$p)$graph['itemListElement'][]=array('@type'=>'ListItem','position'=>$i+1,'name'=>$p['name'],'url'=>get_permalink().'#bmd-aff-list');
+ foreach($items as $i=>$p)$graph['itemListElement'][]=array('@type'=>'ListItem','position'=>$i+1,'name'=>$p['name'],'url'=>get_permalink().'#bmd-aff-item-'.($i+1));
  echo '<script type="application/ld+json" id="bmd-aff-itemlist">'.wp_json_encode($graph,JSON_HEX_TAG|JSON_HEX_AMP|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES).'</script>';
 },124);
 add_action('wp_dashboard_setup',function(){
