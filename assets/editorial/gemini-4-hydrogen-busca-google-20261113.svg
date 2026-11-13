@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-labelledby="t d">
+<title id="t">Gemini 4 Hydrogen chegou à Busca Google</title>
+<desc id="d">Capa editorial de alto contraste em azul-marinho e amarelo com ícone de lupa e estrelas de inteligência artificial.</desc>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0d192a"/><stop offset="1" stop-color="#21395c"/></linearGradient>
+<linearGradient id="orb" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff2a5"/><stop offset=".6" stop-color="#ffd451"/><stop offset="1" stop-color="#efb52a"/></linearGradient>
+<filter id="shadow" x="-30%" y="-30%" width="170%" height="170%"><feDropShadow dx="0" dy="17" stdDeviation="17" flood-color="#000" flood-opacity=".35"/></filter></defs>
+<rect width="1200" height="630" fill="url(#bg)"/>
+<path d="M790-40h450v720H690z" fill="#172b45" opacity=".9"/>
+<path d="M965 0l235 0v450L955 630 698 630z" fill="#244e75" opacity=".24"/>
+<rect x="58" y="49" width="390" height="52" rx="26" fill="#203651" stroke="#53708f"/>
+<circle cx="88" cy="75" r="8" fill="#ffcf47"/>
+<text x="110" y="84" fill="#ebf2fc" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="22" letter-spacing=".4">NOVIDADE DO GOOGLE · 2026</text>
+<text x="57" y="195" fill="#f6f9ff" font-family="Arial,Helvetica,sans-serif" font-weight="800" font-size="66">Gemini 4</text>
+<text x="57" y="277" fill="#ffd34b" font-family="Arial,Helvetica,sans-serif" font-weight="800" font-size="78">Hydrogen</text>
+<text x="58" y="344" fill="#f6f9ff" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="45">na Busca Google</text>
+<rect x="56" y="385" width="660" height="91" rx="19" fill="#f6f9fd"/>
+<text x="79" y="422" fill="#192b40" font-family="Arial,Helvetica,sans-serif" font-size="27" font-weight="700">O que muda nas respostas com IA</text>
+<text x="79" y="454" fill="#34516c" font-family="Arial,Helvetica,sans-serif" font-size="23">e como preparar o conteúdo do seu site</text>
+<line x1="59" y1="523" x2="700" y2="523" stroke="#4b6078" stroke-width="2"/>
+<text x="58" y="564" fill="#d3dfed" font-family="Arial,Helvetica,sans-serif" font-size="21">BUSCA · SEO · CONTEÚDO · MARKETING DIGITAL</text>
+<g filter="url(#shadow)">
+<circle cx="958" cy="293" r="182" fill="url(#orb)"/>
+<circle cx="958" cy="293" r="148" fill="#0d203a"/>
+</g>
+<g fill="none" stroke="#f7fafe" stroke-width="23" stroke-linecap="round">
+<circle cx="942" cy="275" r="71"/>
+<path d="M994 327l73 73"/>
+</g>
+<g fill="#ffd34b">
+<path d="M955 173l11 30 29 11-29 11-11 30-11-30-29-11 29-11z"/>
+<path d="M849 338l8 20 20 8-20 8-8 20-8-20-20-8 20-8z"/>
+<path d="M1073 246l7 19 18 7-18 7-7 18-7-18-18-7 18-7z"/>
+</g>
+<rect x="805" y="522" width="305" height="52" rx="18" fill="#243d5a" stroke="#446884"/>
+<text x="957" y="557" text-anchor="middle" fill="#ebf3fb" font-family="Arial,Helvetica,sans-serif" font-size="24" font-weight="700">GUIA PRÁTICO</text>
+<text x="60" y="610" fill="#9ab0c7" font-family="Arial,Helvetica,sans-serif" font-size="17" letter-spacing="1">BLOG DE MARKETING DIGITAL</text>
+</svg>
