@@ -117,14 +117,70 @@ function bmd_git_editorial_apply($job) {
     $id = isset($job['id']) ? (string)$job['id'] : '';
     if (!preg_match('/^[a-z0-9-]{8,64}$/', $id)) { return new WP_Error('job_id', 'ID da tarefa invalido.'); }
     $action = isset($job['action']) ? $job['action'] : '';
-    if (!in_array($action, array('create', 'append'), true)) { return new WP_Error('job_action', 'Acao nao permitida.'); }
+    if (!in_array($action, array('create', 'append', 'refresh_image'), true)) { return new WP_Error('job_action', 'Acao nao permitida.'); }
     $slug = isset($job['slug']) ? sanitize_title($job['slug']) : '';
     if (!$slug || $slug !== $job['slug']) { return new WP_Error('job_slug', 'Slug invalido.'); }
     $body = isset($job['body']) ? $job['body'] : '';
-    if (!is_string($body) || strlen($body) > 100000 || strlen($body) < 100) { return new WP_Error('job_body', 'Conteudo fora dos limites.'); }
-    $body = wp_kses_post($body);
+    if ($action !== 'refresh_image') {
+        if (!is_string($body) || strlen($body) > 100000 || strlen($body) < 100) { return new WP_Error('job_body', 'Conteudo fora dos limites.'); }
+        $body = wp_kses_post($body);
+    }
     $existing = get_page_by_path($slug, OBJECT, 'post');
     $post_id = 0;
+
+    if ($action === 'refresh_image') {
+        // Restrict this operation to the original Git-authored article, never arbitrary posts.
+        if (!$existing || $existing->post_status !== 'publish' ||
+            (string)get_post_meta($existing->ID, '_bmd_git_editorial_source', true) !== 'bmd-20261113-microfone-guia' ||
+            $slug !== 'microfone-de-lapela-nao-funciona-celular') {
+            return new WP_Error('image_target_mismatch', 'Artigo original nao encontrado ou nao gerenciado pela ponte.');
+        }
+        $post_id = (int)$existing->ID;
+        $old_asset = 'assets/editorial/microfone-lapela-celular-conexoes-20261113.svg';
+        $new_asset = 'assets/editorial/microfone-lapela-icone-8-testes-20261113.svg';
+        if (empty($job['image']) || !is_array($job['image']) ||
+            empty($job['image']['path']) || $job['image']['path'] !== $new_asset) {
+            return new WP_Error('image_asset_mismatch', 'O asset solicitado nao corresponde a nova capa aprovada.');
+        }
+        $previous_html = (string)$existing->post_content;
+        if (strpos($previous_html, $old_asset) === false) {
+            if (strpos($previous_html, $new_asset) !== false || strpos($previous_html, 'microfone-lapela-icone-8-testes-20261113') !== false) {
+                return $post_id;
+            }
+            return new WP_Error('image_missing_in_article', 'A imagem original nao foi encontrada, conteudo mantido intacto.');
+        }
+        $media = bmd_git_editorial_upload_image($new_asset, get_the_title($post_id),
+            'Microfone de lapela nao funciona no celular: 8 testes para resolver, com icone de microfone desativado', $post_id);
+        if (is_wp_error($media)) { return $media; }
+        $new_url = isset($media['url']) ? esc_url_raw($media['url']) : '';
+        if (!$new_url) { return new WP_Error('image_upload_missing_url', 'Imagem gerada sem URL.'); }
+        $pattern = '~https?://[^"\\s<>]+/wp-content/plugins/bmd-performance-core/' . preg_quote($old_asset, '~') . '~';
+        $count = 0;
+        $new_html = preg_replace($pattern, $new_url, $previous_html, 1, $count);
+        if ($count !== 1 || !is_string($new_html)) {
+            return new WP_Error('image_reference_ambiguous', 'Referencia anterior nao corresponde a uma unica imagem.');
+        }
+        $backup_key = '_bmd_git_editorial_backup_' . $id;
+        if (!add_post_meta($post_id, $backup_key, $previous_html, true)) {
+            return new WP_Error('image_backup_failed', 'Backup antigo ja existe; alteracao interrompida.');
+        }
+        $old_thumbnail = (int)get_post_thumbnail_id($post_id);
+        add_post_meta($post_id, '_bmd_git_editorial_previous_thumbnail_' . $id, $old_thumbnail, true);
+        $result = wp_update_post(array('ID' => $post_id, 'post_content' => $new_html), true);
+        if (is_wp_error($result)) { return $result; }
+        if (!empty($media['attachment_id'])) {
+            set_post_thumbnail($post_id, (int)$media['attachment_id']);
+        } elseif ($old_thumbnail) {
+            $old_thumbnail_url = (string)wp_get_attachment_url($old_thumbnail);
+            if (strpos($old_thumbnail_url, 'microfone-lapela-celular-conexoes-20261113') !== false) {
+                delete_post_thumbnail($post_id);
+            }
+        }
+        update_post_meta($post_id, '_bmd_git_editorial_image_url', $new_url);
+        clean_post_cache($post_id);
+        if (has_action('litespeed_purge_post')) { do_action('litespeed_purge_post', $post_id); }
+        return $post_id;
+    }
     if ($action === 'create') {
         if ($existing && get_post_meta($existing->ID, '_bmd_git_editorial_source', true) !== $id) {
             return new WP_Error('job_conflict', 'Slug ja pertence a outro artigo.');
@@ -352,6 +408,8 @@ function bmd_git_editorial_status_snapshot() {
     if (@file_put_contents($tmp, $json, LOCK_EX) !== false) {
         @rename($tmp, $dest);
     }
+    // Plain text mirror for the hosting file inspector, when JSON preview is unavailable.
+    @file_put_contents(trailingslashit($dir['basedir']) . 'bmd-editorial-status.txt', $json, LOCK_EX);
 }
 add_action('wp_loaded', function () {
     if (get_transient('bmd_git_editorial_status_snapshot_lock')) { return; }
