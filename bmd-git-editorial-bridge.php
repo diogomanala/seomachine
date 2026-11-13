@@ -143,6 +143,8 @@ function bmd_git_editorial_apply($job) {
         );
         if ($existing) {
             $post_id = (int)$existing->ID;
+            // Reexecucao nao sobrescreve correcoes humanas feitas depois da publicacao.
+            return $post_id;
             if (!metadata_exists('post', $post_id, '_bmd_git_editorial_backup_' . $id)) {
                 if (!add_post_meta($post_id, '_bmd_git_editorial_backup_' . $id, get_post_field('post_content', $post_id), true)) {
                     return new WP_Error('backup_failed', 'Backup nao criado.');
@@ -164,11 +166,23 @@ function bmd_git_editorial_apply($job) {
         $old = (string)$existing->post_content;
         $marker = 'id="bmd-' . esc_attr($id) . '"';
         if (strpos($old, $marker) !== false) { return $post_id; }
+        $new_title = isset($job['title']) ? sanitize_text_field($job['title']) : '';
+        if ($new_title) {
+            $expected = isset($job['expected_title']) ? (string)$job['expected_title'] : '';
+            if (!$expected || get_the_title($post_id) !== $expected) {
+                return new WP_Error('title_mismatch', 'Titulo mudou; revisao cancelada para proteger o artigo.');
+            }
+        }
         $body = '<section class="bmd-git-note" id="bmd-' . esc_attr($id) . '">' . $body . '</section>';
         if (!add_post_meta($post_id, '_bmd_git_editorial_backup_' . $id, $old, true)) {
             return new WP_Error('backup_failed', 'Backup ja existe ou falhou; nenhuma alteracao realizada.');
         }
-        $res = wp_update_post(array('ID' => $post_id, 'post_content' => $old . "\n" . $body), true);
+        if ($new_title) {
+            add_post_meta($post_id, '_bmd_git_editorial_original_title_' . $id, get_the_title($post_id), true);
+        }
+        $changes = array('ID' => $post_id, 'post_content' => $old . "\n" . $body);
+        if ($new_title) { $changes['post_title'] = $new_title; }
+        $res = wp_update_post($changes, true);
         if (is_wp_error($res)) { return $res; }
     }
     if ($action === 'create' && !empty($job['image']) && is_array($job['image'])) {
