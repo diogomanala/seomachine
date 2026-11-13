@@ -2,11 +2,15 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 3.9.3
+ * Version: 3.10.0
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
+
+/** Editorial Git bridge: versioned posts and images delivered through existing Hostinger Git integration. */
+$bmd_git_editorial_bridge = __DIR__ . '/bmd-git-editorial-bridge.php';
+if ( is_file( $bmd_git_editorial_bridge ) ) { require_once $bmd_git_editorial_bridge; }
 
 /** Keep obsolete, unreliable utilities hidden without deleting editor content. */
 $bmd_retired_tools = __DIR__ . '/bmd-retired-tools.php';
