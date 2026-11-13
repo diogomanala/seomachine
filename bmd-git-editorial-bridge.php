@@ -159,7 +159,9 @@ function bmd_git_editorial_apply($job) {
         $post_id = (int)$res;
         update_post_meta($post_id, '_bmd_git_editorial_source', $id);
     } else {
-        if (!$existing || (int)$existing->ID !== (int)(isset($job['post_id']) ? $job['post_id'] : 0) || $existing->post_status !== 'publish') {
+        if (!$existing || $existing->post_status !== 'publish' ||
+            (!empty($job['post_id']) && (int)$existing->ID !== (int)$job['post_id']) ||
+            (empty($job['post_id']) && (empty($job['expected_title']) || get_the_title($existing->ID) !== (string)$job['expected_title']))) {
             return new WP_Error('job_mismatch', 'ID, slug ou status do artigo nao confere.');
         }
         $post_id = (int)$existing->ID;
