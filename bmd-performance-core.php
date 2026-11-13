@@ -2,11 +2,15 @@
 /**
  * Plugin Name: BMD Performance Core
  * Description: Otimizacao seletiva e recomendacoes editoriais discretas do blog.
- * Version: 3.10.1
+ * Version: 3.10.2
  * Author: Blog de Marketing Digital
  * Requires PHP: 7.4
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
+
+/** Relevant contextual link to the new Gemini Search guide, only once available. */
+$bmd_gemini_related = __DIR__ . '/bmd-gemini-related-links-20261113.php';
+if (is_file($bmd_gemini_related)) { require_once $bmd_gemini_related; }
 
 /** On-site indexation checks (read-only in WordPress Tools). */
 $bmd_indexation_diagnostics = __DIR__ . '/bmd-indexation-diagnostics-20261113.php';
