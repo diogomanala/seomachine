@@ -246,3 +246,76 @@ add_action('wp_head', function () {
     if (!is_singular('post')) { return; }
     echo '<style>.entry-content .bmd-git-note{margin:26px 0;padding:20px 22px;background:#f5f8fc;color:#182433;border:1px solid #c7d5e5;border-radius:14px;font-size:1rem;line-height:1.7}.entry-content .bmd-git-note a{color:#0649a6;text-decoration:underline;text-underline-offset:2px}.entry-content .bmd-git-note h2,.entry-content .bmd-git-note h3{color:#152338;margin:0 0 12px}.entry-content .bmd-git-note a:focus-visible{outline:3px solid #ffbf47;outline-offset:3px}@media(max-width:600px){.entry-content .bmd-git-note{padding:15px}}</style>';
 }, 91);
+
+
+/** Lightweight read-only health check to verify that Git delivery became WordPress content. */
+add_action('rest_api_init', function () {
+    register_rest_route('bmd/v1', '/editorial-health', array(
+        'methods' => 'GET',
+        'permission_callback' => '__return_true',
+        'callback' => function () {
+            $files = bmd_git_editorial_jobs();
+            $done = 0;
+            $failed = 0;
+            $items = array();
+            foreach ($files as $path) {
+                $raw = file_get_contents($path);
+                $job = json_decode($raw, true);
+                $id = isset($job['id']) ? (string)$job['id'] : basename($path);
+                $is_done = get_option('bmd_git_editorial_done_' . md5($id), '') === hash('sha256', $raw);
+                $last = get_option('bmd_git_editorial_result_' . md5($id), '');
+                if ($is_done) { $done++; }
+                elseif ($last !== '') { $failed++; }
+                $items[] = array(
+                    'id' => $id,
+                    'state' => $is_done ? 'completed' : ($last !== '' ? 'error' : 'pending'),
+                );
+            }
+            return rest_ensure_response(array(
+                'bridge' => 'bmd-git-editorial',
+                'version' => 1,
+                'queued' => count($files),
+                'completed' => $done,
+                'errors' => $failed,
+                'jobs' => $items,
+            ));
+        }
+    ));
+});
+
+/** Fallback for hosts where WP-Cron is delayed: one guarded job per public page load. */
+add_action('wp_loaded', function () {
+    if (is_admin() || wp_doing_cron() || wp_doing_ajax() || (defined('REST_REQUEST') && REST_REQUEST)) { return; }
+    $files = bmd_git_editorial_jobs();
+    if (!$files) { return; }
+    $hash = bmd_git_editorial_digest();
+    if (get_option('bmd_git_editorial_completed_queue_hash', '') === $hash) { return; }
+    $lock = 'bmd_git_editorial_processing_lock';
+    if (get_transient($lock)) { return; }
+    set_transient($lock, '1', 60);
+    $all_done = true;
+    foreach ($files as $path) {
+        $raw = file_get_contents($path);
+        if ($raw === false) { $all_done = false; continue; }
+        $job = json_decode($raw, true);
+        $id = isset($job['id']) ? (string)$job['id'] : basename($path);
+        $key = 'bmd_git_editorial_done_' . md5($id);
+        $digest = hash('sha256', $raw);
+        if (get_option($key, '') === $digest) { continue; }
+        $all_done = false;
+        $throttle = 'bmd_git_editorial_retry_' . md5($id);
+        if (get_transient($throttle)) { continue; }
+        set_transient($throttle, 1, 600);
+        $res = bmd_git_editorial_apply($job);
+        if (is_wp_error($res)) {
+            bmd_git_editorial_result($id, $res->get_error_code() . ': ' . $res->get_error_message());
+        } else {
+            update_option($key, $digest, false);
+            bmd_git_editorial_result($id, 'OK: post ' . (int)$res);
+            delete_transient($throttle);
+        }
+        break; // Only one job per request, to avoid a slow public page.
+    }
+    if ($all_done) { update_option('bmd_git_editorial_completed_queue_hash', $hash, false); }
+    delete_transient($lock);
+}, 99);
