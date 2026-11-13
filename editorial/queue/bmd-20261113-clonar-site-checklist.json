@@ -1,0 +1,8 @@
+{
+  "id": "bmd-20261113-clonar-site-checklist",
+  "action": "append",
+  "slug": "como-clonar-um-site-completo",
+  "post_id": 8571,
+  "expected_title": "Como Copiar ou Clonar um Site Completo com Animações",
+  "body": "<h2>Checklist depois da captura: como saber se o site ficou utilizável?</h2>\n<p>Não avalie o resultado apenas pela primeira tela. Abra a cópia em um servidor local e confira: <strong>menu no celular</strong>, imagens carregadas, fontes, links internos, seções com rolagem, formulários, vídeos e animações. Uma cópia visual pode parecer correta mesmo quando scripts de interação e caminhos de arquivos não funcionam.</p>\n<p>Se o objetivo é apresentar uma proposta a um cliente, substitua marcas, imagens e textos que você não possui autorização para reutilizar; defina cores e identidade próprias e revise os direitos de uso. Para projetos com animações e conteúdo carregado por JavaScript, compare o resultado capturado com a página original em diferentes larguras de tela. Esse checklist complementa o tutorial sem prometer captura de backend, bancos de dados ou áreas privadas.</p>"
+}
