@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="bmd-title bmd-desc">
+<title id="bmd-title">Microfone de lapela não funciona no celular? 8 testes para resolver</title>
+<desc id="bmd-desc">Capa editorial de alto contraste, fundo azul-marinho escuro e amarelo, com ícone minimalista de microfone desativado em lugar de uma ilustração improvisada.</desc>
+<defs>
+<linearGradient id="background" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0B1424"/><stop offset="1" stop-color="#172D48"/></linearGradient>
+<linearGradient id="medal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FFFFFF"/><stop offset="1" stop-color="#EDF5FC"/></linearGradient>
+<filter id="soft-shadow" x="-25%" y="-25%" width="150%" height="155%"><feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#020713" flood-opacity=".36"/></filter>
+</defs>
+<rect width="1200" height="630" fill="url(#background)"/>
+<path d="M832 0h368v630H728z" fill="#183352" opacity=".58"/>
+<circle cx="1160" cy="62" r="215" fill="#315A7B" opacity=".19"/>
+<circle cx="818" cy="615" r="210" fill="#16334D" opacity=".42"/>
+<rect x="64" y="63" width="324" height="48" rx="24" fill="#253B55" stroke="#39546E"/>
+<circle cx="91" cy="87" r="7" fill="#FFCA33"/>
+<text x="111" y="95" font-family="Arial,Helvetica,sans-serif" font-size="18" font-weight="700" letter-spacing="1" fill="#EAF3FF">GUIA PRÁTICO DE ÁUDIO</text>
+<g font-family="Arial,Helvetica,sans-serif" font-weight="800">
+<text x="64" y="192" font-size="56" fill="#F8FAFC">Microfone de lapela</text>
+<text x="64" y="272" font-size="70" fill="#FFCE3F">não funciona</text>
+<text x="64" y="344" font-size="60" fill="#F8FAFC">no celular?</text>
+</g>
+<rect x="64" y="391" width="633" height="92" rx="21" fill="#FFCE3F"/>
+<text x="94" y="454" font-family="Arial,Helvetica,sans-serif" font-size="43" font-weight="800" fill="#111B2B">8 testes para resolver</text>
+<rect x="66" y="527" width="662" height="1" fill="#405774"/>
+<g font-family="Arial,Helvetica,sans-serif" font-size="23" fill="#D7E4F2">
+<text x="66" y="572">Conexão</text><circle cx="194" cy="564" r="4" fill="#FFCE3F"/>
+<text x="211" y="572">Permissões</text><circle cx="388" cy="564" r="4" fill="#FFCE3F"/>
+<text x="406" y="572">Compatibilidade</text>
+</g>
+<g filter="url(#soft-shadow)">
+<circle cx="968" cy="300" r="184" fill="#FFCE3F"/>
+<circle cx="968" cy="300" r="171" fill="url(#medal)"/>
+</g>
+<g transform="translate(866 196) scale(8.5)" fill="none" stroke="#14263A" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+<rect x="9" y="2" width="6" height="12" rx="3"/>
+<path d="M5 10v2a7 7 0 0 0 14 0v-2"/>
+<path d="M12 19v3M8 22h8"/>
+</g>
+<path d="M892 218 1043 369" stroke="#E53450" stroke-width="24" stroke-linecap="round"/>
+<path d="M892 218 1043 369" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity=".4"/>
+<g font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="20" text-anchor="middle">
+<rect x="798" y="515" width="100" height="45" rx="15" fill="#263E5B" stroke="#4D6681"/>
+<text x="848" y="545" fill="#F7FAFF">USB-C</text>
+<rect x="911" y="515" width="139" height="45" rx="15" fill="#263E5B" stroke="#4D6681"/>
+<text x="980" y="545" fill="#F7FAFF">Lightning</text>
+<rect x="1062" y="515" width="100" height="45" rx="15" fill="#263E5B" stroke="#4D6681"/>
+<text x="1112" y="545" fill="#F7FAFF">P2</text>
+</g>
+<text x="66" y="610" fill="#93AFC9" font-family="Arial,Helvetica,sans-serif" font-size="16" letter-spacing="1.1">BLOG DE MARKETING DIGITAL</text>
+</svg>
