@@ -319,3 +319,42 @@ add_action('wp_loaded', function () {
     if ($all_done) { update_option('bmd_git_editorial_completed_queue_hash', $hash, false); }
     delete_transient($lock);
 }, 99);
+
+
+/**
+ * Durable local status snapshot readable by the existing Hostinger file API.
+ * No secret credentials or personal data. Written at most once per minute.
+ */
+function bmd_git_editorial_status_snapshot() {
+    $dir = wp_upload_dir();
+    if (!empty($dir['error']) || empty($dir['basedir'])) { return; }
+    $dest = trailingslashit($dir['basedir']) . 'bmd-editorial-status.json';
+    $items = array();
+    $done = 0; $errors = 0;
+    foreach (bmd_git_editorial_jobs() as $path) {
+        $raw = file_get_contents($path);
+        if ($raw === false) { continue; }
+        $job = json_decode($raw, true);
+        $id = isset($job['id']) ? (string)$job['id'] : basename($path);
+        $ok = get_option('bmd_git_editorial_done_' . md5($id), '') === hash('sha256', $raw);
+        $last = (string) get_option('bmd_git_editorial_result_' . md5($id), '');
+        $state = $ok ? 'completed' : ($last ? 'error' : 'pending');
+        if ($ok) { $done++; } elseif ($state === 'error') { $errors++; }
+        $items[] = array('id' => $id, 'state' => $state, 'detail' => substr($last, 0, 160));
+    }
+    $payload = array(
+        'bridge' => 'bmd-git-editorial', 'updated_at' => gmdate('c'),
+        'queued' => count($items), 'completed' => $done, 'errors' => $errors, 'jobs' => $items
+    );
+    $json = wp_json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    if (!$json) { return; }
+    $tmp = $dest . '.tmp';
+    if (@file_put_contents($tmp, $json, LOCK_EX) !== false) {
+        @rename($tmp, $dest);
+    }
+}
+add_action('wp_loaded', function () {
+    if (get_transient('bmd_git_editorial_status_snapshot_lock')) { return; }
+    set_transient('bmd_git_editorial_status_snapshot_lock', 1, 60);
+    bmd_git_editorial_status_snapshot();
+}, 120);
