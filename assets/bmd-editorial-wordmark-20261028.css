@@ -493,3 +493,15 @@ body.bmd-premium-layout.page-id-8730 #bmd-utm-tool .bmd-preset:focus-visible{
   border-color:#cf303b!important;
   color:#a92732!important;
 }
+
+/* A11y 2026-11-14: OceanWP sometimes outputs an empty author anchor on posts.
+   Hide only the empty link; hide its metadata item in browsers with :has().
+   Does not affect a named author link or the visible article content. */
+body.single-post .meta-author a[rel="author"]:empty{
+  display:none!important;
+}
+@supports selector(:has(*)){
+  body.single-post li.meta-author:has(>a[rel="author"]:empty){
+    display:none!important;
+  }
+}
