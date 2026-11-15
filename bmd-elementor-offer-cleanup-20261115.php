@@ -94,3 +94,22 @@ add_action('init', function () {
         update_option('bmd_elementor_converter_cleanup_20261115_done', '1', false);
     }
 }, 90);
+
+
+/** The 8623 article had legacy Rank Math custom metadata, independent of H1.
+ * Keep search snippets consistent with its corrected, current product scope. */
+add_filter('rank_math/frontend/title', function($title) {
+    if (!is_admin() && is_singular('post') && (int)get_queried_object_id() === 8623 &&
+        (string)get_post_field('post_name', 8623) === 'vibe-coding-wordpress-sites-ia-elementor') {
+        return 'Vibe Coding no WordPress: Como Adaptar Sites de IA ao Elementor';
+    }
+    return $title;
+}, 95);
+
+add_filter('rank_math/frontend/description', function($description) {
+    if (!is_admin() && is_singular('post') && (int)get_queried_object_id() === 8623 &&
+        (string)get_post_field('post_name', 8623) === 'vibe-coding-wordpress-sites-ia-elementor') {
+        return 'Veja como adaptar sites criados por IA ao WordPress e Elementor: captura do front-end, reconstrução de widgets e limites do HTML/ZIP.';
+    }
+    return $description;
+}, 95);
