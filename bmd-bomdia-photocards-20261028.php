@@ -186,3 +186,33 @@ add_action('init', function () {
     clean_post_cache(4977);
     if (has_action('litespeed_purge_post')) { do_action('litespeed_purge_post', 4977); }
 }, 99);
+
+
+/**
+ * Final positioning guard: other content filters can prepend the canvas studio
+ * before our early gallery insertion. Move the complete rendered photo gallery
+ * ahead of the studio in the final HTML without duplicating either collection.
+ */
+add_filter('the_content', function ($content) {
+    if (is_admin() || !is_main_query() || !in_the_loop() || is_preview() ||
+        !is_singular('post') || (int)get_the_ID() !== 4977 ||
+        (string)get_post_field('post_name', 4977) !== 'melhores-imagens-de-bom-dia-para-compartilhar-no-whatsapp') {
+        return $content;
+    }
+    $photo_start = strpos($content, '<section class="bmd-photo-collection"');
+    $studio_start = strpos($content, '<section id="bmd-bomdia-studio"');
+    if ($photo_start === false || $studio_start === false || $photo_start < $studio_start) {
+        return $content;
+    }
+    $photo_end = strpos($content, '</section>', $photo_start);
+    if ($photo_end === false) { return $content; }
+    $photo_end += strlen('</section>');
+    $gallery = substr($content, $photo_start, $photo_end - $photo_start);
+    if (!$gallery || substr_count($content, '<section class="bmd-photo-collection"') !== 1) {
+        return $content;
+    }
+    $without = substr_replace($content, '', $photo_start, $photo_end - $photo_start);
+    $new_studio = strpos($without, '<section id="bmd-bomdia-studio"');
+    if ($new_studio === false) { return $content; }
+    return substr_replace($without, $gallery . "\n", $new_studio, 0);
+}, 999);
