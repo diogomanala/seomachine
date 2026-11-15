@@ -152,3 +152,37 @@ add_filter('the_content',function($content){
     }
     return $content;
 },60);
+
+
+/**
+ * One-time, reversible SERP snippet refresh for the single good-morning post.
+ * Preserves original Rank Math values in separate post meta, avoids rewriting
+ * content/URL, and only acts when BOTH stored originals match exactly.
+ */
+add_action('init', function () {
+    if (get_option('bmd_bomdia_serp_20261115_done', '') === '1') { return; }
+    $post = get_post(4977);
+    if (!$post || $post->post_status !== 'publish' ||
+        $post->post_name !== 'melhores-imagens-de-bom-dia-para-compartilhar-no-whatsapp') { return; }
+    $changes = array(
+        'rank_math_title' => array(
+            'old' => 'Imagens de Bom Dia para WhatsApp Grátis: Fotos e Frases',
+            'new' => 'Imagens de Bom Dia para WhatsApp Grátis: 30 Modelos'
+        ),
+        'rank_math_description' => array(
+            'old' => 'Veja imagens de bom dia grátis para WhatsApp com frases curtas, mensagens para a família e fotos para abrir, salvar e compartilhar pelo celular.',
+            'new' => 'Escolha 24 artes editáveis e 6 fotos com frases de bom dia. Baixe imagens grátis em PNG para WhatsApp e Status, sem cadastro.'
+        )
+    );
+    foreach ($changes as $key => $change) {
+        if ((string)get_post_meta(4977, $key, true) !== $change['old']) { return; }
+        if (metadata_exists('post', 4977, '_bmd_bomdia_backup_20261115_' . $key)) { return; }
+    }
+    foreach ($changes as $key => $change) {
+        add_post_meta(4977, '_bmd_bomdia_backup_20261115_' . $key, $change['old'], true);
+        update_post_meta(4977, $key, $change['new'], $change['old']);
+    }
+    update_option('bmd_bomdia_serp_20261115_done', '1', false);
+    clean_post_cache(4977);
+    if (has_action('litespeed_purge_post')) { do_action('litespeed_purge_post', 4977); }
+}, 99);
