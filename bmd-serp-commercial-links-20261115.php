@@ -15,6 +15,12 @@ function bmd_serp_commercial_links_20261115() {
             'anchor' => 'veja como capturar HTML, CSS e arquivos públicos de um site',
             'after' => ', com autorização, e entenda o que o navegador não consegue copiar. Isso não transforma o resultado automaticamente em um template nativo do Elementor.'
         ),
+        'como-colocar-site-no-ar-gratis-vercel-github' => array(
+            'target' => 'como-clonar-um-site-completo',
+            'before' => 'Se você ainda precisa preparar os arquivos de uma página sua ou autorizada para publicar, ',
+            'anchor' => 'aprenda a capturar o front-end com HTML, CSS, imagens e scripts',
+            'after' => ' antes de subir o projeto ao GitHub. Confira o pacote e os direitos de uso antes do deploy.'
+        ),
         '4-erros-comuns-em-sites-de-negocios' => array(
             'target' => 'como-descobrir-plataforma-do-site',
             'before' => 'Antes de propor uma reformulação, também vale ',
