@@ -8,6 +8,10 @@
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
+/** One-time guarded editorial cleanup: remove discontinued Elementor converter promises. */
+$bmd_converter_cleanup = __DIR__ . '/bmd-elementor-offer-cleanup-20261115.php';
+if (is_file($bmd_converter_cleanup)) { require_once $bmd_converter_cleanup; }
+
 /** Curated SERPBear editorial links. One link per relevant article, no DB writes. */
 $bmd_serp_commercial = __DIR__ . '/bmd-serp-commercial-links-20261115.php';
 if (is_file($bmd_serp_commercial)) { require_once $bmd_serp_commercial; }
