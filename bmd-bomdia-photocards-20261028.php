@@ -134,10 +134,10 @@ add_filter('the_content',function($content){
     if(strpos($content,'id="imagens"')===false || strpos($content,'1657822901_921_Imagens-de-bom-dia')===false){
         return $content;
     }
-    $needle='<h2 id="curtas">';
+    $needle='<h2 id="semana">';
     $pos=strpos($content,$needle);
     $photo_pos=strpos($content,'1657822901_921_Imagens-de-bom-dia');
-    if($pos===false || $photo_pos===false || $photo_pos<$pos){ return $content; }
+    if($pos===false || $photo_pos===false || $photo_pos>$pos){ return $content; }
     // Give Google and visitors crawlable image URLs close to the introduction.
     // Canvas-generated cards remain available below the photographic gallery.
     $content=substr($content,0,$pos).do_shortcode('[bmd_bomdia_photo_gallery]').substr($content,$pos);
@@ -151,7 +151,7 @@ add_filter('the_content',function($content){
         );
     }
     return $content;
-},60);
+},83);
 
 
 /**
