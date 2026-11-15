@@ -121,8 +121,8 @@ add_shortcode('bmd_bomdia_photo_gallery',function(){
 });
 
 /**
- * Insert only after the existing three legacy images, just before the
- * next existing section. No destructive WordPress post-content changes.
+ * Show the 6 real photographic cards near the article opening, before
+ * the 24 canvas template designs. No database or theme writes.
  */
 add_filter('the_content',function($content){
     if(is_admin() || !is_main_query() || !in_the_loop() || is_preview() ||
@@ -134,13 +134,12 @@ add_filter('the_content',function($content){
     if(strpos($content,'id="imagens"')===false || strpos($content,'1657822901_921_Imagens-de-bom-dia')===false){
         return $content;
     }
-    $needle='<h2 id="semana">';
+    $needle='<h2 id="curtas">';
     $pos=strpos($content,$needle);
     $photo_pos=strpos($content,'1657822901_921_Imagens-de-bom-dia');
-    if($pos===false || $photo_pos===false || $photo_pos>$pos){ return $content; }
-    // Visitors were missing the new collection because this article is long.
-    // Add a clear jump link in the existing table of contents, without writing
-    // anything to the post database or duplicating the photographic gallery.
+    if($pos===false || $photo_pos===false || $photo_pos<$pos){ return $content; }
+    // Give Google and visitors crawlable image URLs close to the introduction.
+    // Canvas-generated cards remain available below the photographic gallery.
     $content=substr($content,0,$pos).do_shortcode('[bmd_bomdia_photo_gallery]').substr($content,$pos);
     $old_nav='<li><a href="#imagens">Imagens para baixar</a></li>';
     if(strpos($content,'href="#imagens-bom-dia-fotograficas"')===false &&
@@ -152,4 +151,4 @@ add_filter('the_content',function($content){
         );
     }
     return $content;
-},83);
+},60);
