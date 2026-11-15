@@ -8,6 +8,10 @@
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
+/** Curated SERPBear editorial links. One link per relevant article, no DB writes. */
+$bmd_serp_commercial = __DIR__ . '/bmd-serp-commercial-links-20261115.php';
+if (is_file($bmd_serp_commercial)) { require_once $bmd_serp_commercial; }
+
 /** Relevant contextual link to the new Gemini Search guide, only once available. */
 $bmd_gemini_related = __DIR__ . '/bmd-gemini-related-links-20261113.php';
 if (is_file($bmd_gemini_related)) { require_once $bmd_gemini_related; }
